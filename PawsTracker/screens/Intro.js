@@ -4,8 +4,8 @@ import PressableButton from "../components/PressableButton";
 
 export default function Intro({ navigation }) {
   const toSignUp = () => {
-    // navigation.navigate("Signup");
-    navigation.navigate("App");
+    navigation.navigate("Signup");
+    // navigation.navigate("App");
   };
   return (
     <View style={styles.container}>
