@@ -7,7 +7,7 @@ export default function SignUp({ navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const toApp = async () => {
-    // User data to be saved
+    // User data to be saved, and fetch dog data
     const userData = {
       firstName,
       lastName,
