@@ -1,61 +1,58 @@
-import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import PressableButton from "./PressableButton";
-import { writeToDB } from '../firebase-files/firestoreHelper'; 
+import { writeToDB } from "../firebase-files/firestoreHelper";
 export default function SignUp({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const toApp = async () => {
-    // User data to be saved, and fetch dog data
-    const userData = {
-      firstName,
-      lastName,
-      email,
-    };
-  
-    // Define the path segments for storing user information in 'users' collection
-    // Assuming writeToDB is designed to automatically generate document IDs within the specified collection
-    const pathSegments = ['users'];
-  
-    try {
-      // Save user data to database
-      await writeToDB(userData, pathSegments);
-  
-      // Navigate to the App screen after successful data write
-      navigation.navigate("App", { email });
-      
-      console.log("User information saved successfully");
-    } catch (err) {
-      console.error("Error saving user information:", err);
-    }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const signUpHandler = () => {
+    navigation.navigate("App");
   };
-  
+
+  const loginHandler = () => {
+    navigation.navigate("Login");
+  };
   return (
     <View style={styles.container}>
-      <Text>SignUp</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
-        onChangeText={setFirstName}
-        value={firstName}
-        placeholder="Enter your first name"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setLastName}
-        value={lastName}
-        placeholder="Enter your last name"
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
+        placeholder="Email"
         value={email}
-        placeholder="Enter your email"
-        keyboardType="email-address"
+        onChangeText={(changedText) => {
+          setEmail(changedText);
+        }}
       />
-      <PressableButton onPressFunction={toApp}>
-        <Text>To App</Text>
-      </PressableButton>
+      <Text style={styles.label}>Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        placeholder="Password"
+        value={password}
+        onChangeText={(changedText) => {
+          setPassword(changedText);
+        }}
+      />
+      <Text style={styles.label}>Confirm Password</Text>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={true}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={(changedText) => {
+          setConfirmPassword(changedText);
+        }}
+      />
+      <View style={styles.section}>
+        <PressableButton onPressFunction={signUpHandler}>
+          <Text>Register</Text>
+        </PressableButton>
+        <PressableButton onPressFunction={loginHandler}>
+          <Text>Already Registered? Login</Text>
+        </PressableButton>
+      </View>
     </View>
   );
 }
@@ -63,8 +60,21 @@ export default function SignUp({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "",
+    backgroundColor: "#fff",
     justifyContent: "center",
-    alignItems: "center",
+  },
+  input: {
+    borderColor: "#552055",
+    borderWidth: 2,
+    width: "90%",
+    margin: 5,
+    padding: 5,
+  },
+  label: {
+    marginLeft: 10,
+  },
+  section: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
 });
