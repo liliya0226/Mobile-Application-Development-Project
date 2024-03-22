@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import PressableButton from "./PressableButton";
-import { writeToDB } from "../firebase-files/firestoreHelper";
+
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
+
   },
   input: {
     borderColor: "#552055",
