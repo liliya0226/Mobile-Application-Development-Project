@@ -12,7 +12,7 @@ import Weight from "../screens/Weight";
 import Header from "./Header";
 
 const Tab = createBottomTabNavigator();
-export default function BottomTab() {
+export default function BottomTab({ userId }) {
   return (
     <Tab.Navigator
       initialRouteName="Nutri"
@@ -32,7 +32,7 @@ export default function BottomTab() {
               color={color}
             />
           ),
-          header: () => <Header />,
+          header: () => <Header userId={userId} />,
           headerShown: true,
         }}
       />
@@ -44,7 +44,7 @@ export default function BottomTab() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="toilet-paper" size={size} color={color} />
           ),
-          header: () => <Header />,
+          header: () => <Header userId={userId} />,
           headerShown: true,
         }}
       />
@@ -56,7 +56,7 @@ export default function BottomTab() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="weight" size={size} color={color} />
           ),
-          header: () => <Header />,
+          header: () => <Header userId={userId} />,
           headerShown: true,
         }}
       />

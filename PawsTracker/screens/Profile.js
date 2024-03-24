@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
-import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper"; // 替换为您的文件路径
+import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper";
+import Header from "../components/Header";
 
 export default function Profile({ route }) {
   const [userInfo, setUserInfo] = useState({
@@ -19,7 +20,7 @@ export default function Profile({ route }) {
     const fetchUserData = async () => {
       try {
         const userData = await getDocsFromDB(["users"], userId);
-   
+
         if (userData.length > 0) {
           // If user data was found, set it to state
           setUserInfo({
@@ -69,6 +70,7 @@ export default function Profile({ route }) {
 
   return (
     <View style={styles.container}>
+      <Header userId={userId} />
       <Text>Last Name: {userInfo.lastName}</Text>
       <Text>First Name: {userInfo.firstName}</Text>
       <Text>Email: {userInfo.email}</Text>
