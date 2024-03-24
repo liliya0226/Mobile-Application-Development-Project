@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
 import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper"; // 替换为您的文件路径
 
-export default function Profile() {
+export default function Profile({ route }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
     lastName: "",
     email: "",
   });
+  const { userId } = route.params;
   const [dogs, setDogs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dogName, setDogName] = useState("");
@@ -17,17 +18,18 @@ export default function Profile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userData = await getDocsFromDB(["users"]);
+        const userData = await getDocsFromDB(["users"], userId);
+   
         if (userData.length > 0) {
-          const user = userData[0];
+          // If user data was found, set it to state
           setUserInfo({
-            id: user.id || "",
-            firstName: user.firstName || "",
-            lastName: user.lastName || "",
-            email: user.email || "",
+            id: userData[0].id,
+            firstName: userData[0].firstName || "",
+            lastName: userData[0].lastName || "",
+            email: userData[0].email || "",
           });
 
-          const dogsData = await getDocsFromDB(["users", user.id, "dogs"]);
+          const dogsData = await getDocsFromDB(["users", userId, "dogs"]);
           setDogs(dogsData || []);
         }
       } catch (error) {
@@ -36,7 +38,7 @@ export default function Profile() {
     };
 
     fetchUserData();
-  }, []);
+  }, [userId]);
 
   const addDog = () => {
     setIsModalVisible(true);
