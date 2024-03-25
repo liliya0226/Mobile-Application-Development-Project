@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
 import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper";
 import Header from "../components/Header";
 
-export default function Profile({ route }) {
+export default function Profile({ userId }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
     lastName: "",
     email: "",
   });
-  const { userId } = route.params;
+
   const [dogs, setDogs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dogName, setDogName] = useState("");

@@ -3,6 +3,8 @@ import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import PressableButton from "./PressableButton"; // Assuming this is the same custom button component used in SignUp
 import { useNavigation } from "@react-navigation/native";
 import { fetchUserIdByEmail } from "../firebase-files/firestoreHelper";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase-files/firebaseSetup";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,6 +12,9 @@ export default function Login() {
 
   const navigation = useNavigation();
 
+  const signupHandler = () => {
+    navigation.navigate("Signup");
+  };
   const loginHandler = async () => {
     try {
       const userId = await fetchUserIdByEmail(email);
@@ -57,6 +62,9 @@ export default function Login() {
       <View style={styles.section}>
         <PressableButton onPressFunction={loginHandler}>
           <Text>Login</Text>
+        </PressableButton>
+        <PressableButton onPressFunction={signupHandler}>
+          <Text>New User? Create An Account</Text>
         </PressableButton>
       </View>
     </View>
