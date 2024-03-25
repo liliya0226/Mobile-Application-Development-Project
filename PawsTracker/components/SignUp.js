@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
-import PressableButton from './PressableButton'; // Assuming you have this component
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import PressableButton from "./PressableButton"; // Assuming you have this component
 // Import other necessary components and functions
-import { writeToDB } from '../firebase-files/firestoreHelper';
+import { writeToDB } from "../firebase-files/firestoreHelper";
 export default function SignUp({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState(''); // State for the first name
-  const [lastName, setLastName] = useState(''); // State for the last name
-  const [password, setPassword] = useState(''); // State for the password
-  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirming the password
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState(""); // State for the first name
+  const [lastName, setLastName] = useState(""); // State for the last name
+  const [password, setPassword] = useState(""); // State for the password
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirming the password
 
   const signUpHandler = async () => {
     // Check if passwords match
@@ -22,17 +22,16 @@ export default function SignUp({ navigation }) {
       email,
       firstName,
       lastName,
-     
     };
-    const pathSegments = ['users']; // Define the path segments for your database structure
+    const pathSegments = ["users"]; // Define the path segments for your database structure
 
     try {
       const docRef = await writeToDB(userData, pathSegments); // Attempt to write user data to the database
       const userId = docRef.id; // Extract the userId from the document reference
 
       // Navigate to the Profile screen and pass the userId as a parameter
-      navigation.navigate('App', {
-        screen: 'Profile',
+      navigation.navigate("App", {
+        screen: "Profile",
         params: { userId: userId },
       });
     } catch (error) {
