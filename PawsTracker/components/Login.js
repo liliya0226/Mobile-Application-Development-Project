@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import PressableButton from "./PressableButton"; // Assuming this is the same custom button component used in SignUp
 import { useNavigation } from "@react-navigation/native";
-import { fetchUserIdByEmail } from "../firebase-files/firestoreHelper";
+
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-files/firebaseSetup";
 
@@ -13,33 +13,22 @@ export default function Login() {
   const navigation = useNavigation();
 
   const signupHandler = () => {
-    navigation.navigate("Signup");
-  };
-  const loginHandler = async () => {
-    try {
-      const userId = await fetchUserIdByEmail(email);
-      if (userId) {
-        // Navigate to the Profile screen and pass the userId as a parameter
-        navigation.navigate("App", {
-          screen: "Profile",
-          params: { userId: userId },
-        });
-      } else {
-        // Alert the user if no user is found with the provided email
-        Alert.alert(
-          "Login Failed",
-          "No user found with this email. Please sign up."
-        );
-      }
-    } catch (error) {
-      console.error("Login error: ", error);
-      Alert.alert(
-        "Login Error",
-        "An error occurred during login. Please try again."
-      );
-    }
+    navigation.replace("Signup");
   };
 
+
+  const loginHandler = async () => {
+    try {
+      if (!email || !password) {
+        Alert.alert("Fields should not be empty");
+        return;
+      }
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      console.log(userCred);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Email</Text>

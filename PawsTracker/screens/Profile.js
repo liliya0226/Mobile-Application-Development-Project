@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
 import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper";
 import Header from "../components/Header";
-
+import { auth } from "../firebase-files/firebaseSetup";
 export default function Profile({ userId }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -17,29 +17,32 @@ export default function Profile({ userId }) {
   const [dogAge, setDogAge] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchAndSetUserData = async () => {
       try {
-        const userData = await getDocsFromDB(["users"], userId);
-
-        if (userData.length > 0) {
-          // If user data was found, set it to state
+        const userDataArray = await getDocsFromDB(["users"], auth.currentUser.uid);
+        if (userDataArray.length > 0) {
+    
+          const userData = userDataArray[0]; 
           setUserInfo({
-            id: userData[0].id,
-            firstName: userData[0].firstName || "",
-            lastName: userData[0].lastName || "",
-            email: userData[0].email || "",
+            id: userData.id,
+            firstName: userData.firstName || "",
+            lastName: userData.lastName || "",
+            email: userData.email || "",
           });
-
-          const dogsData = await getDocsFromDB(["users", userId, "dogs"]);
-          setDogs(dogsData || []);
         }
+  
+        const dogsData = await getDocsFromDB(["users", auth.currentUser.uid, "dogs"]);
+        setDogs(dogsData || []);
       } catch (error) {
         console.error(error);
       }
     };
-
-    fetchUserData();
-  }, [userId]);
+  
+    if (auth.currentUser.uid) {
+      fetchAndSetUserData();
+    }
+  }, [auth.currentUser.uid]);
+  
 
   const addDog = () => {
     setIsModalVisible(true);
@@ -50,7 +53,7 @@ export default function Profile({ userId }) {
       name: dogName,
       age: dogAge,
     };
-    await writeToDB(newDog, ["users", userInfo.id, "dogs"]);
+    await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
     setDogAge("");
     setDogName("");
     fetchDogsData();
@@ -58,15 +61,15 @@ export default function Profile({ userId }) {
   };
 
   const fetchDogsData = async () => {
-    const dogsData = await getDocsFromDB(["users", userInfo.id, "dogs"]);
+    const dogsData = await getDocsFromDB(["users", auth.currentUser.uid, "dogs"]);
     setDogs(dogsData || []);
   };
 
   useEffect(() => {
-    if (userInfo.id) {
+    if (auth.currentUser.uid) {
       fetchDogsData();
     }
-  }, [userInfo.id]);
+  }, [auth.currentUser.uid]);
 
   return (
     <View style={styles.container}>

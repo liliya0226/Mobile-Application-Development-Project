@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import PressableButton from "./PressableButton"; // Assuming you have this component
 // Import other necessary components and functions
-import { writeToDB } from "../firebase-files/firestoreHelper";
+
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword function
 import { auth } from "../firebase-files/firebaseSetup"; //
+import { writeUserToDB } from "../firebase-files/firestoreHelper";
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
@@ -43,13 +44,9 @@ export default function SignUp({ navigation }) {
         firstName,
         lastName,
       };
-      await writeToDB(userData, ["users"]);
+      await writeUserToDB(userId, userData, ["users"]);
 
-      // Navigate to the Profile screen and pass the userId as a parameter
-      navigation.navigate("App", {
-        screen: "Profile",
-        params: { userId },
-      });
+
     } catch (error) {
       // Handle authentication errors
       if (error.code === "auth/email-already-in-use") {
