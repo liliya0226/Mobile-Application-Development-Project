@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
 import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper";
-import Header from "../components/Header";
 import { auth } from "../firebase-files/firebaseSetup";
-export default function Profile({ userId }) {
+export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
@@ -19,10 +18,12 @@ export default function Profile({ userId }) {
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       try {
-        const userDataArray = await getDocsFromDB(["users"], auth.currentUser.uid);
+        const userDataArray = await getDocsFromDB(
+          ["users"],
+          auth.currentUser.uid
+        );
         if (userDataArray.length > 0) {
-    
-          const userData = userDataArray[0]; 
+          const userData = userDataArray[0];
           setUserInfo({
             id: userData.id,
             firstName: userData.firstName || "",
@@ -30,19 +31,22 @@ export default function Profile({ userId }) {
             email: userData.email || "",
           });
         }
-  
-        const dogsData = await getDocsFromDB(["users", auth.currentUser.uid, "dogs"]);
+
+        const dogsData = await getDocsFromDB([
+          "users",
+          auth.currentUser.uid,
+          "dogs",
+        ]);
         setDogs(dogsData || []);
       } catch (error) {
         console.error(error);
       }
     };
-  
+
     if (auth.currentUser.uid) {
       fetchAndSetUserData();
     }
   }, [auth.currentUser.uid]);
-  
 
   const addDog = () => {
     setIsModalVisible(true);
@@ -61,7 +65,11 @@ export default function Profile({ userId }) {
   };
 
   const fetchDogsData = async () => {
-    const dogsData = await getDocsFromDB(["users", auth.currentUser.uid, "dogs"]);
+    const dogsData = await getDocsFromDB([
+      "users",
+      auth.currentUser.uid,
+      "dogs",
+    ]);
     setDogs(dogsData || []);
   };
 
@@ -73,7 +81,7 @@ export default function Profile({ userId }) {
 
   return (
     <View style={styles.container}>
-      <Header userId={userId} />
+  
       <Text>Last Name: {userInfo.lastName}</Text>
       <Text>First Name: {userInfo.firstName}</Text>
       <Text>Email: {userInfo.email}</Text>
