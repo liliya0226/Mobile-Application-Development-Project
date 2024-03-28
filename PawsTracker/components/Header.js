@@ -1,51 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { getDocsFromDB } from "../firebase-files/firestoreHelper";
-import { auth } from "../firebase-files/firebaseSetup";
+import { useDogContext } from "../context-files/ DogContext";
+
 export default function Header() {
-  const [dogs, setDogs] = useState([]);
-  const [selectedDog, setSelectedDog] = useState(null);
+  const { dogs, selectedDog, setSelectedDog } = useDogContext();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
   useEffect(() => {
-    fetchUserDogs();
-  }, []);
-
-  useEffect(() => {
-    fetchUserDogs();
-  }, [auth.currentUser.uid]);
-
-  const fetchUserDogs = async () => {
-    try {
-      const dogsData = await getDocsFromDB(["users", auth.currentUser.uid, "dogs"]);
-      setDogs(
-        dogsData.map((dog) => ({ label: dog.name, value: dog.id })) || []
-      );
-    } catch (error) {
-      console.error(error);
+    if (selectedDog) {
+      setValue(selectedDog.value);
     }
-  };
+  }, [selectedDog]);
 
-  const handleDogChange = (dogId) => {
-    // Find the corresponding dog object by dogId from the dogs array
-    const selectedDogData = dogs.find(dog => dog.value === dogId);
-    setSelectedDog(selectedDogData ? selectedDogData.label : null); // Update the selectedDog state to the dog's name
-    setValue(dogId); // Update the dropdown's value to reflect the selection
+  const handleDogChange = (value) => {
+    const dog = dogs.find((d) => d.value === value);
+    if (dog) {
+      setSelectedDog(dog);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Display the selected dog's name */}
-      <Text style={styles.title}>{selectedDog ? `Selected Dog: ${selectedDog}` : "Select Dog:"}</Text>
+      <Text style={styles.title}>
+        {selectedDog ? `Selected Dog: ${selectedDog.label}` : "Select Dog:"}
+      </Text>
       <DropDownPicker
         open={open}
         value={value}
         items={dogs}
         setOpen={setOpen}
         setValue={setValue}
-        onChangeValue={(value) => handleDogChange(value)} // Note the use of onChangeValue to properly handle the change in selected value
+        onChangeValue={handleDogChange}
+        containerStyle={styles.dropdownContainer}
+        style={styles.dropdown}
+        dropDownContainerStyle={styles.dropdownBox}
       />
     </View>
   );
@@ -53,13 +43,22 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 100,
-    backgroundColor: "#ff7f50",
+    padding: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   title: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  dropdownContainer: {
+    width: "90%",
+    height: 40,
+  },
+  dropdown: {
+    backgroundColor: "#fafafa",
+  },
+  dropdownBox: {
+    backgroundColor: "#fafafa",
   },
 });

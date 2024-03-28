@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, Modal, TextInput } from "react-native";
 import { writeToDB, getDocsFromDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
+
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -52,17 +53,38 @@ export default function Profile() {
     setIsModalVisible(true);
   };
 
+
   const saveDog = async () => {
+
+    if (!dogName.trim() || dogName.length > 20) {
+      Alert.alert("Validation Error", "Dog's name cannot be empty or exceed 20 characters.");
+      return;
+    }
+  
+    
+    const age = parseInt(dogAge, 10);
+    if (isNaN(age) || age < 0 || age > 20) {
+      Alert.alert("Validation Error", "Dog's age must be a non-negative number within a reasonable range (0-20).");
+      return;
+    }
+  
+
     const newDog = {
-      name: dogName,
-      age: dogAge,
+      name: dogName.trim(),
+      age,
     };
-    await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
-    setDogAge("");
-    setDogName("");
-    fetchDogsData();
-    setIsModalVisible(false);
+    try {
+      await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
+      setDogAge("");
+      setDogName("");
+      fetchDogsData();
+      setIsModalVisible(false);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to save dog information.");
+    }
   };
+  
 
   const fetchDogsData = async () => {
     const dogsData = await getDocsFromDB([
