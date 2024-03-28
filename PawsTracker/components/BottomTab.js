@@ -1,7 +1,7 @@
 import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
-
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Nutri from "../screens/Nutri";
@@ -10,8 +10,11 @@ import Profile from "../screens/Profile";
 import Map from "../screens/Map";
 import Weight from "../screens/Weight";
 import Header from "./Header";
+import AddWeight from "./AddWeight";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
 export default function BottomTab() {
   return (
     <Tab.Navigator
@@ -49,8 +52,8 @@ export default function BottomTab() {
         }}
       />
       <Tab.Screen
-        name="Weight"
-        component={Weight}
+        name="WeightTab"
+        component={WeightStackScreen}
         options={{
           tabBarLabel: "Weight",
           tabBarIcon: ({ color, size }) => (
@@ -85,5 +88,26 @@ export default function BottomTab() {
     </Tab.Navigator>
   );
 }
+
+const WeightStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Weight"
+        component={Weight}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddWeight"
+        component={AddWeight}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const styles = StyleSheet.create({});

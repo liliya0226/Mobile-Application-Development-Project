@@ -1,46 +1,66 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
-import WeightItem from "../components/WeightItem";
-import {
-  getWeightFromDB,
-  writeWeightToDB,
-  deleteWeightFromDB,
-} from "../firebase-files/firestoreHelper";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import WeightList from "../components/WeightList";
+import { getDocsFromDB, writeToDB } from "../firebase-files/firestoreHelper";
+import { useNavigation } from "@react-navigation/native";
+import { auth } from "../firebase-files/firebaseSetup";
+import PressableButton from "../components/PressableButton";
+import { onSnapshot, collection } from "firebase/firestore";
+import { database } from "../firebase-files/firebaseSetup";
 
-export default function Weight({ navigation }) {
-  const [weight, setWeights] = useState([]);
+export default function Weight() {
+  const navigation = useNavigation();
+  const [weights, setWeights] = useState([]);
 
-  function receiveInput(data, date) {
-    const newGoal = { text: data, date: date };
-    writeWeightToDB(newGoal, "weights");
-  }
+  useEffect(() => {
+    //TODO: might need update firestorehelper method
+    const unsubscribe = onSnapshot(
+      collection(
+        database,
+        "users",
+        auth.currentUser.uid,
+        "dogs",
+        //TODO: use dog id
+        "7SEzZmML3X49DZ2TDweX",
+        "weight"
+      ),
+      (snapshot) => {
+        const updatedWeights = [];
+        snapshot.forEach((doc) => {
+          updatedWeights.push({ id: doc.id, ...doc.data() });
+        });
+        setWeights(updatedWeights);
+      },
+      (error) => {
+        console.error("Error fetching weights:", error);
+      }
+    );
 
-  function goalPressHandler(weightItem) {
-    navigation.navigate("WeightDetails", { data: weightItem });
-  }
-  function goalDeleteHandler(deletedId) {
-    console.log("deleted", deletedId);
-    deleteWeightFromDB(deletedId);
-  }
+    return () => unsubscribe();
+  }, []);
+
+  const handleWeightPress = (weight) => {
+    navigation.navigate("AddWeight", { weight });
+  };
+
+  const handleAddButtonPress = () => {
+    navigation.navigate("AddWeight");
+  };
+
   return (
-    <View>
-      <View style={styles.bottomView}>
-        <FlatList
-          contentContainerStyle={styles.scrollViewContent}
-          data={weight}
-          renderItem={({ item }) => {
-            return (
-              <WeightItem
-                weightObj={item}
-                deleteFunction={goalDeleteHandler}
-                detailFunction={goalPressHandler}
-              />
-            );
-          }}
-        />
-      </View>
+    <View style={styles.container}>
+      <PressableButton onPressFunction={handleAddButtonPress}>
+        <Text>Add</Text>
+      </PressableButton>
+      <WeightList weights={weights} onWeightPress={handleWeightPress} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    padding: 10,
+  },
+});
