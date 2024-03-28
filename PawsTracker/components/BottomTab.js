@@ -12,9 +12,11 @@ import Weight from "../screens/Weight";
 import Header from "./Header";
 import PressableButton from "./PressableButton";
 import { AntDesign } from "@expo/vector-icons";
-import AddReminderScreen from "../screens/AddReminderScreen";
+import AddReminder from "./AddReminder";
+import AddWeight from "./AddWeight";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Tab = createBottomTabNavigator();
-
+const Stack = createNativeStackNavigator();
 export default function BottomTab() {
   return (
     <DogProvider>
@@ -54,7 +56,7 @@ export default function BottomTab() {
         />
         <Tab.Screen
           name="AddReminder"
-          component={AddReminderScreen}
+          component={AddReminder}
           options={{
             tabBarLabel: "Add Reminder",
             tabBarButton: () => null,
@@ -64,8 +66,8 @@ export default function BottomTab() {
         />
 
         <Tab.Screen
-          name="Weight"
-          component={Weight}
+          name="WeightTab"
+          component={WeightStackScreen}
           options={{
             tabBarLabel: "Weight",
             tabBarIcon: ({ color, size }) => (
@@ -120,5 +122,24 @@ export default function BottomTab() {
     </DogProvider>
   );
 }
-
+const WeightStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Weight"
+        component={Weight}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddWeight"
+        component={AddWeight}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 const styles = StyleSheet.create({});

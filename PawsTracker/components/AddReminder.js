@@ -21,7 +21,7 @@ const DayButton = ({ day, isSelected, onSelect }) => (
   </TouchableOpacity>
 );
 
-const AddReminderScreen = ({ isVisible, onClose }) => {
+const AddReminder = ({ isVisible, onClose }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);

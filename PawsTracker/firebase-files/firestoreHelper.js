@@ -65,6 +65,16 @@ export async function getDocsFromDB(pathSegments, docId = null) {
   }
 }
 
+export async function updateInDB(data, pathSegments) {
+  try {
+    const docRef = doc(database, ...pathSegments);
+    await setDoc(docRef, data, { merge: true });
+    console.log("Document updated successfully.");
+  } catch (err) {
+    console.error("Error updating document:", err);
+    throw err;
+  }
+}
 export async function deleteFromDB(pathSegments) {
   try {
     let ref = doc(database, ...pathSegments);

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Switch, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AddReminderScreen from "./AddReminderScreen";
+import AddReminder from "../components/AddReminder";
 import { getDocsFromDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/ DogContext";
 
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
-  const [isAddReminderModalVisible, setAddReminderModalVisible] = useState(false);
+  const [isAddReminderModalVisible, setAddReminderModalVisible] =
+    useState(false);
   const { selectedDog } = useDogContext();
 
   useEffect(() => {
@@ -23,7 +24,9 @@ export default function PooPal() {
           selectedDog.value,
           "reminders",
         ]);
-        setReminders(remindersData.map(reminder => ({ ...reminder, isEnabled: false })));
+        setReminders(
+          remindersData.map((reminder) => ({ ...reminder, isEnabled: false }))
+        );
       } catch (error) {
         console.error(error);
       }
@@ -32,9 +35,12 @@ export default function PooPal() {
   }, [selectedDog]);
 
   const toggleSwitch = (index) => {
-    setReminders(prevReminders => {
+    setReminders((prevReminders) => {
       const updatedReminders = [...prevReminders];
-      updatedReminders[index] = { ...updatedReminders[index], isEnabled: !updatedReminders[index].isEnabled };
+      updatedReminders[index] = {
+        ...updatedReminders[index],
+        isEnabled: !updatedReminders[index].isEnabled,
+      };
       return updatedReminders;
     });
   };
@@ -85,7 +91,7 @@ export default function PooPal() {
         </View>
       ))}
 
-      <AddReminderScreen
+      <AddReminder
         isVisible={isAddReminderModalVisible}
         onClose={closeAddReminderScreen}
       />
