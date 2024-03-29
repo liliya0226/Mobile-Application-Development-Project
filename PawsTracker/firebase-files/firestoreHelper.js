@@ -75,6 +75,8 @@ export async function updateInDB(data, pathSegments) {
     throw err;
   }
 }
+
+
 export async function deleteFromDB(pathSegments) {
   try {
     let ref = doc(database, ...pathSegments);
