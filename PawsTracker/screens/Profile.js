@@ -122,12 +122,14 @@ export default function Profile() {
           <TextInput
             style={styles.input}
             placeholder="Dog Name"
+            placeholderTextColor="#999"
             value={dogName}
             onChangeText={setDogName}
           />
           <TextInput
             style={styles.input}
             placeholder="Dog Age"
+            placeholderTextColor="#999"
             value={dogAge}
             onChangeText={setDogAge}
             keyboardType="numeric"
@@ -167,5 +169,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     width: "80%",
+    
   },
 });

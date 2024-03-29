@@ -27,6 +27,12 @@ export default function Login() {
       console.log(userCred);
     } catch (err) {
       console.log(err);
+      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+        Alert.alert("Error", "Incorrect username or password. Please try again.");
+      } else {
+        // Handle other kinds of errors with a generic error message
+        Alert.alert("Error", "An unexpected error occurred. Please try again later.");
+      }
     }
   };
   return (
@@ -60,13 +66,12 @@ export default function Login() {
   );
 }
 
-// Reuse the same styles from your SignUp component for consistency
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
-    alignItems: "center",
   },
   input: {
     borderColor: "#552055",
@@ -81,6 +86,5 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginTop: 10,
   },
 });

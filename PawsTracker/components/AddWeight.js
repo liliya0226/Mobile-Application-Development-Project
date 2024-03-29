@@ -8,13 +8,13 @@ import {
   deleteFromDB,
 } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
-
+import { useDogContext } from "../context-files/DogContext";
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
-
+  const { selectedDog } = useDogContext();
   useEffect(() => {
     if (route.params?.weight) {
       const { weight } = route.params;
@@ -34,8 +34,7 @@ export default function AddWeight({ navigation, route }) {
       "users",
       auth.currentUser.uid,
       "dogs",
-      //TODO: use dog id
-      "7SEzZmML3X49DZ2TDweX",
+      selectedDog.value,
       "weight",
     ]);
   };
@@ -67,8 +66,7 @@ export default function AddWeight({ navigation, route }) {
           "users",
           auth.currentUser.uid,
           "dogs",
-          //TODO: use dog id
-          "7SEzZmML3X49DZ2TDweX",
+          selectedDog.value,
           "weight",
           weight.id,
         ]);
@@ -100,8 +98,7 @@ export default function AddWeight({ navigation, route }) {
                 "users",
                 auth.currentUser.uid,
                 "dogs",
-                //TODO: use dog id
-                "7SEzZmML3X49DZ2TDweX",
+                selectedDog.value,
                 "weight",
                 weight.id,
               ]);
