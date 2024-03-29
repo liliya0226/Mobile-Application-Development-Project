@@ -1,42 +1,61 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
-import PressableButton from './PressableButton'; // Assuming you have this component
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import PressableButton from "./PressableButton"; // Assuming you have this component
 // Import other necessary components and functions
-import { writeToDB } from '../firebase-files/firestoreHelper';
+
+import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword function
+import { auth } from "../firebase-files/firebaseSetup"; //
+import { writeUserToDB } from "../firebase-files/firestoreHelper";
+
 export default function SignUp({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState(''); // State for the first name
-  const [lastName, setLastName] = useState(''); // State for the last name
-  const [password, setPassword] = useState(''); // State for the password
-  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirming the password
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState(""); // State for the first name
+  const [lastName, setLastName] = useState(""); // State for the last name
+  const [password, setPassword] = useState(""); // State for the password
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirming the password
 
   const signUpHandler = async () => {
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match. Please try again."); // Alert the user if passwords do not match
-      return; // Stop the function if there is a mismatch
+    if (!email || !password || !confirmPassword || !firstName || !lastName) {
+      Alert.alert("Fill in all the fields");
+      return;
     }
 
-    // Continue with the signup process if passwords match
-    const userData = {
-      email,
-      firstName,
-      lastName,
-     
-    };
-    const pathSegments = ['users']; // Define the path segments for your database structure
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match. Please try again.");
+      return;
+    }
 
     try {
-      const docRef = await writeToDB(userData, pathSegments); // Attempt to write user data to the database
-      const userId = docRef.id; // Extract the userId from the document reference
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-      // Navigate to the Profile screen and pass the userId as a parameter
-      navigation.navigate('App', {
-        screen: 'Profile',
-        params: { userId: userId },
-      });
+      // Extract user ID
+      const userId = userCredential.user.uid;
+      console.log(userId);
+
+      // Write user data to the database
+      const userData = {
+        email,
+        firstName,
+        lastName,
+      };
+      await writeUserToDB(userId, userData, ["users"]);
+
+
     } catch (error) {
-      console.error("Error signing up: ", error); // Log any errors for debugging
+      // Handle authentication errors
+      if (error.code === "auth/email-already-in-use") {
+        Alert.alert("Error", "Email is already in use.");
+      } else if (error.code === "auth/weak-password") {
+        Alert.alert("Error", "Password is too weak.");
+      } else {
+        Alert.alert("Error", error.message);
+      }
     }
   };
 
