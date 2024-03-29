@@ -9,8 +9,6 @@ import {
   messagingSenderId,
   appId,
 } from "@env";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,6 +26,3 @@ const firebaseConfig = {
 // Initialize Firebase
 const myApp = initializeApp(firebaseConfig);
 export const database = getFirestore(myApp);
-export const auth = initializeAuth(myApp, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
