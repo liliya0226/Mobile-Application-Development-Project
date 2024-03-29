@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import WeightList from "../components/WeightList";
@@ -8,38 +7,38 @@ import { auth } from "../firebase-files/firebaseSetup";
 import PressableButton from "../components/PressableButton";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
-
+import { useDogContext } from "../context-files/DogContext";
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
-
+  const { selectedDog } = useDogContext();
   useEffect(() => {
-    //TODO: might need update firestorehelper method
-    const unsubscribe = onSnapshot(
-      collection(
-        database,
-        "users",
-        auth.currentUser.uid,
-        "dogs",
-        //TODO: use dog id
-        "7SEzZmML3X49DZ2TDweX",
-        "weight"
-      ),
-      (snapshot) => {
-        const updatedWeights = [];
-        snapshot.forEach((doc) => {
-          updatedWeights.push({ id: doc.id, ...doc.data() });
-        });
-        setWeights(updatedWeights);
-      },
-      (error) => {
-        console.error("Error fetching weights:", error);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
+    if (selectedDog) {
+      const unsubscribe = onSnapshot(
+        collection(
+          database,
+          "users",
+          auth.currentUser.uid,
+          "dogs",
+          selectedDog.value,
+          "weight"
+        ),
+        (snapshot) => {
+          const updatedWeights = [];
+          snapshot.forEach((doc) => {
+            updatedWeights.push({ id: doc.id, ...doc.data() });
+          });
+          setWeights(updatedWeights);
+        },
+        (error) => {
+          console.error("Error fetching weights:", error);
+        }
+      );
+  
+      return () => unsubscribe();
+    }
+  }, [selectedDog]);
+  
   const handleWeightPress = (weight) => {
     navigation.navigate("AddWeight", { weight });
   };
