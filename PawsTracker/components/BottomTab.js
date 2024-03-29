@@ -15,6 +15,8 @@ import { AntDesign } from "@expo/vector-icons";
 import AddReminder from "./AddReminder";
 import AddWeight from "./AddWeight";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase-files/firebaseSetup";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 export default function BottomTab() {

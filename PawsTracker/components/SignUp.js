@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
-import PressableButton from "./PressableButton"; // Assuming you have this component
-// Import other necessary components and functions
+import PressableButton from "./PressableButton"; 
+
 
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword function
 import { auth } from "../firebase-files/firebaseSetup"; //

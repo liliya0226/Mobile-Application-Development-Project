@@ -5,7 +5,7 @@ import AddReminder from "../components/AddReminder";
 import { getDocsFromDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
-
+import { Alert } from "react-native";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
@@ -50,12 +50,21 @@ export default function PooPal() {
   };
 
   const openAddReminderScreen = () => {
-    setAddReminderModalVisible(true);
+    if (!selectedDog) {
+      Alert.alert(
+        "No Dog Selected",
+        "Please select a dog before adding a weight.",
+        [{ text: "OK" }]
+      );
+    } else {
+      setAddReminderModalVisible(true);
+    }
   };
 
   const closeAddReminderScreen = () => {
     setAddReminderModalVisible(false);
   };
+
 
   const formatTime = (timeString) => {
     const date = new Date(timeString);
@@ -69,17 +78,15 @@ export default function PooPal() {
       <View style={styles.header}>
         <Text style={styles.title}>Potty Reminder</Text>
         <Pressable style={styles.addButton} onPress={openAddReminderScreen}>
-          <Ionicons name="add-circle-outline" size={30} color="black" />
+          <Ionicons name="add-circle-outline" size={35} color="black" />
         </Pressable>
       </View>
       {reminders.map((reminder, index) => (
-        <View style={styles.groupContainer} key={index}>
-          <Pressable onPress={showTimePicker}>
+        <View style={styles.reminderContainer} key={index}>
+          <View style={styles.timeAndDaysContainer}>
             <Text style={styles.time}>{formatTime(reminder.time)}</Text>
-          </Pressable>
-
-          <Text style={styles.days}>{reminder.days.join(", ")}</Text>
-
+            <Text style={styles.days}>{reminder.days.join(", ")}</Text>
+          </View>
           <Switch
             trackColor={{ false: "#767577", true: "#81b0ff" }}
             thumbColor={reminder.isEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -121,15 +128,30 @@ const styles = StyleSheet.create({
     borderColor: "black",
     marginBottom: 20,
   },
-  time: {
-    fontSize: 32,
-    textAlign: "center",
-  },
-  days: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
+
   switch: {
     transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
+  },
+  reminderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 20,
+    marginBottom: 20,
+  },
+  timeAndDaysContainer: {
+
+    justifyContent: 'center',
+  },
+  time: {
+    fontSize: 18, 
+    fontWeight: 'bold',
+    marginBottom: 5, 
+  },
+  days: {
+    fontSize: 16, 
   },
 });

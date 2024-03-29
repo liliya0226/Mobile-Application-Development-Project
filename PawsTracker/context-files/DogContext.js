@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../firebase-files/firebaseSetup';
-import { getDocsFromDB } from '../firebase-files/firestoreHelper';
+import { onSnapshot, collection } from "firebase/firestore";
+import { auth, database } from '../firebase-files/firebaseSetup';
 
 const DogContext = createContext();
 
@@ -11,19 +11,24 @@ export const DogProvider = ({ children }) => {
   const [selectedDog, setSelectedDog] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        try {
-          const dogsData = await getDocsFromDB(["users", user.uid, "dogs"]);
-          setDogs(dogsData.map((dog) => ({ label: dog.name, value: dog.id })) || []);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+    let unsubscribe = () => {};
+  
+    if (auth.currentUser) {
+      const dogsRef = collection(database, "users", auth.currentUser.uid, "dogs");
+      unsubscribe = onSnapshot(dogsRef, (snapshot) => {
+        const dogsData = snapshot.docs.map(doc => ({
+          label: doc.data().name,
+          value: doc.id
+        }));
+        setDogs(dogsData);
+      }, (error) => {
+        console.error( error);
+      });
+    }
+  
+    return () => unsubscribe(); 
+  }, [auth.currentUser]);
+  
 
   return (
     <DogContext.Provider value={{ dogs, setDogs, selectedDog, setSelectedDog }}>
