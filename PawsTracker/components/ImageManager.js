@@ -38,7 +38,10 @@ export default function ImageManager({ receiveImageURI }) {
   }
   return (
     <View style={styles.container}>
-      <PressableButton onPressFunction={takeImageHandler}>
+      <PressableButton
+        customStyle={styles.cameraButton}
+        onPressFunction={takeImageHandler}
+      >
         <AntDesign name="camerao" size={24} color="black" />
       </PressableButton>
     </View>
@@ -48,5 +51,12 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 5,
   },
-  image: { width: 100, height: 100 },
+  cameraButton: {
+    backgroundColor: "white",
+    // backgroundColor: "red",
+    borderRadius: 25,
+    position: "absolute",
+    left: 25,
+    bottom: 15,
+  },
 });

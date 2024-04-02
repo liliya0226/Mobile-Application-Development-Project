@@ -8,6 +8,8 @@ import {
   TextInput,
   Image,
   Alert,
+  ImageBackground,
+  ScrollView,
 } from "react-native";
 import {
   writeToDB,
@@ -18,6 +20,11 @@ import { auth, storage } from "../firebase-files/firebaseSetup";
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytes } from "firebase/storage";
 import PressableButton from "../components/PressableButton";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { signOut } from "firebase/auth";
+import profileBack from "../assets/profileback.jpg";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
@@ -174,67 +181,105 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <ImageManager receiveImageURI={handleAddProfileImage}></ImageManager>
-      {userInfo.profileImage && (
-        <Image
-          source={{
-            uri: userInfo.profileImage,
-          }}
-          style={styles.profileImage}
-        />
-      )}
-      <Text>Last Name: {userInfo.lastName}</Text>
-      <Text>First Name: {userInfo.firstName}</Text>
-      <Text>Email: {userInfo.email}</Text>
-      <PressableButton onPressFunction={addDog}>
-        <Text>Add Dog</Text>
-      </PressableButton>
-      <View style={styles.dogsContainer}>
-        {dogs &&
-          dogs.map((dog, index) => (
-            <View style={styles.dogContainer} key={index}>
-              <Text>Dog Name: {dog.name}</Text>
-              <Text>Dog Age: {dog.age}</Text>
-
-              <Image source={{ uri: dog.dogImage }} style={styles.dogImage} />
-            </View>
-          ))}
-      </View>
-      <Modal visible={isModalVisible} animationType="slide">
-        <View style={styles.modalContent}>
-          {dogImaUrl && (
-            <Image
-              source={{
-                uri: dogImaUrl,
-              }}
-              style={styles.profileImage}
-            />
-          )}
-          <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
-          <TextInput
-            style={styles.input}
-            placeholder="Dog Name"
-            placeholderTextColor="#999"
-            value={dogName}
-            onChangeText={setDogName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Dog Age"
-            placeholderTextColor="#999"
-            value={dogAge}
-            onChangeText={setDogAge}
-            keyboardType="numeric"
-          />
-
-          <PressableButton onPressFunction={handleCancel}>
-            <Text>Cancel</Text>
-          </PressableButton>
-          <PressableButton onPressFunction={saveDog}>
-            <Text>Save</Text>
+      <ImageBackground source={profileBack} style={styles.profileBack}>
+        <View style={styles.profileSection}>
+          <View style={styles.profileImage}>
+            {userInfo.profileImage ? (
+              <Image
+                source={{
+                  uri: userInfo.profileImage,
+                }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                name="account-circle-outline"
+                color="gray"
+                size={150}
+              />
+            )}
+          </View>
+          <ImageManager receiveImageURI={handleAddProfileImage}></ImageManager>
+          <Text style={styles.name}>
+            {userInfo.lastName + "  "}
+            {userInfo.firstName}
+          </Text>
+          <Text style={styles.email}> {userInfo.email}</Text>
+          <PressableButton
+            onPressFunction={() => {
+              try {
+                signOut(auth);
+              } catch (err) {
+                console.log(err);
+              }
+            }}
+          >
+            <AntDesign name="logout" size={24} color="white" />
           </PressableButton>
         </View>
-      </Modal>
+      </ImageBackground>
+
+      <View style={styles.bottomContainer}>
+        <View style={styles.addDogSection}>
+          <Text>Add Your Dogs: </Text>
+          <PressableButton
+            customStyle={styles.addDogButton}
+            onPressFunction={addDog}
+          >
+            <Ionicons name="add-circle-outline" size={30} color="black" />
+          </PressableButton>
+        </View>
+        <ScrollView contentContainerStyle={styles.dogSection}>
+          {dogs &&
+            dogs.map((dog, index) => (
+              <View style={styles.dogContainer} key={index}>
+                <Image source={{ uri: dog.dogImage }} style={styles.dogImage} />
+                <Text>Dog Name: {dog.name}</Text>
+                <Text>Dog Age: {dog.age}</Text>
+              </View>
+            ))}
+        </ScrollView>
+        <Modal visible={isModalVisible} animationType="slide">
+          <View style={styles.modalContent}>
+            <View style={styles.addDogImage}>
+              {dogImaUrl ? (
+                <Image
+                  source={{
+                    uri: dogImaUrl,
+                  }}
+                  style={styles.addDogImage}
+                />
+              ) : (
+                <MaterialCommunityIcons name="dog" color="gray" size={150} />
+              )}
+            </View>
+            <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
+            <TextInput
+              style={styles.input}
+              placeholder="Dog Name"
+              placeholderTextColor="#999"
+              value={dogName}
+              onChangeText={setDogName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Dog Age"
+              placeholderTextColor="#999"
+              value={dogAge}
+              onChangeText={setDogAge}
+              keyboardType="numeric"
+            />
+            <View style={styles.section}>
+              <PressableButton onPressFunction={handleCancel}>
+                <Text>Cancel</Text>
+              </PressableButton>
+              <PressableButton onPressFunction={saveDog}>
+                <Text>Save</Text>
+              </PressableButton>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 }
@@ -244,34 +289,91 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
   },
+  profileSection: {
+    paddingTop: 80,
+    paddingBottom: 30,
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileBack: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    resizeMode: "cover",
+  },
+
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderColor: "black",
     marginBottom: 20,
+    backgroundColor: "white",
   },
-  dogsContainer: {
-    marginTop: 20,
+  name: {
+    fontSize: 30,
+    backgroundColor: "white",
+  },
+  email: {
+    fontSize: 20,
+    backgroundColor: "white",
+  },
+  bottomContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    width: "100%",
+    paddingTop: 20,
+  },
+  addDogSection: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    height: 40,
+    alignItems: "center",
+    marginLeft: 20,
+  },
+  addDogButton: {
+    backgroundColor: "white",
+  },
+  dogSection: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
     width: "100%",
   },
   dogContainer: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#FFA07A",
+    backgroundColor: "#FFA07A",
+    borderRadius: 10,
     padding: 10,
     marginBottom: 10,
+    marginTop: 20,
+    marginHorizontal: 20,
+    width: "40%",
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   dogImage: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 5,
     marginVertical: 10,
   },
   modalContent: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#ffc4ad",
+  },
+  section: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-around",
   },
   input: {
     borderWidth: 1,
@@ -279,5 +381,12 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     width: "80%",
+  },
+  addDogImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderColor: "white",
+    marginBottom: 20,
   },
 });
