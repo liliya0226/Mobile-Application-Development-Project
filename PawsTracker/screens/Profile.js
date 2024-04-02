@@ -7,6 +7,7 @@ import {
   Modal,
   TextInput,
   Image,
+  Alert,
 } from "react-native";
 import {
   writeToDB,
@@ -16,6 +17,7 @@ import {
 import { auth, storage } from "../firebase-files/firebaseSetup";
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytes } from "firebase/storage";
+import PressableButton from "../components/PressableButton";
 
 export default function Profile() {
   const [userInfo, setUserInfo] = useState({
@@ -30,7 +32,9 @@ export default function Profile() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dogName, setDogName] = useState("");
   const [dogAge, setDogAge] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [profileImaUrl, setProfileImaUrl] = useState("");
+  const [dogImaUrl, setDogImaUrl] = useState("");
+  const [dogImageUri, setDogImageUri] = useState("");
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
@@ -64,7 +68,7 @@ export default function Profile() {
     if (auth.currentUser.uid) {
       fetchAndSetUserData();
     }
-  }, [auth.currentUser.uid, imageUrl]);
+  }, [auth.currentUser.uid, profileImaUrl]);
 
   const handleAddProfileImage = async (imageUri) => {
     try {
@@ -76,7 +80,7 @@ export default function Profile() {
       const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${imageRef.bucket}/o/profileImages%2F${imageName}?alt=media`;
 
       await addImageUrlToUserDocument(auth.currentUser.uid, imageUrl);
-      setImageUrl(imageUrl);
+      setProfileImaUrl(imageUrl);
     } catch (error) {
       console.error("Error uploading profile image:", error);
       Alert.alert("Error", "Failed to upload profile image.");
@@ -85,6 +89,28 @@ export default function Profile() {
 
   const addDog = () => {
     setIsModalVisible(true);
+  };
+
+  const handleAddDogImage = async (imageUri) => {
+    try {
+      setDogImageUri(imageUri);
+      const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
+      const imageRef = ref(storage, `dogImages/${imageName}`);
+      const response = await fetch(imageUri);
+      const imageBlob = await response.blob();
+      await uploadBytes(imageRef, imageBlob);
+      const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${imageRef.bucket}/o/dogImages%2F${imageName}?alt=media`;
+      setDogImaUrl(imageUrl);
+      // await writeToDB({ dogImage: imageUrl }, [
+      //   "users",
+      //   auth.currentUser.uid,
+      //   "dogs",
+      // ]);
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading dog image:", error);
+      Alert.alert("Error", "Failed to upload dog image.");
+    }
   };
 
   const saveDog = async () => {
@@ -106,13 +132,16 @@ export default function Profile() {
     }
 
     try {
+      const dogImageUrl = await handleAddDogImage(dogImageUri);
       const newDog = {
         name: dogName.trim(),
         age,
+        dogImage: dogImageUrl,
       };
 
       await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
 
+      console.log("Dog uploaded successfully");
       setDogAge("");
       setDogName("");
       fetchDogsData();
@@ -120,7 +149,13 @@ export default function Profile() {
     } catch (error) {
       console.error("Error saving dog:", error);
       Alert.alert("Error", "Failed to save dog information.");
+    } finally {
+      setDogImaUrl("");
     }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   const fetchDogsData = async () => {
@@ -152,7 +187,9 @@ export default function Profile() {
       <Text>Last Name: {userInfo.lastName}</Text>
       <Text>First Name: {userInfo.firstName}</Text>
       <Text>Email: {userInfo.email}</Text>
-      <Button title="Add Dog" onPress={addDog} />
+      <PressableButton onPressFunction={addDog}>
+        <Text>Add Dog</Text>
+      </PressableButton>
       <View style={styles.dogsContainer}>
         {dogs &&
           dogs.map((dog, index) => (
@@ -160,12 +197,13 @@ export default function Profile() {
               <Text>Dog Name: {dog.name}</Text>
               <Text>Dog Age: {dog.age}</Text>
 
-              {/* <Image source={{ uri: dog.image }} style={styles.dogImage} /> */}
+              <Image source={{ uri: dog.dogImage }} style={styles.dogImage} />
             </View>
           ))}
       </View>
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modalContent}>
+          <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
           <TextInput
             style={styles.input}
             placeholder="Dog Name"
@@ -184,7 +222,12 @@ export default function Profile() {
           {/* <ImageManager
             receiveImageURI={(imageUri) => handleAddDogImage(imageUri, dog.id)}
           /> */}
-          <Button title="Save" onPress={saveDog} />
+          <PressableButton onPressFunction={handleCancel}>
+            <Text>Cancel</Text>
+          </PressableButton>
+          <PressableButton onPressFunction={saveDog}>
+            <Text>Save</Text>
+          </PressableButton>
         </View>
       </Modal>
     </View>
