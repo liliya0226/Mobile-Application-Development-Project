@@ -41,14 +41,6 @@ export default function ImageManager({ receiveImageURI }) {
       <PressableButton onPressFunction={takeImageHandler}>
         <AntDesign name="camerao" size={24} color="black" />
       </PressableButton>
-      {imageUri && (
-        <Image
-          style={styles.image}
-          source={{
-            uri: imageUri,
-          }}
-        />
-      )}
     </View>
   );
 }

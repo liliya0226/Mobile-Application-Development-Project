@@ -101,11 +101,6 @@ export default function Profile() {
       await uploadBytes(imageRef, imageBlob);
       const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${imageRef.bucket}/o/dogImages%2F${imageName}?alt=media`;
       setDogImaUrl(imageUrl);
-      // await writeToDB({ dogImage: imageUrl }, [
-      //   "users",
-      //   auth.currentUser.uid,
-      //   "dogs",
-      // ]);
       return imageUrl;
     } catch (error) {
       console.error("Error uploading dog image:", error);
@@ -130,6 +125,10 @@ export default function Profile() {
       );
       return;
     }
+    if (!dogImageUri) {
+      Alert.alert("Error", "Your dog need its picture!");
+      return;
+    }
 
     try {
       const dogImageUrl = await handleAddDogImage(dogImageUri);
@@ -141,16 +140,16 @@ export default function Profile() {
 
       await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
 
-      console.log("Dog uploaded successfully");
+      // console.log("Dog uploaded successfully");
       setDogAge("");
       setDogName("");
+      setDogImaUrl("");
+      setDogImageUri("");
       fetchDogsData();
       setIsModalVisible(false);
     } catch (error) {
       console.error("Error saving dog:", error);
       Alert.alert("Error", "Failed to save dog information.");
-    } finally {
-      setDogImaUrl("");
     }
   };
 
@@ -203,6 +202,14 @@ export default function Profile() {
       </View>
       <Modal visible={isModalVisible} animationType="slide">
         <View style={styles.modalContent}>
+          {dogImaUrl && (
+            <Image
+              source={{
+                uri: dogImaUrl,
+              }}
+              style={styles.profileImage}
+            />
+          )}
           <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
           <TextInput
             style={styles.input}
@@ -219,9 +226,7 @@ export default function Profile() {
             onChangeText={setDogAge}
             keyboardType="numeric"
           />
-          {/* <ImageManager
-            receiveImageURI={(imageUri) => handleAddDogImage(imageUri, dog.id)}
-          /> */}
+
           <PressableButton onPressFunction={handleCancel}>
             <Text>Cancel</Text>
           </PressableButton>
