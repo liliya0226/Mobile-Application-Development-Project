@@ -8,6 +8,7 @@ import {
   query,
   where,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
@@ -17,6 +18,18 @@ export async function writeUserToDB(userId, data, pathSegments) {
     await setDoc(userDocRef, data);
     console.log("User data has been written to the database successfully.");
     return userDocRef;
+  } catch (err) {
+    console.error("Error writing data to the database:", err);
+    throw err;
+  }
+}
+
+// Add a new document with a generated id.
+export async function addPic(data, pathSegments) {
+  try {
+    let ref = collection(database, pathSegments);
+    const docRef = await addDoc(ref, data);
+    return docRef;
   } catch (err) {
     console.error("Error writing data to the database:", err);
     throw err;
@@ -76,12 +89,21 @@ export async function updateInDB(data, pathSegments) {
   }
 }
 
-
 export async function deleteFromDB(pathSegments) {
   try {
     let ref = doc(database, ...pathSegments);
     await deleteDoc(ref);
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function addImageUrlToUserDocument(userId, imageUrl) {
+  try {
+    const userRef = doc(database, "users", userId);
+    await updateDoc(userRef, { profileImage: imageUrl });
+    console.log("Image URL added to user document successfully.");
+  } catch (error) {
+    console.error("Error adding image URL to user document:", error);
   }
 }
