@@ -24,18 +24,6 @@ export async function writeUserToDB(userId, data, pathSegments) {
   }
 }
 
-// Add a new document with a generated id.
-export async function addPic(data, pathSegments) {
-  try {
-    let ref = collection(database, pathSegments);
-    const docRef = await addDoc(ref, data);
-    return docRef;
-  } catch (err) {
-    console.error("Error writing data to the database:", err);
-    throw err;
-  }
-}
-
 export async function writeToDB(data, pathSegments) {
   try {
     let ref = collection(database, ...pathSegments);
