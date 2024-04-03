@@ -95,3 +95,13 @@ export async function addImageUrlToUserDocument(userId, imageUrl) {
     console.error("Error adding image URL to user document:", error);
   }
 }
+
+export async function addLocationToUserDocument(userId, location) {
+  try {
+    const userRef = doc(database, "users", userId);
+    await updateDoc(userRef, { location: location });
+    console.log("Location added to user document successfully.");
+  } catch (error) {
+    console.error("Error adding location info to user document:", error);
+  }
+}
