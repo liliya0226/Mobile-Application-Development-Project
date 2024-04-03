@@ -8,6 +8,7 @@ import {
   query,
   where,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
@@ -76,12 +77,21 @@ export async function updateInDB(data, pathSegments) {
   }
 }
 
-
 export async function deleteFromDB(pathSegments) {
   try {
     let ref = doc(database, ...pathSegments);
     await deleteDoc(ref);
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function addImageUrlToUserDocument(userId, imageUrl) {
+  try {
+    const userRef = doc(database, "users", userId);
+    await updateDoc(userRef, { profileImage: imageUrl });
+    console.log("Image URL added to user document successfully.");
+  } catch (error) {
+    console.error("Error adding image URL to user document:", error);
   }
 }
