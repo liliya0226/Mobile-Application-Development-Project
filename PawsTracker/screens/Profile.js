@@ -190,14 +190,18 @@ export default function Profile({ navigation }) {
   useEffect(() => {
     const getAdress = async () => {
       try {
-        if (!userInfo.location) return;
+        if (
+          userInfo.location &&
+          typeof userInfo.location.latitude === "number" &&
+          typeof userInfo.location.longitude === "number"
+        ) {
+          const [location] = await Location.reverseGeocodeAsync({
+            latitude: userInfo.location.latitude,
+            longitude: userInfo.location.longitude,
+          });
 
-        const [location] = await Location.reverseGeocodeAsync({
-          latitude: userInfo.location.latitude,
-          longitude: userInfo.location.longitude,
-        });
-
-        setAddress(location);
+          setAddress(location);
+        }
         // console.log(location);
       } catch (error) {
         console.error("Error getting address:", error);
@@ -205,7 +209,7 @@ export default function Profile({ navigation }) {
     };
 
     getAdress();
-  }, [userInfo.location]); // Trigger when userLocation changes
+  }, [userInfo.location]);
 
   return (
     <View style={styles.container}>
@@ -229,7 +233,7 @@ export default function Profile({ navigation }) {
                 source={{
                   uri: userInfo.profileImage,
                 }}
-                // style={styles.profileImage}
+                style={styles.profileImage}
               />
             ) : (
               <MaterialCommunityIcons
@@ -251,7 +255,7 @@ export default function Profile({ navigation }) {
             onPressFunction={locateUserHandler}
           >
             <Ionicons name="location-outline" size={20} color="black" />
-            {userInfo.location ? (
+            {address ? (
               <Text>
                 {address.city}, {address.country}
               </Text>
