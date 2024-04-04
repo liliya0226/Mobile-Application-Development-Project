@@ -1,20 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React, { useState, useEffect } from "react";
+import Intro from "./screens/Intro";
+import SignUp from "./components/SignUp";
+import Login from "./components/Login";
+import BottomTab from "./components/BottomTab";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase-files/firebaseSetup"; 
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserLoggedIn(!!user);
+    });
+    return unsubscribe; 
+  }, []);
+
+  const AuthStack = (
+    <>
+      <Stack.Screen name="Intro" component={Intro} />
+      <Stack.Screen name="Signup" component={SignUp} />
+      <Stack.Screen name="Login" component={Login} />
+    </>
+  );
+
+  const AppStack = (
+    <>
+      <Stack.Screen name="App" component={BottomTab} />
+  
+    </>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Intro"
+        screenOptions={{ headerShown: false }}
+      >
+        {userLoggedIn ? AppStack : AuthStack}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
