@@ -5,14 +5,22 @@ export default function PressableButton({
   customStyle,
   onPressFunction,
   children,
+  disabled = false,
 }) {
+  const handlePress = () => {
+    if (!disabled) {
+      onPressFunction();
+    }
+  };
+
   return (
     <Pressable
-      onPress={onPressFunction}
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.defaultStyle,
         customStyle,
         pressed && styles.pressed,
+        disabled && styles.disabled,
       ]}
     >
       {children}
@@ -28,5 +36,9 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.5,
+  },
+  disabled: {
+    opacity: 0.5,
+    backgroundColor: "#ccc", // Change color to indicate disabled state
   },
 });

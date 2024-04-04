@@ -211,6 +211,7 @@ export default function Profile({ navigation }) {
     <View style={styles.container}>
       <ImageBackground source={profileBack} style={styles.profileBack}>
         <PressableButton
+          customStyle={styles.logout}
           onPressFunction={() => {
             try {
               signOut(auth);
@@ -228,13 +229,14 @@ export default function Profile({ navigation }) {
                 source={{
                   uri: userInfo.profileImage,
                 }}
-                style={styles.profileImage}
+                // style={styles.profileImage}
               />
             ) : (
               <MaterialCommunityIcons
                 name="account-circle-outline"
                 color="gray"
                 size={150}
+                // style={styles.iconWithBorder}
               />
             )}
           </View>
@@ -251,7 +253,7 @@ export default function Profile({ navigation }) {
             <Ionicons name="location-outline" size={20} color="black" />
             {userInfo.location ? (
               <Text>
-                {address.city}, {address.region}
+                {address.city}, {address.country}
               </Text>
             ) : (
               <Text>Get My Location</Text>
@@ -291,7 +293,12 @@ export default function Profile({ navigation }) {
                   style={styles.addDogImage}
                 />
               ) : (
-                <MaterialCommunityIcons name="dog" color="gray" size={150} />
+                <MaterialCommunityIcons
+                  name="dog"
+                  color="gray"
+                  size={150}
+                  style={styles.iconWithBorder}
+                />
               )}
             </View>
             <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
@@ -331,8 +338,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  logout: {
+    marginTop: 80,
+    marginStart: 300,
+  },
   profileSection: {
-    paddingTop: 80,
     paddingBottom: 30,
     flex: 1,
     width: "100%",
@@ -398,7 +408,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  iconWithBorder: {
+    borderWidth: 2, // Adjust border width as needed
+    borderColor: "gray", // Adjust border color as needed
+    borderRadius: 75,
+  },
   dogImage: {
     width: 50,
     height: 50,
@@ -411,6 +425,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffc4ad",
   },
+
   section: {
     flexDirection: "row",
     width: "100%",
