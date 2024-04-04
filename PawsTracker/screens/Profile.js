@@ -25,13 +25,15 @@ import { AntDesign } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
 import profileBack from "../assets/profileback.jpg";
 import { Ionicons } from "@expo/vector-icons";
+import * as Location from "expo-location";
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
     lastName: "",
     email: "",
+    location: [],
     profileImage: "",
   });
 
@@ -42,6 +44,7 @@ export default function Profile() {
   const [profileImaUrl, setProfileImaUrl] = useState("");
   const [dogImaUrl, setDogImaUrl] = useState("");
   const [dogImageUri, setDogImageUri] = useState("");
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
@@ -57,6 +60,7 @@ export default function Profile() {
             firstName: userData.firstName || "",
             lastName: userData.lastName || "",
             email: userData.email || "",
+            location: userData.location || [],
             profileImage: userData.profileImage || "",
           });
         }
@@ -179,9 +183,44 @@ export default function Profile() {
     }
   }, [auth.currentUser.uid]);
 
+  const locateUserHandler = () => {
+    navigation.navigate("Map");
+  };
+
+  useEffect(() => {
+    const getAdress = async () => {
+      try {
+        if (!userInfo.location) return;
+
+        const [location] = await Location.reverseGeocodeAsync({
+          latitude: userInfo.location.latitude,
+          longitude: userInfo.location.longitude,
+        });
+
+        setAddress(location);
+        // console.log(location);
+      } catch (error) {
+        console.error("Error getting address:", error);
+      }
+    };
+
+    getAdress();
+  }, [userInfo.location]); // Trigger when userLocation changes
+
   return (
     <View style={styles.container}>
       <ImageBackground source={profileBack} style={styles.profileBack}>
+        <PressableButton
+          onPressFunction={() => {
+            try {
+              signOut(auth);
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+        >
+          <AntDesign name="logout" size={24} color="white" />
+        </PressableButton>
         <View style={styles.profileSection}>
           <View style={styles.profileImage}>
             {userInfo.profileImage ? (
@@ -206,15 +245,17 @@ export default function Profile() {
           </Text>
           <Text style={styles.email}> {userInfo.email}</Text>
           <PressableButton
-            onPressFunction={() => {
-              try {
-                signOut(auth);
-              } catch (err) {
-                console.log(err);
-              }
-            }}
+            customStyle={styles.location}
+            onPressFunction={locateUserHandler}
           >
-            <AntDesign name="logout" size={24} color="white" />
+            <Ionicons name="location-outline" size={20} color="black" />
+            {userInfo.location ? (
+              <Text>
+                {address.city}, {address.region}
+              </Text>
+            ) : (
+              <Text>Get My Location</Text>
+            )}
           </PressableButton>
         </View>
       </ImageBackground>
@@ -388,5 +429,8 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     borderColor: "white",
     marginBottom: 20,
+  },
+  location: {
+    flexDirection: "row",
   },
 });
