@@ -25,13 +25,15 @@ import { AntDesign } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
 import profileBack from "../assets/profileback.jpg";
 import { Ionicons } from "@expo/vector-icons";
+import * as Location from "expo-location";
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
     firstName: "",
     lastName: "",
     email: "",
+    location: [],
     profileImage: "",
   });
 
@@ -42,6 +44,7 @@ export default function Profile() {
   const [profileImaUrl, setProfileImaUrl] = useState("");
   const [dogImaUrl, setDogImaUrl] = useState("");
   const [dogImageUri, setDogImageUri] = useState("");
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     const fetchAndSetUserData = async () => {
@@ -57,6 +60,7 @@ export default function Profile() {
             firstName: userData.firstName || "",
             lastName: userData.lastName || "",
             email: userData.email || "",
+            location: userData.location || [],
             profileImage: userData.profileImage || "",
           });
         }
@@ -179,9 +183,49 @@ export default function Profile() {
     }
   }, [auth.currentUser.uid]);
 
+  const locateUserHandler = () => {
+    navigation.navigate("Map");
+  };
+
+  useEffect(() => {
+    const getAdress = async () => {
+      try {
+        if (
+          userInfo.location &&
+          typeof userInfo.location.latitude === "number" &&
+          typeof userInfo.location.longitude === "number"
+        ) {
+          const [location] = await Location.reverseGeocodeAsync({
+            latitude: userInfo.location.latitude,
+            longitude: userInfo.location.longitude,
+          });
+
+          setAddress(location);
+        }
+        // console.log(location);
+      } catch (error) {
+        console.error("Error getting address:", error);
+      }
+    };
+
+    getAdress();
+  }, [userInfo.location]);
+
   return (
     <View style={styles.container}>
       <ImageBackground source={profileBack} style={styles.profileBack}>
+        <PressableButton
+          customStyle={styles.logout}
+          onPressFunction={() => {
+            try {
+              signOut(auth);
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+        >
+          <AntDesign name="logout" size={24} color="white" />
+        </PressableButton>
         <View style={styles.profileSection}>
           <View style={styles.profileImage}>
             {userInfo.profileImage ? (
@@ -196,6 +240,7 @@ export default function Profile() {
                 name="account-circle-outline"
                 color="gray"
                 size={150}
+                // style={styles.iconWithBorder}
               />
             )}
           </View>
@@ -206,15 +251,17 @@ export default function Profile() {
           </Text>
           <Text style={styles.email}> {userInfo.email}</Text>
           <PressableButton
-            onPressFunction={() => {
-              try {
-                signOut(auth);
-              } catch (err) {
-                console.log(err);
-              }
-            }}
+            customStyle={styles.location}
+            onPressFunction={locateUserHandler}
           >
-            <AntDesign name="logout" size={24} color="white" />
+            <Ionicons name="location-outline" size={20} color="black" />
+            {address ? (
+              <Text>
+                {address.city}, {address.country}
+              </Text>
+            ) : (
+              <Text>Get My Location</Text>
+            )}
           </PressableButton>
         </View>
       </ImageBackground>
@@ -250,7 +297,12 @@ export default function Profile() {
                   style={styles.addDogImage}
                 />
               ) : (
-                <MaterialCommunityIcons name="dog" color="gray" size={150} />
+                <MaterialCommunityIcons
+                  name="dog"
+                  color="gray"
+                  size={150}
+                  style={styles.iconWithBorder}
+                />
               )}
             </View>
             <ImageManager receiveImageURI={handleAddDogImage}></ImageManager>
@@ -290,8 +342,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  logout: {
+    marginTop: 80,
+    marginStart: 300,
+  },
   profileSection: {
-    paddingTop: 80,
     paddingBottom: 30,
     flex: 1,
     width: "100%",
@@ -357,7 +412,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
+  iconWithBorder: {
+    borderWidth: 2, // Adjust border width as needed
+    borderColor: "gray", // Adjust border color as needed
+    borderRadius: 75,
+  },
   dogImage: {
     width: 50,
     height: 50,
@@ -370,6 +429,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffc4ad",
   },
+
   section: {
     flexDirection: "row",
     width: "100%",
@@ -388,5 +448,8 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     borderColor: "white",
     marginBottom: 20,
+  },
+  location: {
+    flexDirection: "row",
   },
 });
