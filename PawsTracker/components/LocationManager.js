@@ -1,86 +1,112 @@
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
-import * as Location from "expo-location";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Alert, Dimensions } from "react-native";
 import { API_KEY } from "@env";
-import PressableButton from "./PressableButton";
-import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
+import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
 
-export default function LocationManager() {
-  const [status, requestPermission] = Location.useForegroundPermissions();
-  const [location, setLocation] = useState(null);
-  async function verifyPermission() {
-    if (status.granted) {
-      return true;
-    }
-    try {
-      const permissionResponse = await requestPermission();
-      return permissionResponse.granted;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  const locateUserHandler = async () => {
-    try {
-      const havePermission = await verifyPermission();
-      if (!havePermission) {
-        Alert.alert("You need to give permission");
-        return;
+export default function DogParkMap() {
+  const [userLocation, setUserLocation] = useState(null);
+  const [dogParks, setDogParks] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission to access location was denied");
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        setUserLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+      } catch (error) {
+        console.error("Error fetching user location: ", error);
       }
-      const receivedLocation = await Location.getCurrentPositionAsync();
-      setLocation({
-        lat: receivedLocation.coords.latitude,
-        long: receivedLocation.coords.longitude,
-      });
-    } catch (err) {
-      console.log(err);
+    })();
+  }, []);
+
+  useEffect(() => {
+    const fetchNearbyDogParks = async () => {
+      if (!userLocation) return;
+
+      try {
+        if (userLocation) {
+          addLocationToUser(userLocation);
+        }
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${userLocation.latitude},${userLocation.longitude}&radius=3000&type=park&keyword=dog park&key=${API_KEY}`
+        );
+        const data = await response.json();
+        setDogParks(data.results);
+      } catch (error) {
+        console.error("Error fetching nearby dog parks: ", error);
+      }
+    };
+
+    fetchNearbyDogParks();
+  }, [userLocation]);
+
+  const addLocationToUser = async (location) => {
+    try {
+      await addLocationToUserDocument(auth.currentUser.uid, location);
+    } catch (error) {
+      console.error("Error uploading location info:", error);
     }
   };
-  //   useEffect(() => {
-  //     const handleAddUserLocation = async (location) => {
-  //       try {
-  //         await addLocationToUserDocument(auth.currentUser.uid, location);
-  //         setLocation(location);
-  //       } catch (error) {
-  //         console.error("Error uploading profile image:", error);
-  //         Alert.alert("Error", "Failed to upload profile image.");
-  //       }
-  //     };
-  //     handleAddUserLocation();
-  //   }, [location]);
+
   return (
-    <View>
-      {location ? (
-        <Image
-          style={styles.image}
-          source={{
-            uri: `https://maps.googleapis.com/maps/api/staticmap?center=${
-              location.lat
-            },${location.long}&zoom=14&size=${Dimensions.get("window").width}x${
-              Dimensions.get("window").height
-            }&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.lat},${
-              location.long
-            }&key=${API_KEY}`,
+    <View style={styles.container}>
+      {userLocation && (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           }}
-        ></Image>
-      ) : (
-        <PressableButton
-          customStyle={styles.locateButton}
-          onPressFunction={locateUserHandler}
         >
-          <Text>Locate Me</Text>
-        </PressableButton>
+          <Marker
+            coordinate={{
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+            }}
+            title="Your Location"
+            pinColor="blue"
+          />
+
+          {dogParks.map((park, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: park.geometry.location.lat,
+                longitude: park.geometry.location.lng,
+              }}
+              title={park.name}
+              description={park.vicinity}
+              pinColor="green"
+            />
+          ))}
+        </MapView>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  map: {
     width: Dimensions.get("screen").width,
     height: Dimensions.get("screen").height,
-  },
-  locateButton: {
-    backgroundColor: "#ff7f50",
   },
 });
