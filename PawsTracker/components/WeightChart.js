@@ -4,8 +4,13 @@ import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
 
 export default function WeightChart({ weightData }) {
-  const dates = weightData.map((item) => format(new Date(item.date), "MM-dd"));
-  const weights = weightData.map((item) => item.record);
+  const sortedWeights = weightData
+    .slice()
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const dates = sortedWeights.map((item) =>
+    format(new Date(item.date), "MM-dd")
+  );
+  const weights = sortedWeights.map((item) => item.record);
   const chartConfig = {
     backgroundGradientFrom: "#f5f5f5",
     backgroundGradientTo: "#f5f5f5",

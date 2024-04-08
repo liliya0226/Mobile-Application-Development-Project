@@ -10,6 +10,9 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 export default function WeightList({ weights, onWeightPress }) {
+  const sortedWeights = weights
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
   const renderWeightItem = ({ item }) => (
     <View style={styles.weightItem}>
       <Text style={styles.dateText}>
@@ -33,7 +36,7 @@ export default function WeightList({ weights, onWeightPress }) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={weights}
+        data={sortedWeights}
         renderItem={renderWeightItem}
         keyExtractor={(item, index) => index.toString()}
       />
