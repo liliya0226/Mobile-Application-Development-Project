@@ -21,6 +21,22 @@ Our application is currently capable of the following:
 
 ![ProfileWithCamera](/PawsTracker/assets/profilewithcamera.PNG)
 
+## Team Contributions for iteration 1
+
+### Member 1: Mingxi Li
+
+- Completed the setup for profile and potty components.
+- Configured context and firebase helper files.
+- Designed the UI for the header component.
+- Contributed to UI/UX design decisions.
+- Provided assistance with debugging and testing throughout the development process.
+
+### Member 2: Xinyue Zheng
+
+- Added basic navigation for bottom tab, header, signup, and login screens.
+- Implemented CRUD operations for weight entries tied to a fixed dog ID, with basic UI for Weight Screen and AddWeight.
+- Set basic Authentication for user signup/login.
+
 ## Team Contributions for iteration 2
 
 ### Member 1: Mingxi Li
