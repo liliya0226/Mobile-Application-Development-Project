@@ -2,38 +2,46 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Switch, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AddReminder from "../components/AddReminder";
-import { getDocsFromDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
+import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { Alert } from "react-native";
+import { ref, onValue } from "firebase/database";
+import { collection, onSnapshot } from "@firebase/firestore";
+
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
     useState(false);
   const { selectedDog } = useDogContext();
 
-  useEffect(() => {
-    const fetchReminders = async () => {
-      if (!selectedDog || !selectedDog.value) return;
 
-      try {
-        const remindersData = await getDocsFromDB([
+  useEffect(() => {
+    if (selectedDog) {
+      const unsubscribe = onSnapshot(
+        collection(
+          database,
           "users",
           auth.currentUser.uid,
           "dogs",
           selectedDog.value,
-          "reminders",
-        ]);
-        setReminders(
-          remindersData.map((reminder) => ({ ...reminder, isEnabled: false }))
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchReminders();
+          "reminders"
+        ),
+        (snapshot) => {
+          const updatedReminders = [];
+          snapshot.forEach((doc) => {
+            updatedReminders.push({ id: doc.id, ...doc.data(), isEnabled: false });
+          });
+          setReminders(updatedReminders);
+        },
+        (error) => {
+          console.error("Error fetching reminders:", error);
+        }
+      );
+  
+      return () => unsubscribe();
+    }
   }, [selectedDog]);
-
   const toggleSwitch = (index) => {
     setReminders((prevReminders) => {
       const updatedReminders = [...prevReminders];
@@ -45,9 +53,6 @@ export default function PooPal() {
     });
   };
 
-  const showTimePicker = () => {
-    console.log("Show time picker!");
-  };
 
   const openAddReminderScreen = () => {
     if (!selectedDog) {
