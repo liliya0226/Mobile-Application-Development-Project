@@ -32,7 +32,7 @@ export default function WeightChart({ weightData }) {
         }}
         width={350}
         height={220}
-        yAxisSuffix="lbs"
+        yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier
         style={styles.chart}
