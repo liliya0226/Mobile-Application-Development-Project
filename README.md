@@ -53,7 +53,6 @@ Our application is currently capable of the following:
   - make the flatlist smoothly combined with chart component
 - Add interactive map component(LocationManager.js) on map screen(Map.js) and location modification for Profile Scfreen.
   - Map could show the user current location and the surrounding "dogs parks"
-  -
 - Add camera function(ImageManager.js) and adjust the UI design of Profile Screen. (Profile.js)
   - User could take photos and upload it to user profile as well as their dogs' profile.
 
