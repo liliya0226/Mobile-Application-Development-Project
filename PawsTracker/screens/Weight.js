@@ -10,7 +10,8 @@ import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
-import { Alert } from "react-native"; 
+import { Alert } from "react-native";
+import WeightChart from "../components/WeightChart";
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
@@ -66,7 +67,16 @@ export default function Weight() {
             <Ionicons name="add-circle-outline" size={35} color="black" />
           </Pressable>
         </View>
-        <WeightList weights={weights} onWeightPress={handleWeightPress} />
+        <View style={styles.WeightChart}>
+          {weights.length > 0 && selectedDog ? (
+            <WeightChart weightData={weights} />
+          ) : (
+            ""
+          )}
+        </View>
+        <View style={styles.weightData}>
+          <WeightList weights={weights} onWeightPress={handleWeightPress} />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -77,7 +87,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
+    flex: 1,
     padding: 20,
   },
   header: {
@@ -89,5 +100,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    flex: 1,
+  },
+  WeightChart: {
+    // height: 270,
+    flex: 3,
+    marginBottom: 10,
+  },
+  weightData: {
+    // height: 350,
+    flex: 4,
+    marginTop: 10,
   },
 });

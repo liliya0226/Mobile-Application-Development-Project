@@ -425,7 +425,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: 150,
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#ffc4ad",
   },
@@ -434,6 +435,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-around",
+    marginTop: 20,
   },
   input: {
     borderWidth: 1,
