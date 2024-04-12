@@ -43,6 +43,8 @@ export default function DogParkMap() {
         );
         const data = await response.json();
         setDogParks(data.results);
+        // console.log(response);
+        console.log(data.results);
       } catch (error) {
         console.error("Error fetching nearby dog parks: ", error);
       }
