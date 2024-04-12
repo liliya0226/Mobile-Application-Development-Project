@@ -41,11 +41,9 @@ Our application is currently capable of the following:
 
 ### Member 1: Mingxi Li
 
-- Completed the setup for profile and potty components.
-- Configured context and firebase helper files.
-- Designed the UI for the header component.
-- Contributed to UI/UX design decisions.
-- Provided assistance with debugging and testing throughout the development process.
+- Implement the functionality of Nutris screen. 
+  - Users can navigate through different dates using the calendar on the Nutri screen to add or review their nutritional records.
+-  Created a new introductory screen that welcomes users and provides a quick overview of the app’s features.
 
 ### Member 2: Xinyue Zheng
 
@@ -98,8 +96,20 @@ Also a subset of each dog's document, this collection stores reminders for the p
 - **Create:** Set a new reminder.
 - **Read:** Review upcoming reminders.
 
+### Nutris Collection
+
+Also a subset of each dog's document, this collection stores reminders for the nutrition log.
+
+**CRUD Operations:**
+
+- **Create:** Create a new nutrition log.
+- **Read:** Read a new nutrition log of selected date.
+
 ## Upcoming Features
 
 In the next iteration, we plan to implement the following features leveraging the nested collection architecture:
 
 - Automated reminder notifications for upcoming care tasks.
+- Use external API for poopal reminder.
+- Refine and enhance the user interface of our app
+
