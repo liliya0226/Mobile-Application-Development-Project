@@ -15,20 +15,22 @@ import AddReminder from "./AddReminder";
 import AddWeight from "./AddWeight";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase-files/firebaseSetup";
+import AddNutri from "./AddNutri";
+import AddNutriDetail from "./AddNutriDetail";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 export default function BottomTab() {
   return (
     <DogProvider>
       <Tab.Navigator
-        initialRouteName="Nutri"
+        initialRouteName="Profile"
         screenOptions={{
           tabBarActiveTintColor: "#ff7f50",
         }}
       >
         <Tab.Screen
-          name="Nutri"
-          component={Nutri}
+          name="NutriTab"
+          component={NutriStackScreen}
           options={{
             tabBarLabel: "Nutri",
             tabBarIcon: ({ color, size }) => (
@@ -120,6 +122,33 @@ const WeightStackScreen = ({ navigation }) => {
       <Stack.Screen
         name="AddWeight"
         component={AddWeight}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+const NutriStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Nutri"
+        component={Nutri}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddNutri"
+        component={AddNutri}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddNutriDetail"
+        component={AddNutriDetail}
         options={{
           headerShown: false,
         }}
