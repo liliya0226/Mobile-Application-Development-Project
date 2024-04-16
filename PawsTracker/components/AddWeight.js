@@ -30,6 +30,8 @@ export default function AddWeight({ navigation, route }) {
       date: date.toISOString(),
     };
 
+    //TODO: check if date is duplicate
+
     await writeToDB(payload, [
       "users",
       auth.currentUser.uid,

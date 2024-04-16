@@ -12,9 +12,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Alert } from "react-native";
 import WeightChart from "../components/WeightChart";
+import PressableButton from "../components/PressableButton";
+import FilterByMonth from "../components/FilterByMonth";
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
+  const [filteredWeights, setFilteredWeights] = useState([]);
   const { selectedDog } = useDogContext();
   useEffect(() => {
     if (selectedDog) {
@@ -33,6 +36,7 @@ export default function Weight() {
             updatedWeights.push({ id: doc.id, ...doc.data() });
           });
           setWeights(updatedWeights);
+          setFilteredWeights(updatedWeights);
         },
         (error) => {
           console.error("Error fetching weights:", error);
@@ -58,6 +62,20 @@ export default function Weight() {
       navigation.navigate("AddWeight");
     }
   };
+
+  const handleFilterByMonth = (month) => {
+    if (!month) {
+      setFilteredWeights(weights);
+    } else {
+      const filtered = weights.filter((weight) => {
+        const date = new Date(weight.date);
+        const monthPart = date.toISOString().slice(5, 7);
+        return monthPart === month;
+      });
+      setFilteredWeights(filtered);
+      // console.log(filtered);
+    }
+  };
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -74,8 +92,16 @@ export default function Weight() {
             ""
           )}
         </View>
+        {weights.length > 0 && selectedDog ? (
+          <FilterByMonth onFilter={handleFilterByMonth} />
+        ) : (
+          ""
+        )}
         <View style={styles.weightData}>
-          <WeightList weights={weights} onWeightPress={handleWeightPress} />
+          <WeightList
+            weights={filteredWeights}
+            onWeightPress={handleWeightPress}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -105,7 +131,6 @@ const styles = StyleSheet.create({
   WeightChart: {
     // height: 270,
     flex: 3,
-    marginBottom: 10,
   },
   weightData: {
     // height: 350,
