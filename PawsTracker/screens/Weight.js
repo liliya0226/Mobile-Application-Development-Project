@@ -50,6 +50,7 @@ export default function Weight() {
 
   const handleWeightPress = (weight) => {
     navigation.navigate("AddWeight", { weight });
+    setResetDropdown(true);
   };
 
   const handleAddButtonPress = () => {
@@ -91,7 +92,7 @@ export default function Weight() {
           {weights.length > 0 && selectedDog ? (
             <WeightChart weightData={weights} />
           ) : (
-            ""
+            <Text style={styles.noRecords}>No records yet</Text>
           )}
         </View>
         {weights.length > 0 && selectedDog ? (
@@ -142,5 +143,11 @@ const styles = StyleSheet.create({
     // height: 350,
     flex: 4,
     marginTop: 10,
+  },
+  noRecords: {
+    fontSize: 16,
+    color: "#999",
+    textAlign: "center",
+    marginTop: 20,
   },
 });

@@ -48,10 +48,6 @@ export default function FilterByMonth({
         ]}
         setOpen={setOpen}
         setValue={setValue}
-        containerStyle={styles.pickerContainer}
-        style={styles.picker}
-        itemStyle={styles.pickerItem}
-        dropDownStyle={styles.dropDown}
         onChangeValue={handleMonthSelect}
         placeholder="Select Month"
         placeholderStyle={styles.placeholder}
@@ -62,11 +58,9 @@ export default function FilterByMonth({
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
     paddingHorizontal: 10,
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop: 20,
     zIndex: 2,
   },
   pickerContainer: {
