@@ -18,6 +18,7 @@ export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
   const [filteredWeights, setFilteredWeights] = useState([]);
+  const [resetDropdown, setResetDropdown] = useState(false);
   const { selectedDog } = useDogContext();
   useEffect(() => {
     if (selectedDog) {
@@ -60,6 +61,7 @@ export default function Weight() {
       );
     } else {
       navigation.navigate("AddWeight");
+      setResetDropdown(true);
     }
   };
 
@@ -93,7 +95,11 @@ export default function Weight() {
           )}
         </View>
         {weights.length > 0 && selectedDog ? (
-          <FilterByMonth onFilter={handleFilterByMonth} />
+          <FilterByMonth
+            onFilter={handleFilterByMonth}
+            resetDropdown={resetDropdown}
+            setResetDropdown={setResetDropdown}
+          />
         ) : (
           ""
         )}

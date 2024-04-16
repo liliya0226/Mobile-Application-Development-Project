@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
-export default function FilterByMonth({ onFilter }) {
+export default function FilterByMonth({
+  onFilter,
+  resetDropdown,
+  setResetDropdown,
+}) {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+
+  useEffect(() => {
+    if (resetDropdown) {
+      setValue(null);
+      setResetDropdown(false);
+    }
+  }, [resetDropdown]);
 
   const handleMonthSelect = (month) => {
     if (month !== selectedMonth) {
@@ -21,7 +32,7 @@ export default function FilterByMonth({ onFilter }) {
         open={open}
         value={value}
         items={[
-          { label: "default", value: null },
+          { label: "All", value: null },
           { label: "January", value: "01" },
           { label: "February", value: "02" },
           { label: "March", value: "03" },
