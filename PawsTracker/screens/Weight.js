@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   WeightChart: {
     // height: 270,
     flex: 3,
+    marginBottom: 10,
   },
   weightData: {
     // height: 350,
