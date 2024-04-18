@@ -102,5 +102,4 @@ const styles = StyleSheet.create({
   title: {
     display: "none",
   },
-
 });

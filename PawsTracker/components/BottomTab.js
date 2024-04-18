@@ -11,26 +11,26 @@ import Map from "../screens/Map";
 import Weight from "../screens/Weight";
 import Header from "./Header";
 import PressableButton from "./PressableButton";
-import { AntDesign } from "@expo/vector-icons";
 import AddReminder from "./AddReminder";
 import AddWeight from "./AddWeight";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { signOut } from "firebase/auth";
 import { auth } from "../firebase-files/firebaseSetup";
+import AddNutri from "./AddNutri";
+import AddNutriDetail from "./AddNutriDetail";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 export default function BottomTab() {
   return (
     <DogProvider>
       <Tab.Navigator
-        initialRouteName="Nutri"
+        initialRouteName="Profile"
         screenOptions={{
           tabBarActiveTintColor: "#ff7f50",
         }}
       >
         <Tab.Screen
-          name="Nutri"
-          component={Nutri}
+          name="NutriTab"
+          component={NutriStackScreen}
           options={{
             tabBarLabel: "Nutri",
             tabBarIcon: ({ color, size }) => (
@@ -102,22 +102,7 @@ export default function BottomTab() {
                 size={size}
               />
             ),
-            // headerShown: false,
-            headerRight: () => {
-              return (
-                <PressableButton
-                  onPressFunction={() => {
-                    try {
-                      signOut(auth);
-                    } catch (err) {
-                      console.log(err);
-                    }
-                  }}
-                >
-                  <AntDesign name="logout" size={24} color="white" />
-                </PressableButton>
-              );
-            },
+            headerShown: false,
           }}
         />
       </Tab.Navigator>
@@ -137,6 +122,33 @@ const WeightStackScreen = ({ navigation }) => {
       <Stack.Screen
         name="AddWeight"
         component={AddWeight}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+const NutriStackScreen = ({ navigation }) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Nutri"
+        component={Nutri}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddNutri"
+        component={AddNutri}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddNutriDetail"
+        component={AddNutriDetail}
         options={{
           headerShown: false,
         }}
