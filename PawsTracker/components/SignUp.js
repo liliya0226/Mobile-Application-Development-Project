@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
-import PressableButton from "./PressableButton"; 
-
+import PressableButton from "./PressableButton";
 
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword function
 import { auth } from "../firebase-files/firebaseSetup"; //
 import { writeUserToDB } from "../firebase-files/firestoreHelper";
+import button from "../config/button";
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
@@ -45,8 +45,6 @@ export default function SignUp({ navigation }) {
         lastName,
       };
       await writeUserToDB(userId, userData, ["users"]);
-
-
     } catch (error) {
       // Handle authentication errors
       if (error.code === "auth/email-already-in-use") {
@@ -115,11 +113,18 @@ export default function SignUp({ navigation }) {
 
       {/* Buttons for registering and navigating to login */}
       <View style={styles.section}>
-        <PressableButton onPressFunction={signUpHandler}>
+        <PressableButton
+          customStyle={button.registerButton}
+          onPressFunction={signUpHandler}
+        >
           <Text>Register</Text>
         </PressableButton>
-        <PressableButton onPressFunction={loginHandler}>
-          <Text>Already Registered? Login</Text>
+        <PressableButton
+          customStyle={button.loginButton}
+          onPressFunction={loginHandler}
+        >
+          <Text>Already Registered? </Text>
+          <Text>Login</Text>
         </PressableButton>
       </View>
     </View>

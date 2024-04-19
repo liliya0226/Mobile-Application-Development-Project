@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-files/firebaseSetup";
+import button from "../config/button";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,6 @@ export default function Login() {
     navigation.replace("Signup");
   };
 
-
   const loginHandler = async () => {
     try {
       if (!email || !password) {
@@ -27,11 +27,21 @@ export default function Login() {
       console.log(userCred);
     } catch (err) {
       console.log(err);
-      if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
-        Alert.alert("Error", "Incorrect username or password. Please try again.");
+      if (
+        err.code === "auth/invalid-credential" ||
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/user-not-found"
+      ) {
+        Alert.alert(
+          "Error",
+          "Incorrect username or password. Please try again."
+        );
       } else {
         // Handle other kinds of errors with a generic error message
-        Alert.alert("Error", "An unexpected error occurred. Please try again later.");
+        Alert.alert(
+          "Error",
+          "An unexpected error occurred. Please try again later."
+        );
       }
     }
   };
@@ -49,23 +59,29 @@ export default function Login() {
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry={true} // Hide the password input
+        secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
       />
 
       <View style={styles.section}>
-        <PressableButton onPressFunction={loginHandler}>
+        <PressableButton
+          customStyle={button.loginButton}
+          onPressFunction={loginHandler}
+        >
           <Text>Login</Text>
         </PressableButton>
-        <PressableButton onPressFunction={signupHandler}>
-          <Text>New User? Create An Account</Text>
+        <PressableButton
+          customStyle={button.registerButton}
+          onPressFunction={signupHandler}
+        >
+          <Text>New User? </Text>
+          <Text>Create An Account</Text>
         </PressableButton>
       </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
