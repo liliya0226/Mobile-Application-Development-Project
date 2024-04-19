@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import colors from "../config/colors";
 
 export default function FilterByMonth({
   onFilter,
@@ -73,9 +74,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   dropDown: {
-    backgroundColor: "#fafafa",
+    backgroundColor: colors.dropdowncolor,
   },
   placeholder: {
-    color: "#808080",
+    color: colors.placeholder,
   },
 });

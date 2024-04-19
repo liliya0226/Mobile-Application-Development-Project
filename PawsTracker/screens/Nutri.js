@@ -96,12 +96,11 @@ export default function Nutri() {
           const updatedNutris = [];
           snapshot.forEach((doc) => {
             const data = doc.data();
-          
+
             data.date = data.date.toDate();
             updatedNutris.push({ id: doc.id, ...data });
           });
           setNutris(updatedNutris);
-  
         },
         (error) => {
           console.error(

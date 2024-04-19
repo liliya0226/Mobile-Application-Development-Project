@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
+import colors from "../config/colors";
 
 export default function WeightChart({ weightData }) {
   const groupByMonth = {};
@@ -25,8 +26,8 @@ export default function WeightChart({ weightData }) {
   const weights = dates.map((month) => averageWeights[month]);
 
   const chartConfig = {
-    backgroundGradientFrom: "#f5f5f5",
-    backgroundGradientTo: "#f5f5f5",
+    backgroundGradientFrom: colors.chartColor,
+    backgroundGradientTo: colors.chartColor,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     strokeWidth: 2,
   };
@@ -43,8 +44,8 @@ export default function WeightChart({ weightData }) {
             },
           ],
         }}
-        width={400}
-        height={200}
+        width={Dimensions.get("screen").width * 0.85}
+        height={Dimensions.get("screen").height * 0.2}
         yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+
     // backgroundColor: "#fff",
   },
   title: {

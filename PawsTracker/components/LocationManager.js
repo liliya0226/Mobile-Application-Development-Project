@@ -5,8 +5,9 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
 import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
+import colors from "../config/colors";
 
-export default function DogParkMap() {
+export default function LocationManager() {
   const [userLocation, setUserLocation] = useState(null);
   const [dogParks, setDogParks] = useState([]);
 
@@ -79,7 +80,7 @@ export default function DogParkMap() {
               longitude: userLocation.longitude,
             }}
             title="Your Location"
-            pinColor="blue"
+            pinColor={colors.mylocation}
           />
 
           {dogParks.map((park, index) => (
@@ -91,7 +92,7 @@ export default function DogParkMap() {
               }}
               title={park.name}
               description={park.vicinity}
-              pinColor="green"
+              pinColor={colors.dogsParkLoc}
             />
           ))}
         </MapView>

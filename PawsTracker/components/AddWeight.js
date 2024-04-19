@@ -10,6 +10,8 @@ import {
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { FontAwesome } from "@expo/vector-icons";
+import colors from "../config/colors";
+import button from "../config/button";
 
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
@@ -124,7 +126,7 @@ export default function AddWeight({ navigation, route }) {
               customStyle={styles.delete}
               onPressFunction={handleDelete}
             >
-              <FontAwesome name="trash-o" size={26} color="black" />
+              <FontAwesome name="trash-o" size={26} color={colors.black} />
             </PressableButton>
           </View>
         ) : (
@@ -147,7 +149,10 @@ export default function AddWeight({ navigation, route }) {
           style={styles.input}
           value={textInputValue}
           editable={false}
-          onTouchStart={() => setShowDatePicker(true)}
+          onTouchStart={() => {
+            setShowDatePicker(true);
+            setTextInputValue(new Date().toDateString());
+          }}
         />
         {showDatePicker && (
           <DateTimePicker
@@ -160,13 +165,16 @@ export default function AddWeight({ navigation, route }) {
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          buttonstyle={styles.cancel}
+          customStyle={button.cancelButton}
           onPressFunction={handleCancel}
         >
-          <Text>Cancel</Text>
+          <Text style={{ color: colors.white }}>Cancel</Text>
         </PressableButton>
-        <PressableButton onPressFunction={handleSave}>
-          <Text>Save</Text>
+        <PressableButton
+          customStyle={button.saveButton}
+          onPressFunction={handleSave}
+        >
+          <Text style={{ color: colors.white }}>Save</Text>
         </PressableButton>
       </View>
     </View>
@@ -176,7 +184,7 @@ export default function AddWeight({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.white,
   },
   section: {
     marginVertical: 20,
@@ -186,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#f5deb3",
+    backgroundColor: colors.weightRdHeader,
     marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
@@ -199,11 +207,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   delete: {
-    backgroundColor: "transparent",
+    backgroundColor: colors.transparent,
   },
   input: {
     height: 40,
-    borderColor: "green",
+    borderColor: colors.black,
     borderWidth: 1,
     marginTop: 10,
     marginBottom: 10,
@@ -213,8 +221,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
-  },
-  cancel: {
-    backgroundColor: "red",
   },
 });
