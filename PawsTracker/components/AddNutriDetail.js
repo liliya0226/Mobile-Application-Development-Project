@@ -61,10 +61,8 @@ const AddNutriDetail = ({ route, navigation }) => {
 
   const handleSaveNutri = async () => {
     if (selectedDog) {
-      // 根据是否为药物类别来保存不同的数据
       let nutriData = {};
       if (isMedicineCategory) {
-        // 药物类别保存药物名称、剂量和备注
         nutriData = {
           category: category,
           medicineName: medicineName,
@@ -73,7 +71,6 @@ const AddNutriDetail = ({ route, navigation }) => {
           date: Timestamp.fromDate(date),
         };
       } else {
-        // 非药物类别保存食物名称、重量和备注
         nutriData = {
           category: category,
           foodName: foodName,

@@ -67,6 +67,7 @@ export default function Weight() {
             <Ionicons name="add-circle-outline" size={35} color="black" />
           </Pressable>
         </View>
+        
         <View style={styles.WeightChart}>
           {weights.length > 0 && selectedDog ? (
             <WeightChart weightData={weights} />

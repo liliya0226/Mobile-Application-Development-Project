@@ -7,8 +7,6 @@ import { AntDesign } from "@expo/vector-icons";
 const AddNutri = ({ navigation }) => {
 
   const handlePress = (selectedCategory) => {
-    // Handle the press event, possibly update state or navigate
-
     navigation.navigate("AddNutriDetail", {
       category: selectedCategory,
     });
