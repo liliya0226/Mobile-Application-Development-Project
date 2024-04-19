@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: "center",
     backgroundColor: "#FFA07A",
+    shadowColor: "gray",
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   icon: {
     width: 40,
