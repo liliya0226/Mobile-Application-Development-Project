@@ -7,7 +7,15 @@ import Login from "./components/Login";
 import BottomTab from "./components/BottomTab";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase-files/firebaseSetup"; 
-
+import * as Notifications from "expo-notifications";
+Notifications.setNotificationHandler({
+  handleNotification: async function (notification) {
+   
+    return {
+      shouldShowAlert: true,
+    };
+  },
+});
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -18,6 +26,33 @@ export default function App() {
       setUserLoggedIn(!!user);
     });
     return unsubscribe; 
+  }, []);
+  useEffect(() => {
+    const sunscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("received listener", notification);
+      }
+    );
+    return () => {
+      sunscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    const sunscription = Notifications.addNotificationResponseReceivedListener(
+      (notificationResponse) => {
+        console.log(
+          "received response listener",
+          notificationResponse.notification.request.content.data.url
+        );
+        Linking.openURL(
+          notificationResponse.notification.request.content.data.url
+        );
+      }
+    );
+    return () => {
+      sunscription.remove();
+    };
   }, []);
 
   const AuthStack = (

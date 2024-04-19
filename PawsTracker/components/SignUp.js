@@ -36,7 +36,7 @@ export default function SignUp({ navigation }) {
 
       // Extract user ID
       const userId = userCredential.user.uid;
-      console.log(userId);
+
 
       // Write user data to the database
       const userData = {

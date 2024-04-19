@@ -6,11 +6,13 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { writeToDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
+import { scheduleNotification } from "./NotificationManager";
 
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
@@ -25,7 +27,8 @@ const AddReminder = ({ isVisible, onClose }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(Platform.OS === "ios"); // iOS always shows the picker
   const [selectedDays, setSelectedDays] = useState([]);
-  const { selectedDog } = useDogContext();
+  const [isSaving, setIsSaving] = useState(false); // New state to prevent multiple saves
+  const { selectedDog,userLocation } = useDogContext();
 
   const toggleDaySelection = (day) => {
     setSelectedDays((currentDays) =>
@@ -36,15 +39,24 @@ const AddReminder = ({ isVisible, onClose }) => {
   };
 
   const saveReminder = async () => {
+    if (isSaving) return; // Prevents additional clicks
+    setIsSaving(true); // Disables the button to prevent multiple saves
+
     if (selectedDog) {
+      if (!selectedDays.length) {
+        Alert.alert("Please select a date before saving the reminder.");
+        setIsSaving(false); // Re-enables the button in case of an error
+        return;
+      }
       const reminder = {
         time: date.toISOString(),
         days: selectedDays,
-        enabled: true,
+        isEnabled: true,
       };
 
       try {
-        await writeToDB(reminder, [
+        onClose(); 
+        const savedReminder = await writeToDB(reminder, [
           "users",
           auth.currentUser.uid,
           "dogs",
@@ -52,12 +64,17 @@ const AddReminder = ({ isVisible, onClose }) => {
           "reminders",
         ]);
 
-        onClose();
+        await scheduleNotification(reminder, userLocation);
+        setSelectedDays([]);
+     
+        setIsSaving(false);
       } catch (error) {
         console.error("Failed to save reminder:", error);
+        setIsSaving(false); // Re-enables the button in case of an error
       }
     } else {
       console.error("No selected dog to save the reminder for.");
+      setIsSaving(false); // Re-enables the button if there's no selected dog
     }
   };
 
@@ -84,10 +101,9 @@ const AddReminder = ({ isVisible, onClose }) => {
             is24Hour={true}
             display={Platform.OS === "android" ? "default" : "inline"} // 'default' for Android, 'inline' for iOS
             onChange={onChange}
-            style={styles.datePicker} // 应用任何需要的样式
+            style={styles.datePicker}
           />
 
-          {/* 渲染星期选择按钮 */}
           <View style={styles.dayButtonsContainer}>
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
               <DayButton
@@ -99,8 +115,11 @@ const AddReminder = ({ isVisible, onClose }) => {
             ))}
           </View>
 
-          {/* 保存按钮 */}
-          <Pressable style={styles.saveButton} onPress={saveReminder}>
+          <Pressable
+            style={styles.saveButton}
+            onPress={saveReminder}
+            disabled={!date || isSaving} // Button is disabled when a save operation is in progress
+          >
             <Text style={styles.saveButtonText}>Save</Text>
           </Pressable>
         </View>

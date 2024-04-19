@@ -113,7 +113,7 @@ export default function Nutri() {
 
       return () => unsubscribe();
     }
-  }, [selectedDog, selectedDate]);
+  }, [selectedDog]);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
