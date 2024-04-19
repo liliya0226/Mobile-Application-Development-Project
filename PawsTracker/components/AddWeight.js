@@ -9,6 +9,8 @@ import {
 } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
+import { FontAwesome } from "@expo/vector-icons";
+
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
   const [date, setDate] = useState(new Date());
@@ -29,6 +31,8 @@ export default function AddWeight({ navigation, route }) {
       record: Number(record),
       date: date.toISOString(),
     };
+
+    //TODO: check if date is duplicate
 
     await writeToDB(payload, [
       "users",
@@ -112,6 +116,21 @@ export default function AddWeight({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.recordHeader}>
+        <Text style={styles.recordHeaderText}>Weight Record</Text>
+        {route.params?.weight ? (
+          <View style={styles.deleteButtonContainer}>
+            <PressableButton
+              customStyle={styles.delete}
+              onPressFunction={handleDelete}
+            >
+              <FontAwesome name="trash-o" size={26} color="black" />
+            </PressableButton>
+          </View>
+        ) : (
+          ""
+        )}
+      </View>
       <View style={styles.section}>
         <Text>Record *</Text>
         <TextInput
@@ -141,12 +160,6 @@ export default function AddWeight({ navigation, route }) {
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          buttonstyle={styles.delete}
-          onPressFunction={handleDelete}
-        >
-          <Text>Delete</Text>
-        </PressableButton>
-        <PressableButton
           buttonstyle={styles.cancel}
           onPressFunction={handleCancel}
         >
@@ -163,12 +176,30 @@ export default function AddWeight({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "white",
   },
   section: {
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  recordHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f5deb3",
     marginBottom: 20,
-    marginTop: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  recordHeaderText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  deleteButtonContainer: {
+    marginLeft: "auto",
+  },
+  delete: {
+    backgroundColor: "transparent",
   },
   input: {
     height: 40,

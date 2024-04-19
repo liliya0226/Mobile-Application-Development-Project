@@ -4,13 +4,26 @@ import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
 
 export default function WeightChart({ weightData }) {
-  const sortedWeights = weightData
-    .slice()
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
-  const dates = sortedWeights.map((item) =>
-    format(new Date(item.date), "MM-dd")
-  );
-  const weights = sortedWeights.map((item) => item.record);
+  const groupByMonth = {};
+  weightData.forEach((item) => {
+    const month = format(new Date(item.date), "MM");
+    if (!groupByMonth[month]) {
+      groupByMonth[month] = [];
+    }
+    groupByMonth[month].push(item.record);
+  });
+
+  const averageWeights = {};
+  for (const month in groupByMonth) {
+    const weights = groupByMonth[month];
+    const sum = weights.reduce((total, weight) => total + weight, 0);
+    averageWeights[month] = sum / weights.length;
+  }
+
+  let dates = Object.keys(averageWeights);
+  dates = dates.sort((a, b) => Number(a) - Number(b));
+  const weights = dates.map((month) => averageWeights[month]);
+
   const chartConfig = {
     backgroundGradientFrom: "#f5f5f5",
     backgroundGradientTo: "#f5f5f5",
@@ -20,7 +33,7 @@ export default function WeightChart({ weightData }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Weight Chart</Text>
+      <Text style={styles.title}>Weight Average by Month</Text>
       <LineChart
         data={{
           labels: dates,
@@ -30,8 +43,8 @@ export default function WeightChart({ weightData }) {
             },
           ],
         }}
-        width={350}
-        height={220}
+        width={400}
+        height={200}
         yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier
