@@ -411,6 +411,9 @@ const styles = StyleSheet.create({
     width: "40%",
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "gray",
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   iconWithBorder: {
     borderWidth: 2, // Adjust border width as needed

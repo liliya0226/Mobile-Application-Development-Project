@@ -163,13 +163,16 @@ export default function AddWeight({ navigation, route }) {
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          buttonstyle={styles.cancel}
+          customStyle={styles.cancelButton}
           onPressFunction={handleCancel}
         >
-          <Text>Cancel</Text>
+          <Text style={{ color: "white" }}>Cancel</Text>
         </PressableButton>
-        <PressableButton onPressFunction={handleSave}>
-          <Text>Save</Text>
+        <PressableButton
+          customStyle={styles.saveButton}
+          onPressFunction={handleSave}
+        >
+          <Text style={{ color: "white" }}>Save</Text>
         </PressableButton>
       </View>
     </View>
@@ -217,7 +220,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
   },
-  cancel: {
-    backgroundColor: "red",
+  cancelButton: {
+    backgroundColor: "#ff4500",
+    width: 80,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
   },
+  saveButton: { backgroundColor: "#4682b4", width: 80, alignItems: "center" },
 });
