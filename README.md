@@ -15,11 +15,13 @@ Our application is currently capable of the following:
 - Tracking of weight history for each pet.
 - Setting reminders for potty time.
 
-![WeightWithGraph](/PawsTracker/assets/weightwithgraph.PNG)
+![WeightWithGraph](/PawsTracker/assets/weightchart.png)
+
+![editWeight](/PawsTracker/assets/editWeight.png)
 
 ![MapScreen](/PawsTracker/assets/map.PNG)
 
-![ProfileWithCamera](/PawsTracker/assets/profilewithcamera.PNG)
+![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
 
 ## Team Contributions for iteration 1
 
