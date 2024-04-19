@@ -10,6 +10,7 @@ import {
   Alert,
   ImageBackground,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import {
   writeToDB,
@@ -26,6 +27,7 @@ import { signOut } from "firebase/auth";
 import profileBack from "../assets/profileback.jpg";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import button from "../config/button";
 
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
@@ -224,7 +226,7 @@ export default function Profile({ navigation }) {
             }
           }}
         >
-          <AntDesign name="logout" size={24} color="white" />
+          <AntDesign name="logout" size={30} color="black" />
         </PressableButton>
         <View style={styles.profileSection}>
           <View style={styles.profileImage}>
@@ -268,7 +270,7 @@ export default function Profile({ navigation }) {
 
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
-          <Text>Add Your Dogs: </Text>
+          <Text style={{ fontSize: 20 }}>Add Your Dogs: </Text>
           <PressableButton
             customStyle={styles.addDogButton}
             onPressFunction={addDog}
@@ -322,11 +324,17 @@ export default function Profile({ navigation }) {
               keyboardType="numeric"
             />
             <View style={styles.section}>
-              <PressableButton onPressFunction={handleCancel}>
-                <Text>Cancel</Text>
+              <PressableButton
+                customStyle={button.cancelButton}
+                onPressFunction={handleCancel}
+              >
+                <Text style={{ color: "white" }}>Cancel</Text>
               </PressableButton>
-              <PressableButton onPressFunction={saveDog}>
-                <Text>Save</Text>
+              <PressableButton
+                customStyle={button.saveButton}
+                onPressFunction={saveDog}
+              >
+                <Text style={{ color: "white" }}>Save</Text>
               </PressableButton>
             </View>
           </View>
@@ -345,6 +353,11 @@ const styles = StyleSheet.create({
   logout: {
     marginTop: 80,
     marginStart: 300,
+    backgroundColor: "#FFA07A",
+    borderRadius: 25,
+    shadowColor: "gray",
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   profileSection: {
     paddingBottom: 30,
@@ -371,11 +384,30 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 30,
-    backgroundColor: "white",
+    backgroundColor: "#fffff0",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
+    shadowColor: "gray",
+    shadowOpacity: 50,
+    // borderRadius: 100,
   },
   email: {
-    fontSize: 20,
-    backgroundColor: "white",
+    fontSize: 18,
+    backgroundColor: "#fffff0",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
+    shadowColor: "gray",
+    shadowOpacity: 50,
+  },
+  location: {
+    flexDirection: "row",
+    fontSize: 18,
+    backgroundColor: "#fffff0",
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
   },
   bottomContainer: {
     flex: 1,
@@ -408,7 +440,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
     marginHorizontal: 20,
-    width: "40%",
+    width: Dimensions.get("screen").width > 600 ? "60%" : "40%",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "gray",
@@ -416,8 +448,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 50,
   },
   iconWithBorder: {
-    borderWidth: 2, // Adjust border width as needed
-    borderColor: "gray", // Adjust border color as needed
+    borderWidth: 2,
+    borderColor: "gray",
     borderRadius: 75,
   },
   dogImage: {
@@ -442,7 +474,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#696969",
     padding: 10,
     marginVertical: 5,
     width: "80%",
@@ -453,8 +485,5 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     borderColor: "white",
     marginBottom: 20,
-  },
-  location: {
-    flexDirection: "row",
   },
 });

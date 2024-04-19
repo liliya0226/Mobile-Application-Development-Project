@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
@@ -43,8 +43,8 @@ export default function WeightChart({ weightData }) {
             },
           ],
         }}
-        width={400}
-        height={200}
+        width={Dimensions.get("screen").width * 0.85}
+        height={Dimensions.get("screen").height * 0.2}
         yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier

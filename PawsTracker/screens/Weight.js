@@ -139,8 +139,11 @@ const styles = StyleSheet.create({
     // height: 270,
     flex: 3,
     marginBottom: 10,
+    padding: 10,
     width: Dimensions.get("screen").width * 0.9,
     height: Dimensions.get("screen").height * 0.3,
+    borderColor: "black",
+    borderWidth: 1,
   },
   weightData: {
     // height: 350,

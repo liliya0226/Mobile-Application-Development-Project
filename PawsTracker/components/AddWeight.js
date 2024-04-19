@@ -10,6 +10,8 @@ import {
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { FontAwesome } from "@expo/vector-icons";
+import colors from "../config/colors";
+import button from "../config/button";
 
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
@@ -163,13 +165,13 @@ export default function AddWeight({ navigation, route }) {
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          customStyle={styles.cancelButton}
+          customStyle={button.cancelButton}
           onPressFunction={handleCancel}
         >
           <Text style={{ color: "white" }}>Cancel</Text>
         </PressableButton>
         <PressableButton
-          customStyle={styles.saveButton}
+          customStyle={button.saveButton}
           onPressFunction={handleSave}
         >
           <Text style={{ color: "white" }}>Save</Text>
@@ -220,12 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
   },
-  cancelButton: {
-    backgroundColor: "#ff4500",
-    width: 80,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  saveButton: { backgroundColor: "#4682b4", width: 80, alignItems: "center" },
+  // cancelButton: {
+  //   backgroundColor: "#ff4500",
+  //   width: 80,
+  //   height: 30,
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  // },
+  // saveButton: { backgroundColor: "#4682b4", width: 80, alignItems: "center" },
 });

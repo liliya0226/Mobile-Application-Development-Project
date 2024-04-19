@@ -1,0 +1,16 @@
+export default {
+  tab: "#FFA07A",
+  header: "#a698cd",
+  textWhite: "white",
+  textBlack: "black",
+  card: "#8d6fdb",
+  tabActive: "yellow",
+  tabInactive: "gray",
+  button: "#fff",
+  buttonW: "#ccc",
+  buttonB: "#2277ee",
+  buttonR: "red",
+  error: "red",
+  warning: "yellow",
+  press: "#000",
+};
