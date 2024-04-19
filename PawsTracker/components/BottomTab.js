@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase-files/firebaseSetup";
 import AddNutri from "./AddNutri";
 import AddNutriDetail from "./AddNutriDetail";
+import colors from "../config/colors";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 export default function BottomTab() {
@@ -25,7 +26,7 @@ export default function BottomTab() {
       <Tab.Navigator
         initialRouteName="Profile"
         screenOptions={{
-          tabBarActiveTintColor: "#ff7f50",
+          tabBarActiveTintColor: colors.bottomTab,
         }}
       >
         <Tab.Screen

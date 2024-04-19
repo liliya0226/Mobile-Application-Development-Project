@@ -126,7 +126,7 @@ export default function AddWeight({ navigation, route }) {
               customStyle={styles.delete}
               onPressFunction={handleDelete}
             >
-              <FontAwesome name="trash-o" size={26} color="black" />
+              <FontAwesome name="trash-o" size={26} color={colors.black} />
             </PressableButton>
           </View>
         ) : (
@@ -168,13 +168,13 @@ export default function AddWeight({ navigation, route }) {
           customStyle={button.cancelButton}
           onPressFunction={handleCancel}
         >
-          <Text style={{ color: "white" }}>Cancel</Text>
+          <Text style={{ color: colors.white }}>Cancel</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.saveButton}
           onPressFunction={handleSave}
         >
-          <Text style={{ color: "white" }}>Save</Text>
+          <Text style={{ color: colors.white }}>Save</Text>
         </PressableButton>
       </View>
     </View>
@@ -184,7 +184,7 @@ export default function AddWeight({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.white,
   },
   section: {
     marginVertical: 20,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#f5deb3",
+    backgroundColor: colors.weightRdHeader,
     marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
@@ -207,11 +207,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   delete: {
-    backgroundColor: "transparent",
+    backgroundColor: colors.transparent,
   },
   input: {
     height: 40,
-    borderColor: "green",
+    borderColor: colors.black,
     borderWidth: 1,
     marginTop: 10,
     marginBottom: 10,
@@ -222,12 +222,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
   },
-  // cancelButton: {
-  //   backgroundColor: "#ff4500",
-  //   width: 80,
-  //   height: 30,
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  // },
-  // saveButton: { backgroundColor: "#4682b4", width: 80, alignItems: "center" },
 });

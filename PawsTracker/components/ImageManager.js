@@ -4,6 +4,7 @@ import PressableButton from "./PressableButton";
 
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
+import colors from "../config/colors";
 
 export default function ImageManager({ receiveImageURI }) {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
@@ -42,7 +43,7 @@ export default function ImageManager({ receiveImageURI }) {
         customStyle={styles.cameraButton}
         onPressFunction={takeImageHandler}
       >
-        <AntDesign name="camerao" size={24} color="black" />
+        <AntDesign name="camerao" size={24} color={colors.black} />
       </PressableButton>
     </View>
   );
@@ -52,8 +53,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   cameraButton: {
-    backgroundColor: "white",
-    // backgroundColor: "red",
+    backgroundColor: colors.white,
     borderRadius: 25,
     position: "absolute",
     left: 25,

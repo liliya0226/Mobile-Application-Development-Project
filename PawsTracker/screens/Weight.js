@@ -14,6 +14,7 @@ import { Alert } from "react-native";
 import WeightChart from "../components/WeightChart";
 import PressableButton from "../components/PressableButton";
 import FilterByMonth from "../components/FilterByMonth";
+import colors from "../config/colors";
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
@@ -85,7 +86,11 @@ export default function Weight() {
         <View style={styles.header}>
           <Text style={styles.title}>Weight Tracker</Text>
           <Pressable style={styles.addButton} onPress={handleAddButtonPress}>
-            <Ionicons name="add-circle-outline" size={35} color="black" />
+            <Ionicons
+              name="add-circle-outline"
+              size={35}
+              color={colors.black}
+            />
           </Pressable>
         </View>
 
@@ -122,7 +127,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    // backgroundColor: "white",
     flex: 1,
     padding: 20,
   },
@@ -138,23 +142,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   WeightChart: {
-    // height: 270,
     flex: 3,
     marginBottom: 10,
     padding: 10,
     width: Dimensions.get("screen").width * 0.9,
     height: Dimensions.get("screen").height * 0.3,
-    borderColor: "black",
+    borderColor: colors.black,
     borderWidth: 1,
   },
   weightData: {
-    // height: 350,
     flex: 4,
     marginTop: 10,
   },
   noRecords: {
     fontSize: 16,
-    color: "#999",
+    color: colors.shadow,
     textAlign: "center",
     marginTop: 20,
   },

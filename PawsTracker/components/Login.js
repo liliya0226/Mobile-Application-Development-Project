@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-files/firebaseSetup";
 import button from "../config/button";
+import colors from "../config/colors";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export default function Login() {
         return;
       }
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCred);
+      // console.log(userCred);
     } catch (err) {
       console.log(err);
       if (
@@ -86,11 +87,11 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     justifyContent: "center",
   },
   input: {
-    borderColor: "#552055",
+    borderColor: colors.black,
     borderWidth: 2,
     width: "90%",
     margin: 5,

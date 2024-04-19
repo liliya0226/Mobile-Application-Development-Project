@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth"; // Import create
 import { auth } from "../firebase-files/firebaseSetup"; //
 import { writeUserToDB } from "../firebase-files/firestoreHelper";
 import button from "../config/button";
+import colors from "../config/colors";
 
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
@@ -36,7 +37,7 @@ export default function SignUp({ navigation }) {
 
       // Extract user ID
       const userId = userCredential.user.uid;
-      console.log(userId);
+      // console.log(userId);
 
       // Write user data to the database
       const userData = {
@@ -135,11 +136,11 @@ export default function SignUp({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.white,
     justifyContent: "center",
   },
   input: {
-    borderColor: "#552055",
+    borderColor: colors.black,
     borderWidth: 2,
     width: "90%",
     margin: 5,

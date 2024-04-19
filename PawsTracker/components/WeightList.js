@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
+import colors from "../config/colors";
 export default function WeightList({ weights, onWeightPress }) {
   const sortedWeights = weights
     .slice()
@@ -28,7 +29,11 @@ export default function WeightList({ weights, onWeightPress }) {
         customStyle={styles.arrow}
         onPressFunction={() => onWeightPress(item)}
       >
-        <Ionicons name="chevron-forward-outline" size={24} color="black" />
+        <Ionicons
+          name="chevron-forward-outline"
+          size={24}
+          color={colors.black}
+        />
       </PressableButton>
     </View>
   );
@@ -52,7 +57,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: "#000",
+    borderColor: colors.black,
     marginBottom: 10,
   },
   dateText: {
@@ -64,6 +69,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   arrow: {
-    backgroundColor: "transparent",
+    backgroundColor: colors.transparent,
   },
 });
