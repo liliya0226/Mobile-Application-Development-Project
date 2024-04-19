@@ -128,7 +128,10 @@ export default function AddWeight({ navigation, route }) {
           style={styles.input}
           value={textInputValue}
           editable={false}
-          onTouchStart={() => setShowDatePicker(true)}
+          onTouchStart={() => {
+            setShowDatePicker(true);
+            setTextInputValue(new Date().toDateString());
+          }}
         />
         {showDatePicker && (
           <DateTimePicker

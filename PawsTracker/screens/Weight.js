@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import WeightList from "../components/WeightList";
 import { writeToDB } from "../firebase-files/firestoreHelper";
 import { useNavigation } from "@react-navigation/native";
@@ -106,6 +106,8 @@ const styles = StyleSheet.create({
     // height: 270,
     flex: 3,
     marginBottom: 10,
+    width: Dimensions.get("screen").width * 0.9,
+    height: Dimensions.get("screen").height * 0.3,
   },
   weightData: {
     // height: 350,
