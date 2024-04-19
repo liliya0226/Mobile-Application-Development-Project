@@ -6,7 +6,7 @@ import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
 import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
 
-export default function DogParkMap() {
+export default function LocationManager() {
   const [userLocation, setUserLocation] = useState(null);
   const [dogParks, setDogParks] = useState([]);
 

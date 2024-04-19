@@ -88,13 +88,15 @@ export default function Weight() {
             <Ionicons name="add-circle-outline" size={35} color="black" />
           </Pressable>
         </View>
-        <View style={styles.WeightChart}>
-          {weights.length > 0 && selectedDog ? (
+
+        {weights.length > 0 && selectedDog ? (
+          <View style={styles.WeightChart}>
             <WeightChart weightData={weights} />
-          ) : (
-            <Text style={styles.noRecords}>No records yet</Text>
-          )}
-        </View>
+          </View>
+        ) : (
+          <Text style={styles.noRecords}>No records yet</Text>
+        )}
+
         {weights.length > 0 && selectedDog ? (
           <FilterByMonth
             onFilter={handleFilterByMonth}
