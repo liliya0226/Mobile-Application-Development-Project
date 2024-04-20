@@ -4,8 +4,6 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  FlatList,
-  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { auth } from "../firebase-files/firebaseSetup";
@@ -21,9 +19,6 @@ import NutritionList from "../components/NutritionList";
 export default function Nutri() {
   const navigation = useNavigation();
   const { selectedDog } = useDogContext();
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [nutris, setNutris] = useState([]);
 
   const getCategoryImage = (category) => {
@@ -50,7 +45,8 @@ export default function Nutri() {
     }
   };
   useEffect(() => {
-    if (selectedDog && selectedDog.value) {
+
+    if (selectedDog) {
       const nutrisRef = collection(
         database,
         "users",
@@ -73,6 +69,7 @@ export default function Nutri() {
           updatedNutris.sort((a, b) => b.date - a.date);
 
           setNutris(updatedNutris);
+    
         },
         (error) => {
           console.error("Error fetching nutritional information:", error);

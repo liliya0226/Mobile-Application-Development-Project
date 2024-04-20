@@ -9,28 +9,8 @@ import { useDogContext } from "../context-files/DogContext";
 
 export default function DogParkMap() {
   const { userLocation } = useDogContext();
-  // const [userLocation, setUserLocation] = useState(null);
+ 
   const [dogParks, setDogParks] = useState([]);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       let { status } = await Location.requestForegroundPermissionsAsync();
-  //       if (status !== "granted") {
-  //         Alert.alert("Permission to access location was denied");
-  //         return;
-  //       }
-
-  //       let location = await Location.getCurrentPositionAsync({});
-  //       setUserLocation({
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching user location: ", error);
-  //     }
-  //   })();
-  // }, []);
 
   useEffect(() => {
     const fetchNearbyDogParks = async () => {

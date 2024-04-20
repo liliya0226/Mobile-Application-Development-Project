@@ -50,7 +50,7 @@ export const scheduleNotification = async (reminder, userLocation) => {
         };
 
         console.log(`Scheduling a weekly notification on ${day} at ${hour}:${minute} with weather: ${weather}`);
-        let message = `It's time to walk the dog! Current temp: ${temperature}°C.`;
+        let message = `Time to walk the dog! Current temp: ${temperature}°C.`;
         
         if (weather.includes("rain")) {
           message += " Don't forget your umbrella, it's raining. Stay dry!";

@@ -44,19 +44,34 @@ export default function PooPal() {
       return () => unsubscribe();
     }
   }, [selectedDog]);
+  const ensureLocationAndGetPermission = async () => {
+    if (!userLocation) {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Location Permission', 'Location permission is required to add reminders.');
+        return false;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      });
+    }
+    return true;
+  };
 
-  const openAddReminderScreen = () => {
+  const openAddReminderScreen = async () => {
     if (!selectedDog) {
-      Alert.alert(
-        "No Dog Selected",
-        "Please select a dog before adding a reminder.",
-        [{ text: "OK" }]
-      );
-    } else {
+      Alert.alert("No Dog Selected", "Please select a dog before adding a reminder.", [{ text: "OK" }]);
+      return;
+    }
+
+    const hasLocation = await ensureLocationAndGetPermission();
+    if (hasLocation) {
       setAddReminderModalVisible(true);
     }
   };
-
+  
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     const hours = date.getHours();

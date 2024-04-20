@@ -44,7 +44,7 @@ export const DogProvider = ({ children }) => {
   
 
   return (
-    <DogContext.Provider value={{ dogs, setDogs, selectedDog, setSelectedDog, userLocation }}>
+    <DogContext.Provider value={{ dogs, setDogs, selectedDog, setSelectedDog, userLocation,setUserLocation }}>
       {children}
     </DogContext.Provider>
   );

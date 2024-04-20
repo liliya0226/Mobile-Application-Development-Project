@@ -10,6 +10,7 @@ import {
   Alert,
   ImageBackground,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import {
   writeToDB,
@@ -26,6 +27,8 @@ import { signOut } from "firebase/auth";
 import profileBack from "../assets/profileback.jpg";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import button from "../config/button";
+import colors from "../config/colors";
 
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
@@ -148,16 +151,23 @@ export default function Profile({ navigation }) {
         age,
         dogImage: dogImageUrl,
       };
+      Alert.alert("Save Dog", "Are you sure you want to save this dog?", [
+        { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+        {
+          text: "OK",
+          onPress: async () => {
+            await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
 
-      await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
-
-      // console.log("Dog uploaded successfully");
-      setDogAge("");
-      setDogName("");
-      setDogImaUrl("");
-      setDogImageUri("");
-      fetchDogsData();
-      setIsModalVisible(false);
+            // console.log("Dog uploaded successfully");
+            setDogAge("");
+            setDogName("");
+            setDogImaUrl("");
+            setDogImageUri("");
+            fetchDogsData();
+            setIsModalVisible(false);
+          },
+        },
+      ]);
     } catch (error) {
       console.error("Error saving dog:", error);
       Alert.alert("Error", "Failed to save dog information.");
@@ -188,7 +198,6 @@ export default function Profile({ navigation }) {
   };
 
   useEffect(() => {
-   
     const getAdress = async () => {
       try {
         if (
@@ -225,7 +234,7 @@ export default function Profile({ navigation }) {
             }
           }}
         >
-          <AntDesign name="logout" size={24} color="white" />
+          <AntDesign name="logout" size={30} color={colors.black} />
         </PressableButton>
         <View style={styles.profileSection}>
           <View style={styles.profileImage}>
@@ -239,7 +248,7 @@ export default function Profile({ navigation }) {
             ) : (
               <MaterialCommunityIcons
                 name="account-circle-outline"
-                color="gray"
+                color={colors.shadow}
                 size={150}
                 // style={styles.iconWithBorder}
               />
@@ -255,7 +264,7 @@ export default function Profile({ navigation }) {
             customStyle={styles.location}
             onPressFunction={locateUserHandler}
           >
-            <Ionicons name="location-outline" size={20} color="black" />
+            <Ionicons name="location-outline" size={20} color={colors.black} />
             {address ? (
               <Text>
                 {address.city}, {address.country}
@@ -269,12 +278,16 @@ export default function Profile({ navigation }) {
 
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
-          <Text>Add Your Dogs: </Text>
+          <Text style={{ fontSize: 20 }}>Add Your Dogs: </Text>
           <PressableButton
             customStyle={styles.addDogButton}
             onPressFunction={addDog}
           >
-            <Ionicons name="add-circle-outline" size={30} color="black" />
+            <Ionicons
+              name="add-circle-outline"
+              size={30}
+              color={colors.black}
+            />
           </PressableButton>
         </View>
         <ScrollView contentContainerStyle={styles.dogSection}>
@@ -300,7 +313,7 @@ export default function Profile({ navigation }) {
               ) : (
                 <MaterialCommunityIcons
                   name="dog"
-                  color="gray"
+                  color={colors.shadow}
                   size={150}
                   style={styles.iconWithBorder}
                 />
@@ -310,24 +323,30 @@ export default function Profile({ navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Dog Name"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.placeholder}
               value={dogName}
               onChangeText={setDogName}
             />
             <TextInput
               style={styles.input}
               placeholder="Dog Age"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.placeholder}
               value={dogAge}
               onChangeText={setDogAge}
               keyboardType="numeric"
             />
             <View style={styles.section}>
-              <PressableButton onPressFunction={handleCancel}>
-                <Text>Cancel</Text>
+              <PressableButton
+                customStyle={button.cancelButton}
+                onPressFunction={handleCancel}
+              >
+                <Text style={{ color: colors.white }}>Cancel</Text>
               </PressableButton>
-              <PressableButton onPressFunction={saveDog}>
-                <Text>Save</Text>
+              <PressableButton
+                customStyle={button.saveButton}
+                onPressFunction={saveDog}
+              >
+                <Text style={{ color: colors.white }}>Save</Text>
               </PressableButton>
             </View>
           </View>
@@ -346,6 +365,11 @@ const styles = StyleSheet.create({
   logout: {
     marginTop: 80,
     marginStart: 300,
+    backgroundColor: colors.bottomTab,
+    borderRadius: 25,
+    shadowColor: colors.shadow,
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   profileSection: {
     paddingBottom: 30,
@@ -366,21 +390,39 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    borderColor: "black",
+    borderColor: colors.black,
     marginBottom: 20,
-    backgroundColor: "white",
+    backgroundColor: colors.white,
   },
   name: {
     fontSize: 30,
-    backgroundColor: "white",
+    backgroundColor: colors.profileInfos,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
+    shadowColor: colors.shadow,
+    shadowOpacity: 50,
   },
   email: {
-    fontSize: 20,
-    backgroundColor: "white",
+    fontSize: 18,
+    backgroundColor: colors.profileInfos,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
+    shadowColor: colors.shadow,
+    shadowOpacity: 50,
+  },
+  location: {
+    flexDirection: "row",
+    fontSize: 18,
+    backgroundColor: colors.profileInfos,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginVertical: 2,
   },
   bottomContainer: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.white,
     width: "100%",
     paddingTop: 20,
   },
@@ -392,7 +434,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   addDogButton: {
-    backgroundColor: "white",
+    backgroundColor: colors.white,
   },
   dogSection: {
     flexDirection: "row",
@@ -402,20 +444,23 @@ const styles = StyleSheet.create({
   },
   dogContainer: {
     borderWidth: 1,
-    borderColor: "#FFA07A",
-    backgroundColor: "#FFA07A",
+    borderColor: colors.header,
+    backgroundColor: colors.header,
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
     marginTop: 20,
     marginHorizontal: 20,
-    width: "40%",
+    width: Dimensions.get("screen").width > 600 ? "60%" : "40%",
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: colors.shadow,
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   iconWithBorder: {
-    borderWidth: 2, // Adjust border width as needed
-    borderColor: "gray", // Adjust border color as needed
+    borderWidth: 2,
+    borderColor: colors.shadow,
     borderRadius: 75,
   },
   dogImage: {
@@ -426,19 +471,21 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: 150,
+    justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#ffc4ad",
+    backgroundColor: colors.modalColor,
   },
 
   section: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-around",
+    marginTop: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: colors.shadow,
     padding: 10,
     marginVertical: 5,
     width: "80%",
@@ -447,10 +494,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 75,
-    borderColor: "white",
+    borderColor: colors.white,
     marginBottom: 20,
-  },
-  location: {
-    flexDirection: "row",
   },
 });

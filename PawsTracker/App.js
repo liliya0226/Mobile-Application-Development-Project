@@ -5,6 +5,7 @@ import Intro from "./screens/Intro";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import BottomTab from "./components/BottomTab";
+import { Alert } from 'react-native';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase-files/firebaseSetup"; 
 import * as Notifications from "expo-notifications";
@@ -38,22 +39,26 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const sunscription = Notifications.addNotificationResponseReceivedListener(
-      (notificationResponse) => {
-        console.log(
-          "received response listener",
-          notificationResponse.notification.request.content.data.url
-        );
-        Linking.openURL(
-          notificationResponse.notification.request.content.data.url
-        );
-      }
-    );
-    return () => {
-      sunscription.remove();
-    };
-  }, []);
+
+
+useEffect(() => {
+  const subscription = Notifications.addNotificationResponseReceivedListener(
+    (notificationResponse) => {
+      const message = notificationResponse.notification.request.content.body;
+      
+      Alert.alert(
+        notificationResponse.notification.request.content.title, 
+        message, 
+        [{ text: 'OK' }]
+      );
+    }
+  );
+
+  return () => {
+    subscription.remove();
+  };
+}, []);
+
 
   const AuthStack = (
     <>
