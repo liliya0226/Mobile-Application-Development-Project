@@ -168,13 +168,13 @@ export default function AddWeight({ navigation, route }) {
           customStyle={button.cancelButton}
           onPressFunction={handleCancel}
         >
-          <Text style={{ color: colors.white }}>Cancel</Text>
+          <Text style={button.buttonText}>Cancel</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.saveButton}
           onPressFunction={handleSave}
         >
-          <Text style={{ color: colors.white }}>Save</Text>
+          <Text style={button.buttonText}>Save</Text>
         </PressableButton>
       </View>
     </View>

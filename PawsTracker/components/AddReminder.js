@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import { writeToDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { scheduleNotification } from "./NotificationManager";
-
+import button from "../config/button";
+import PressableButton from "./PressableButton";
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
     onPress={() => onSelect(day)}
@@ -28,7 +29,14 @@ const AddReminder = ({ isVisible, onClose }) => {
   const [show, setShow] = useState(Platform.OS === "ios"); // iOS always shows the picker
   const [selectedDays, setSelectedDays] = useState([]);
   const [isSaving, setIsSaving] = useState(false); // New state to prevent multiple saves
-  const { selectedDog,userLocation } = useDogContext();
+  const { selectedDog, userLocation } = useDogContext();
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  useEffect(() => {
+    if (isVisible) {
+      setDate(new Date());
+      setSelectedDays([]); 
+    }
+  }, [isVisible]); 
 
   const toggleDaySelection = (day) => {
     setSelectedDays((currentDays) =>
@@ -37,6 +45,17 @@ const AddReminder = ({ isVisible, onClose }) => {
         : [...currentDays, day]
     );
   };
+  const showTimepicker = () => {
+    setShowTimePicker(true);
+  };
+  const onTimeChange = (event, selectedTime) => {
+    const currentMode = Platform.OS === "ios" ? "time" : "date";
+    setShowTimePicker(Platform.OS === "ios"); 
+    if (selectedTime) {
+      setDate(new Date(date.setHours(selectedTime.getHours(), selectedTime.getMinutes())));
+    }
+  };
+  
 
   const saveReminder = async () => {
     if (isSaving) return; // Prevents additional clicks
@@ -55,7 +74,7 @@ const AddReminder = ({ isVisible, onClose }) => {
       };
 
       try {
-        onClose(); 
+        onClose();
         const savedReminder = await writeToDB(reminder, [
           "users",
           auth.currentUser.uid,
@@ -66,7 +85,7 @@ const AddReminder = ({ isVisible, onClose }) => {
 
         await scheduleNotification(reminder, userLocation);
         setSelectedDays([]);
-     
+
         setIsSaving(false);
       } catch (error) {
         console.error("Failed to save reminder:", error);
@@ -78,10 +97,7 @@ const AddReminder = ({ isVisible, onClose }) => {
     }
   };
 
-  const onChange = (event, selectedDate) => {
-    setShow(Platform.OS === "ios"); // For iOS, picker is always visible
-    setDate(selectedDate || date);
-  };
+
 
   return (
     <Modal
@@ -94,15 +110,20 @@ const AddReminder = ({ isVisible, onClose }) => {
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Add Reminder</Text>
 
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode="time"
-            is24Hour={true}
-            display={Platform.OS === "android" ? "default" : "inline"} // 'default' for Android, 'inline' for iOS
-            onChange={onChange}
-            style={styles.datePicker}
-          />
+          <Pressable onPress={showTimepicker} style={styles.timePickerButton}>
+            <Text style={styles.timePickerText}>{date.toTimeString().substring(0,5)}</Text>
+          </Pressable>
+
+          {showTimePicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={onTimeChange}
+            />
+          )}
 
           <View style={styles.dayButtonsContainer}>
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -114,14 +135,23 @@ const AddReminder = ({ isVisible, onClose }) => {
               />
             ))}
           </View>
-
-          <Pressable
-            style={styles.saveButton}
-            onPress={saveReminder}
-            disabled={!date || isSaving} // Button is disabled when a save operation is in progress
-          >
-            <Text style={styles.saveButtonText}>Save</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+          
+            <PressableButton
+              customStyle={button.cancelReminderButton}
+              onPressFunction={onClose}
+              disabled={isSaving} 
+            >
+              <Text style={button.buttonText}>Cancel</Text>
+            </PressableButton>
+            <PressableButton
+              customStyle={button.saveReminderButton}
+              onPressFunction={saveReminder}
+              disabled={!date || isSaving}
+            >
+              <Text style={button.buttonText}>Save</Text>
+            </PressableButton>
+          </View>
         </View>
       </View>
     </Modal>
@@ -134,6 +164,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+ 
   },
   modalView: {
     margin: 20,
@@ -168,12 +203,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   timePickerText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "black",
   },
   dayButtonsContainer: {
     flexDirection: "row",
     marginBottom: 20,
+    marginTop: 20,
   },
   dayButton: {
     flex: 1,
@@ -190,17 +226,7 @@ const styles = StyleSheet.create({
   dayButtonText: {
     textAlign: "center",
   },
-  saveButton: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#ff7f50",
-  },
-  saveButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+
   datePicker: {
     width: "100%",
   },

@@ -13,7 +13,7 @@ export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
     useState(false);
-  const { selectedDog,userLocation } = useDogContext();
+  const { selectedDog,userLocation,setUserLocation } = useDogContext();
  
   useEffect(() => {
     if (selectedDog) {
@@ -71,7 +71,7 @@ export default function PooPal() {
       setAddReminderModalVisible(true);
     }
   };
-  
+
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     const hours = date.getHours();

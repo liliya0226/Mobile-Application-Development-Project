@@ -118,14 +118,14 @@ export default function SignUp({ navigation }) {
           customStyle={button.registerButton}
           onPressFunction={signUpHandler}
         >
-          <Text>Register</Text>
+          <Text style={button.buttonText}>Register</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.loginButton}
           onPressFunction={loginHandler}
         >
-          <Text>Already Registered? </Text>
-          <Text>Login</Text>
+          <Text style={button.buttonText}>Already Registered? </Text>
+          <Text style={button.buttonText}>Login</Text>
         </PressableButton>
       </View>
     </View>
