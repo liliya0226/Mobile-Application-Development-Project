@@ -13,7 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import { format } from "date-fns";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
-import { SafeAreaView } from "react-native-safe-area-context";
 import NutritionList from "../components/NutritionList";
 
 export default function Nutri() {

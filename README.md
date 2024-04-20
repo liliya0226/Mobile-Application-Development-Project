@@ -15,11 +15,13 @@ Our application is currently capable of the following:
 - Tracking of weight history for each pet.
 - Setting reminders for potty time.
 
-![WeightWithGraph](/PawsTracker/assets/weightwithgraph.PNG)
+![WeightWithGraph](/PawsTracker/assets/weightchart.png)
+
+![editWeight](/PawsTracker/assets/editWeight.png)
 
 ![MapScreen](/PawsTracker/assets/map.PNG)
 
-![ProfileWithCamera](/PawsTracker/assets/profilewithcamera.PNG)
+![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
 
 ## Team Contributions for iteration 1
 
@@ -41,9 +43,9 @@ Our application is currently capable of the following:
 
 ### Member 1: Mingxi Li
 
-- Implement the functionality of Nutris screen. 
+- Implement the functionality of Nutris screen.
   - Users can navigate through different dates using the calendar on the Nutri screen to add or review their nutritional records.
--  Created a new introductory screen that welcomes users and provides a quick overview of the app’s features.
+- Created a new introductory screen that welcomes users and provides a quick overview of the app’s features.
 
 ### Member 2: Xinyue Zheng
 
@@ -53,6 +55,18 @@ Our application is currently capable of the following:
   - Map could show the user current location and the surrounding "dogs parks"
 - Add camera function(ImageManager.js) and adjust the UI design of Profile Screen. (Profile.js)
   - User could take photos and upload it to user profile as well as their dogs' profile.
+
+## Team Contributions for iteration 3
+
+### Member 1: Mingxi Li
+
+### Member 2: Xinyue Zheng
+
+- Modify Weight Chart(WeightChart.js) to Average month record
+- Add filter(filterByMonth.js) to filter the weight record by month.
+- Rearrange UI for add weight screen and Profile Screen.
+- Add responsive UI design for weight chart Profile Dogs section.
+- Unify buttons and colors config.
 
 # Data Model and Collections
 
@@ -105,11 +119,6 @@ Also a subset of each dog's document, this collection stores reminders for the n
 - **Create:** Create a new nutrition log.
 - **Read:** Read a new nutrition log of selected date.
 
-## Upcoming Features
+## Future improvement
 
-In the next iteration, we plan to implement the following features leveraging the nested collection architecture:
-
-- Automated reminder notifications for upcoming care tasks.
-- Use external API for poopal reminder.
-- Refine and enhance the user interface of our app
-
+-

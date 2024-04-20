@@ -5,11 +5,13 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
 import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
-import { useDogContext } from "../context-files/DogContext";
 
-export default function DogParkMap() {
+import { useDogContext } from "../context-files/DogContext";
+import colors from "../config/colors";
+
+export default function LocationManager() {
   const { userLocation } = useDogContext();
- 
+
   const [dogParks, setDogParks] = useState([]);
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function DogParkMap() {
         );
         const data = await response.json();
         setDogParks(data.results);
-  
+        // console.log(response);
         // console.log(data.results);
       } catch (error) {
         console.error("Error fetching nearby dog parks: ", error);
@@ -61,7 +63,7 @@ export default function DogParkMap() {
               longitude: userLocation.longitude,
             }}
             title="Your Location"
-            pinColor="blue"
+            pinColor={colors.mylocation}
           />
 
           {dogParks.map((park, index) => (
@@ -73,7 +75,7 @@ export default function DogParkMap() {
               }}
               title={park.name}
               description={park.vicinity}
-              pinColor="green"
+              pinColor={colors.dogsParkLoc}
             />
           ))}
         </MapView>

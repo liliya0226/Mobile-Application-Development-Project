@@ -6,6 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
+import colors from "../config/colors";
 export default function Header() {
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
   const [open, setOpen] = useState(false);
@@ -15,7 +16,8 @@ export default function Header() {
     if (selectedDog) {
       setValue(selectedDog.value);
     }
-  }, [selectedDog]);
+    //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
+  }, []);
 
   const handleDogChange = (value) => {
     const dog = dogs.find((d) => d.value === value);
@@ -33,7 +35,7 @@ export default function Header() {
         <MaterialCommunityIcons
           name="dog"
           size={40}
-          color="black"
+          color={colors.black}
           style={styles.icon}
         />
         <DropDownPicker
@@ -56,7 +58,12 @@ export default function Header() {
             nestedScrollEnabled: true,
           }}
         />
-        <AntDesign name="down" size={35} color="black" style={styles.icon} />
+        <AntDesign
+          name="down"
+          size={35}
+          color={colors.black}
+          style={styles.icon}
+        />
       </Pressable>
     </SafeAreaView>
   );
@@ -69,7 +76,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     justifyContent: "center",
-    backgroundColor: "#FFA07A",
+    backgroundColor: colors.header,
+    shadowColor: colors.shadow,
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   icon: {
     width: 40,
@@ -84,18 +94,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdown: {
-    backgroundColor: "transparent", // Makes the dropdown transparent
+    backgroundColor: colors.transparent,
     borderWidth: 0,
     textAlign: "center",
   },
   dropdownBox: {
-    borderColor: "#000",
+    borderColor: colors.placeholder,
   },
   dropdownArrow: {
     display: "none",
   },
   dropdownPlaceholder: {
-    color: "black",
+    color: colors.black,
     fontSize: 25,
     textAlign: "center",
   },
