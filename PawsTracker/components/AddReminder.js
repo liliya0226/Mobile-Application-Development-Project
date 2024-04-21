@@ -35,9 +35,9 @@ const AddReminder = ({ isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
       setDate(new Date());
-      setSelectedDays([]); 
+      setSelectedDays([]);
     }
-  }, [isVisible]); 
+  }, [isVisible]);
 
   const toggleDaySelection = (day) => {
     setSelectedDays((currentDays) =>
@@ -51,12 +51,19 @@ const AddReminder = ({ isVisible, onClose }) => {
   };
   const onTimeChange = (event, selectedTime) => {
     const currentMode = Platform.OS === "ios" ? "time" : "date";
-    setShowTimePicker(Platform.OS === "ios"); 
+    setShowTimePicker(Platform.OS === "ios");
     if (selectedTime) {
-      setDate(new Date(date.setHours(selectedTime.getHours(), selectedTime.getMinutes())));
+      setDate(
+        new Date(
+          date.setHours(selectedTime.getHours(), selectedTime.getMinutes())
+        )
+      );
     }
   };
-  
+  const handleCancel = () => {
+    setShowTimePicker(false); // Hide time picker
+    onClose(); // Call the original onClose handler
+  };
 
   const saveReminder = async () => {
     if (isSaving) return; // Prevents additional clicks
@@ -98,8 +105,6 @@ const AddReminder = ({ isVisible, onClose }) => {
     }
   };
 
-
-
   return (
     <Modal
       animationType="slide"
@@ -112,7 +117,9 @@ const AddReminder = ({ isVisible, onClose }) => {
           <Text style={styles.modalText}>Add Reminder</Text>
 
           <Pressable onPress={showTimepicker} style={styles.timePickerButton}>
-            <Text style={styles.timePickerText}>{date.toTimeString().substring(0,5)}</Text>
+            <Text style={styles.timePickerText}>
+              {date.toTimeString().substring(0, 5)}
+            </Text>
           </Pressable>
 
           {showTimePicker && (
@@ -137,11 +144,10 @@ const AddReminder = ({ isVisible, onClose }) => {
             ))}
           </View>
           <View style={styles.buttonContainer}>
-          
             <PressableButton
               customStyle={button.cancelReminderButton}
-              onPressFunction={onClose}
-              disabled={isSaving} 
+              onPressFunction={handleCancel}
+              disabled={isSaving}
             >
               <Text style={button.buttonText}>Cancel</Text>
             </PressableButton>
@@ -167,9 +173,8 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
- 
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   modalView: {
     margin: 20,

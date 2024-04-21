@@ -7,14 +7,18 @@ import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { onSnapshot, collection, updateDoc, doc } from "@firebase/firestore";
 import ReminderList from "../components/ReminderList";
-import  { cancelNotification, scheduleNotification } from "../components/NotificationManager";
+import {
+  cancelNotification,
+  scheduleNotification,
+} from "../components/NotificationManager";
 import font from "../config/font";
+import PressableButton from "../components/PressableButton";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
     useState(false);
-  const { selectedDog,userLocation,setUserLocation } = useDogContext();
- 
+  const { selectedDog, userLocation, setUserLocation } = useDogContext();
+
   useEffect(() => {
     if (selectedDog) {
       const unsubscribe = onSnapshot(
@@ -47,14 +51,17 @@ export default function PooPal() {
   const ensureLocationAndGetPermission = async () => {
     if (!userLocation) {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Location Permission', 'Location permission is required to add reminders.');
+      if (status !== "granted") {
+        Alert.alert(
+          "Location Permission",
+          "Location permission is required to add reminders."
+        );
         return false;
       }
       let location = await Location.getCurrentPositionAsync({});
       setUserLocation({
         latitude: location.coords.latitude,
-        longitude: location.coords.longitude
+        longitude: location.coords.longitude,
       });
     }
     return true;
@@ -62,7 +69,11 @@ export default function PooPal() {
 
   const openAddReminderScreen = async () => {
     if (!selectedDog) {
-      Alert.alert("No Dog Selected", "Please select a dog before adding a reminder.", [{ text: "OK" }]);
+      Alert.alert(
+        "No Dog Selected",
+        "Please select a dog before adding a reminder.",
+        [{ text: "OK" }]
+      );
       return;
     }
 
@@ -103,7 +114,6 @@ export default function PooPal() {
       } else {
         // Cancel notification if switch is turned off
         await cancelNotification(updatedReminders[index]);
-        
       }
     } catch (error) {
       console.error("Error updating reminder:", error);
@@ -117,9 +127,9 @@ export default function PooPal() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Potty Reminder</Text>
-        <Pressable style={styles.addButton} onPress={openAddReminderScreen}>
+        <PressableButton onPressFunction={openAddReminderScreen}>
           <Ionicons name="add-circle-outline" size={35} color="black" />
-        </Pressable>
+        </PressableButton>
       </View>
       <ReminderList
         reminders={reminders}

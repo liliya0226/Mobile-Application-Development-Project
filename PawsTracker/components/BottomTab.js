@@ -10,7 +10,6 @@ import Profile from "../screens/Profile";
 import Map from "../screens/Map";
 import Weight from "../screens/Weight";
 import Header from "./Header";
-import PressableButton from "./PressableButton";
 import AddReminder from "./AddReminder";
 import AddWeight from "./AddWeight";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";

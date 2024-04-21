@@ -15,6 +15,7 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
 import NutritionList from "../components/NutritionList";
 import font from "../config/font";
+import PressableButton from "../components/PressableButton";
 export default function Nutri() {
   const navigation = useNavigation();
   const { selectedDog } = useDogContext();
@@ -84,9 +85,9 @@ export default function Nutri() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Daily Nutrition Log</Text>
-          <Pressable style={styles.addButton} onPress={handleAddButtonPress}>
+          <PressableButton  onPressFunction={handleAddButtonPress}>
             <Ionicons name="add-circle-outline" size={35} color="black" />
-          </Pressable>
+          </PressableButton>
         </View>
        
         <View style={styles.list}>

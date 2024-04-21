@@ -86,13 +86,13 @@ export default function Weight() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Weight Tracker</Text>
-          <Pressable style={styles.addButton} onPress={handleAddButtonPress}>
+          <PressableButton  onPressFunction={handleAddButtonPress}>
             <Ionicons
               name="add-circle-outline"
               size={35}
               color={colors.black}
             />
-          </Pressable>
+          </PressableButton>
         </View>
 
         {weights.length > 0 && selectedDog ? (
