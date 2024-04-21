@@ -13,7 +13,10 @@ Our application is currently capable of the following:
 - User authentication and profile management.
 - Creation and management of pet profiles, including details like name and age.
 - Tracking of weight history for each pet.
-- Setting reminders for potty time.
+- Setting and receiving timely potty time reminders and local weather-based notifications, including suggestions on whether to carry an umbrella.
+- Discover nearby dog parks based on user's location
+- Track dog's dietary details
+
 
 ![WeightWithGraph](/PawsTracker/assets/weightchart.png)
 
@@ -22,7 +25,11 @@ Our application is currently capable of the following:
 ![MapScreen](/PawsTracker/assets/map.PNG)
 
 ![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
-
+![reminder](/PawsTracker/assets/reminder.png)
+![addReminder](/PawsTracker/assets/addReminder.png)
+![NutriInfo](/PawsTracker/assets/nutri.png)
+![addNutriInfo](/PawsTracker/assets/addNutri.png)
+![addNutriInfoDetail](/PawsTracker/assets/addNutriDetail.png)
 ## Team Contributions for iteration 1
 
 ### Member 1: Mingxi Li
@@ -43,7 +50,7 @@ Our application is currently capable of the following:
 
 ### Member 1: Mingxi Li
 
-- Implement the functionality of Nutris screen.
+- Implemented the functionality of Nutris screen.
   - Users can navigate through different dates using the calendar on the Nutri screen to add or review their nutritional records.
 - Created a new introductory screen that welcomes users and provides a quick overview of the app’s features.
 
@@ -59,6 +66,9 @@ Our application is currently capable of the following:
 ## Team Contributions for iteration 3
 
 ### Member 1: Mingxi Li
+- Integrated a third-party API to provide real-time weather data for enhanced reminders and weather-based notifications.
+- Led comprehensive testing on Android and iPad platforms to ensure seamless integration and functionality.
+- Improved the UI layout and design, focusing on a cohesive look that aligns with our unified style guide for buttons and color schemes.
 
 ### Member 2: Xinyue Zheng
 
