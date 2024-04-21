@@ -60,15 +60,11 @@ export default function Profile({ navigation }) {
   };
 
   useEffect(() => {
-    if (!auth.currentUser.uid) {
-      return;
-    }
     const fetchAndSetUserData = async () => {
       if (!auth.currentUser.uid) {
         return;
       }
       try {
-
         const userDataArray = await getDocsFromDB(
           ["users"],
           auth.currentUser.uid
@@ -84,24 +80,25 @@ export default function Profile({ navigation }) {
             profileImage: userData.profileImage || "",
           });
         }
-
-        const dogsData = await getDocsFromDB([
-          "users",
-          auth.currentUser.uid,
-          "dogs",
-        ]);
-        setDogs(dogsData || []);
+        if (auth.currentUser && auth.currentUser.uid) {
+          const dogsData = await getDocsFromDB([
+            "users",
+            auth.currentUser.uid,
+            "dogs",
+          ]);
+          setDogs(dogsData || []);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    if (auth.currentUser.uid) {
+    if (auth.currentUser && auth.currentUser.uid) {
       fetchAndSetUserData();
     }
-    // }, [auth.currentUser.uid, profileImaUrl, userInfo.location]);
+  }, [profileImaUrl, userInfo.location]);
   // }, []);
-  }, [ profileImaUrl]);
+  // }, [ profileImaUrl]);
   const handleAddProfileImage = async (imageUri) => {
     if (!auth.currentUser.uid) {
       return;
@@ -116,7 +113,6 @@ export default function Profile({ navigation }) {
 
       await addImageUrlToUserDocument(auth.currentUser.uid, imageUrl);
       setProfileImaUrl(imageUrl);
-
     } catch (error) {
       console.error("Error uploading profile image:", error);
       Alert.alert("Error", "Failed to upload profile image.");
@@ -200,12 +196,14 @@ export default function Profile({ navigation }) {
   };
 
   const fetchDogsData = async () => {
-    const dogsData = await getDocsFromDB([
-      "users",
-      auth.currentUser.uid,
-      "dogs",
-    ]);
-    setDogs(dogsData || []);
+    if (auth.currentUser.uid) {
+      const dogsData = await getDocsFromDB([
+        "users",
+        auth.currentUser.uid,
+        "dogs",
+      ]);
+      setDogs(dogsData || []);
+    }
   };
   const logoutHandler = async () => {
     try {
@@ -218,24 +216,24 @@ export default function Profile({ navigation }) {
         location: [],
         profileImage: "",
       });
-      setAddress("");
       setDogs([]);
       setUserLocation(null);
       navigation.navigate("Intro");
-  
     } catch (err) {
       console.error("Logout error:", err);
     }
   };
 
-  useEffect(() => {
-    if (auth.currentUser.uid) {
-      fetchDogsData();
-    }
-  }, [auth.currentUser.uid]);
+  // useEffect(() => {
+  //   if (auth.currentUser.uid) {
+  //     fetchDogsData();
+  //   }
+  // }, [auth.currentUser.uid]);
 
   const locateUserHandler = () => {
-    navigation.navigate("Map");
+    if (auth.currentUser.uid) {
+      navigation.navigate("Map");
+    }
   };
 
   useEffect(() => {
