@@ -30,6 +30,18 @@ export default function BottomTab() {
         }}
       >
         <Tab.Screen
+          name="WeightTab"
+          component={WeightStackScreen}
+          options={{
+            tabBarLabel: "Weight",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="weight" size={size} color={color} />
+            ),
+            header: () => <Header isWeight={true} />,
+            headerShown: true,
+          }}
+        />
+        <Tab.Screen
           name="NutriTab"
           component={NutriStackScreen}
           options={{
@@ -41,7 +53,7 @@ export default function BottomTab() {
                 color={color}
               />
             ),
-            header: () => <Header />,
+            header: () => <Header isWeight={false} />,
             headerShown: true,
           }}
         />
@@ -53,7 +65,7 @@ export default function BottomTab() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="toilet-paper" size={size} color={color} />
             ),
-            header: () => <Header />,
+            header: () => <Header isWeight={false} />,
             headerShown: true,
           }}
         />
@@ -68,18 +80,6 @@ export default function BottomTab() {
           }}
         />
 
-        <Tab.Screen
-          name="WeightTab"
-          component={WeightStackScreen}
-          options={{
-            tabBarLabel: "Weight",
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="weight" size={size} color={color} />
-            ),
-            header: () => <Header />,
-            headerShown: true,
-          }}
-        />
         <Tab.Screen
           name="Map"
           component={Map}
