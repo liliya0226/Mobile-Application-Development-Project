@@ -37,7 +37,7 @@ export default function SignUp({ navigation }) {
 
       // Extract user ID
       const userId = userCredential.user.uid;
-      // console.log(userId);
+
 
       // Write user data to the database
       const userData = {
@@ -118,14 +118,14 @@ export default function SignUp({ navigation }) {
           customStyle={button.registerButton}
           onPressFunction={signUpHandler}
         >
-          <Text>Register</Text>
+          <Text style={button.buttonText}>Register</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.loginButton}
           onPressFunction={loginHandler}
         >
-          <Text>Already Registered? </Text>
-          <Text>Login</Text>
+          <Text style={button.buttonText}>Already Registered? </Text>
+          <Text style={button.buttonText}>Login</Text>
         </PressableButton>
       </View>
     </View>

@@ -70,14 +70,14 @@ export default function Login() {
           customStyle={button.loginButton}
           onPressFunction={loginHandler}
         >
-          <Text>Login</Text>
+          <Text style={button.buttonText}>Login</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.registerButton}
           onPressFunction={signupHandler}
         >
-          <Text>New User? </Text>
-          <Text>Create An Account</Text>
+          <Text style={button.buttonText}>New User? </Text>
+          <Text style={button.buttonText}>Create An Account</Text>
         </PressableButton>
       </View>
     </View>

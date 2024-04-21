@@ -5,31 +5,14 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
 import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
+
+import { useDogContext } from "../context-files/DogContext";
 import colors from "../config/colors";
 
 export default function LocationManager() {
-  const [userLocation, setUserLocation] = useState(null);
+  const { userLocation } = useDogContext();
+
   const [dogParks, setDogParks] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission to access location was denied");
-          return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-        setUserLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-      } catch (error) {
-        console.error("Error fetching user location: ", error);
-      }
-    })();
-  }, []);
 
   useEffect(() => {
     const fetchNearbyDogParks = async () => {

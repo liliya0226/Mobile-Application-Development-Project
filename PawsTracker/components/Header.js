@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdownLabel: {
-    fontSize: 25,
+    fontSize: 20,
     textAlign: "center",
   },
   dropdown: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   dropdownPlaceholder: {
     color: colors.black,
-    fontSize: 25,
+    fontSize: 20,
     textAlign: "center",
   },
   title: {

@@ -3,12 +3,12 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import PressableButton from "./PressableButton";
+import button from "../config/button";
 
 const AddNutri = ({ navigation }) => {
 
   const handlePress = (selectedCategory) => {
-    // Handle the press event, possibly update state or navigate
-
     navigation.navigate("AddNutriDetail", {
       category: selectedCategory,
     });
@@ -129,13 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "center", // Centers the header content vertically
     padding: 20,
   },
-  backButton: {
-    position: "absolute", // Absolute positioning to place the button
-    top: 20, // Distance from the top of the header
-    left: 10, // Distance from the left of the header
-    paddingRight: 15,
-    zIndex: 10, // Ensures the button is clickable by bringing it to the front
-  },
+ 
   title: {
     fontSize: 18,
     fontWeight: "bold",
@@ -152,6 +146,13 @@ const styles = StyleSheet.create({
     height: 50,
     margin: 20,
    
+  },
+  backButton: {
+    position: "absolute", 
+    top: 20, 
+    left: 10, 
+    paddingRight: 15,
+    zIndex: 10, 
   },
   optionButton: {
     width: "45%",

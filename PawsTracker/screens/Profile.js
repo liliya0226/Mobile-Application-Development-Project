@@ -29,6 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import button from "../config/button";
 import colors from "../config/colors";
+import { useDogContext } from "../context-files/DogContext";
 
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
@@ -48,7 +49,7 @@ export default function Profile({ navigation }) {
   const [dogImaUrl, setDogImaUrl] = useState("");
   const [dogImageUri, setDogImageUri] = useState("");
   const [address, setAddress] = useState("");
-
+  const { setUserLocation } = useDogContext();
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       try {
@@ -186,7 +187,26 @@ export default function Profile({ navigation }) {
     ]);
     setDogs(dogsData || []);
   };
-
+  const logoutHandler = async () => {
+    try {
+      await signOut(auth);
+      setUserInfo({
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        location: [],
+        profileImage: "",
+      });
+      setAddress("");
+      setDogs([]);
+      setUserLocation(null);
+    
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+  
   useEffect(() => {
     if (auth.currentUser.uid) {
       fetchDogsData();

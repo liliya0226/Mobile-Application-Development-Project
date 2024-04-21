@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,12 +6,15 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { writeToDB } from "../firebase-files/firestoreHelper";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
-
+import { scheduleNotification } from "./NotificationManager";
+import button from "../config/button";
+import PressableButton from "./PressableButton";
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
     onPress={() => onSelect(day)}
@@ -25,7 +28,15 @@ const AddReminder = ({ isVisible, onClose }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(Platform.OS === "ios"); // iOS always shows the picker
   const [selectedDays, setSelectedDays] = useState([]);
-  const { selectedDog } = useDogContext();
+  const [isSaving, setIsSaving] = useState(false); // New state to prevent multiple saves
+  const { selectedDog, userLocation } = useDogContext();
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  useEffect(() => {
+    if (isVisible) {
+      setDate(new Date());
+      setSelectedDays([]); 
+    }
+  }, [isVisible]); 
 
   const toggleDaySelection = (day) => {
     setSelectedDays((currentDays) =>
@@ -34,17 +45,37 @@ const AddReminder = ({ isVisible, onClose }) => {
         : [...currentDays, day]
     );
   };
+  const showTimepicker = () => {
+    setShowTimePicker(true);
+  };
+  const onTimeChange = (event, selectedTime) => {
+    const currentMode = Platform.OS === "ios" ? "time" : "date";
+    setShowTimePicker(Platform.OS === "ios"); 
+    if (selectedTime) {
+      setDate(new Date(date.setHours(selectedTime.getHours(), selectedTime.getMinutes())));
+    }
+  };
+  
 
   const saveReminder = async () => {
+    if (isSaving) return; // Prevents additional clicks
+    setIsSaving(true); // Disables the button to prevent multiple saves
+
     if (selectedDog) {
+      if (!selectedDays.length) {
+        Alert.alert("Please select a date before saving the reminder.");
+        setIsSaving(false); // Re-enables the button in case of an error
+        return;
+      }
       const reminder = {
         time: date.toISOString(),
         days: selectedDays,
-        enabled: true,
+        isEnabled: true,
       };
 
       try {
-        await writeToDB(reminder, [
+        onClose();
+        const savedReminder = await writeToDB(reminder, [
           "users",
           auth.currentUser.uid,
           "dogs",
@@ -52,19 +83,21 @@ const AddReminder = ({ isVisible, onClose }) => {
           "reminders",
         ]);
 
-        onClose();
+        await scheduleNotification(reminder, userLocation);
+        setSelectedDays([]);
+
+        setIsSaving(false);
       } catch (error) {
         console.error("Failed to save reminder:", error);
+        setIsSaving(false); // Re-enables the button in case of an error
       }
     } else {
       console.error("No selected dog to save the reminder for.");
+      setIsSaving(false); // Re-enables the button if there's no selected dog
     }
   };
 
-  const onChange = (event, selectedDate) => {
-    setShow(Platform.OS === "ios"); // For iOS, picker is always visible
-    setDate(selectedDate || date);
-  };
+
 
   return (
     <Modal
@@ -77,17 +110,21 @@ const AddReminder = ({ isVisible, onClose }) => {
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Add Reminder</Text>
 
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode="time"
-            is24Hour={true}
-            display={Platform.OS === "android" ? "default" : "inline"} // 'default' for Android, 'inline' for iOS
-            onChange={onChange}
-            style={styles.datePicker} // 应用任何需要的样式
-          />
+          <Pressable onPress={showTimepicker} style={styles.timePickerButton}>
+            <Text style={styles.timePickerText}>{date.toTimeString().substring(0,5)}</Text>
+          </Pressable>
 
-          {/* 渲染星期选择按钮 */}
+          {showTimePicker && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={onTimeChange}
+            />
+          )}
+
           <View style={styles.dayButtonsContainer}>
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
               <DayButton
@@ -98,11 +135,23 @@ const AddReminder = ({ isVisible, onClose }) => {
               />
             ))}
           </View>
-
-          {/* 保存按钮 */}
-          <Pressable style={styles.saveButton} onPress={saveReminder}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+          
+            <PressableButton
+              customStyle={button.cancelReminderButton}
+              onPressFunction={onClose}
+              disabled={isSaving} 
+            >
+              <Text style={button.buttonText}>Cancel</Text>
+            </PressableButton>
+            <PressableButton
+              customStyle={button.saveReminderButton}
+              onPressFunction={saveReminder}
+              disabled={!date || isSaving}
+            >
+              <Text style={button.buttonText}>Save</Text>
+            </PressableButton>
+          </View>
         </View>
       </View>
     </Modal>
@@ -115,6 +164,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+ 
   },
   modalView: {
     margin: 20,
@@ -149,12 +203,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   timePickerText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "black",
   },
   dayButtonsContainer: {
     flexDirection: "row",
     marginBottom: 20,
+    marginTop: 20,
   },
   dayButton: {
     flex: 1,
@@ -171,17 +226,7 @@ const styles = StyleSheet.create({
   dayButtonText: {
     textAlign: "center",
   },
-  saveButton: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#ff7f50",
-  },
-  saveButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+
   datePicker: {
     width: "100%",
   },
