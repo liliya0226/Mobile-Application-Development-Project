@@ -46,7 +46,7 @@ export default function WeightChart({ weightData }) {
           ],
         }}
         width={Dimensions.get("screen").width * 0.85}
-        height={height > 1024 ? height * 0.25 : height * 0.1855}
+        height={height > 1024 ? height * 0.25 : height * 0.2}
         yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier
