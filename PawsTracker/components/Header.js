@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
 import colors from "../config/colors";
-export default function Header() {
+export default function Header({ isWeight }) {
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -17,7 +17,7 @@ export default function Header() {
       setValue(selectedDog.value);
     }
     //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
-  }, []);
+  }, [selectedDog]);
 
   const handleDogChange = (value) => {
     const dog = dogs.find((d) => d.value === value);
@@ -31,7 +31,10 @@ export default function Header() {
 
   return (
     <SafeAreaView>
-      <Pressable onPress={toggleDropdown} style={styles.container}>
+      <Pressable
+        onPress={isWeight ? toggleDropdown : undefined}
+        style={styles.container}
+      >
         <MaterialCommunityIcons
           name="dog"
           size={40}
@@ -39,7 +42,7 @@ export default function Header() {
           style={styles.icon}
         />
         <DropDownPicker
-          open={open}
+          open={isWeight ? open : false}
           value={value}
           items={dogs.map((dog) => ({ label: dog.label, value: dog.value }))}
           setOpen={setOpen}
@@ -58,12 +61,16 @@ export default function Header() {
             nestedScrollEnabled: true,
           }}
         />
-        <AntDesign
-          name="down"
-          size={35}
-          color={colors.black}
-          style={styles.icon}
-        />
+        {isWeight ? (
+          <AntDesign
+            name="down"
+            size={35}
+            color={colors.black}
+            style={styles.icon}
+          />
+        ) : (
+          ""
+        )}
       </Pressable>
     </SafeAreaView>
   );

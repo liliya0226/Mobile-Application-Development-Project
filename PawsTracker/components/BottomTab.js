@@ -41,7 +41,7 @@ export default function BottomTab() {
                 color={color}
               />
             ),
-            header: () => <Header />,
+            header: () => <Header isWeight={false} />,
             headerShown: true,
           }}
         />
@@ -53,7 +53,7 @@ export default function BottomTab() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="toilet-paper" size={size} color={color} />
             ),
-            header: () => <Header />,
+            header: () => <Header isWeight={false} />,
             headerShown: true,
           }}
         />
@@ -67,7 +67,6 @@ export default function BottomTab() {
             headerShown: false,
           }}
         />
-
         <Tab.Screen
           name="WeightTab"
           component={WeightStackScreen}
@@ -76,7 +75,7 @@ export default function BottomTab() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="weight" size={size} color={color} />
             ),
-            header: () => <Header />,
+            header: () => <Header isWeight={true} />,
             headerShown: true,
           }}
         />
