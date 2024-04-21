@@ -10,6 +10,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import colors from "../config/colors";
+import font from "../config/font";
 export default function WeightList({ weights, onWeightPress }) {
   const sortedWeights = weights
     .slice()
@@ -61,11 +62,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   dateText: {
-    fontSize: 16,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   weightText: {
-    fontSize: 16,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   arrow: {

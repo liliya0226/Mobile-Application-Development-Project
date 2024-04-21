@@ -12,7 +12,7 @@ import { useDogContext } from "../context-files/DogContext";
 import { FontAwesome } from "@expo/vector-icons";
 import colors from "../config/colors";
 import button from "../config/button";
-
+import font from "../config/font";
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
   const [date, setDate] = useState(new Date());
@@ -59,7 +59,7 @@ export default function AddWeight({ navigation, route }) {
     }
 
     Alert.alert("Save Changes", "Are you sure you want to save the changes?", [
-      { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+      { text: "Cancel", onPress: () => {} },
       { text: "OK", onPress: () => saveChanges() },
     ]);
   };
@@ -96,7 +96,7 @@ export default function AddWeight({ navigation, route }) {
         "Delete Weight",
         "Are you sure you want to delete this weight record?",
         [
-          { text: "Cancel", onPress: () => console.log("Cancel Pressed") },
+          { text: "Cancel", onPress: () => {} },
           {
             text: "OK",
             onPress: async () => {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   recordHeaderText: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   deleteButtonContainer: {

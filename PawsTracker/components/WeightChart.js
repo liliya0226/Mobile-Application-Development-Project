@@ -3,7 +3,7 @@ import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
 import colors from "../config/colors";
-
+import font from "../config/font";
 export default function WeightChart({ weightData }) {
   const groupByMonth = {};
   weightData.forEach((item) => {
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#fff",
   },
   title: {
-    fontSize: 20,
+    fontSize: font.medium,
     fontWeight: "bold",
     marginBottom: 10,
   },

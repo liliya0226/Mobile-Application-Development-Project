@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image,Platform,Dimensions } from "react-native"
 import React from "react";
 import PressableButton from "../components/PressableButton";
 import button from "../config/button";
+import font from "../config/font";
 export default function Intro({ navigation }) {
   const toSignUp = () => {
     navigation.navigate("Signup");
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: font.medium,
     fontWeight: "bold",
     textAlign: "center",
     marginHorizontal: 20,

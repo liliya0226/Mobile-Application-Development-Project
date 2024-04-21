@@ -15,6 +15,7 @@ import WeightChart from "../components/WeightChart";
 import PressableButton from "../components/PressableButton";
 import FilterByMonth from "../components/FilterByMonth";
 import colors from "../config/colors";
+import font from "../config/font";
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
@@ -77,7 +78,7 @@ export default function Weight() {
         return monthPart === month;
       });
       setFilteredWeights(filtered);
-      // console.log(filtered);
+   
     }
   };
   return (
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
     flex: 1,
   },
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   noRecords: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
     color: colors.shadow,
     textAlign: "center",
     marginTop: 20,

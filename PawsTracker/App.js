@@ -29,15 +29,17 @@ export default function App() {
     return unsubscribe; 
   }, []);
   useEffect(() => {
-    const sunscription = Notifications.addNotificationReceivedListener(
+    const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
         console.log("received listener", notification);
       }
     );
     return () => {
-      sunscription.remove();
+      subscription.remove();
     };
   }, []);
+  
+  
 
 
 

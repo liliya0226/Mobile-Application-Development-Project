@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
 import { format } from 'date-fns';
 import { Ionicons } from "@expo/vector-icons";
-
+import font from "../config/font";
 const NutritionList = ({ nutris, getCategoryImage, selectedDog }) => {
   return (
     <FlatList
@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
         flex: 1,
       },
       time: {
-        fontSize: 16,
+        fontSize: font.extraSmall,
       },
       description: {
-        fontSize: 14,
+        fontSize: font.superSmall,
         color: "#666",
       },
       noRecords: {
-        fontSize: 16,
+        fontSize: font.extraSmall,
         color: "#999",
         textAlign: "center",
      
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
       },
       selectDogMessage: {
-        fontSize: 20,
+        fontSize: font.medium,
         color: "grey",
         marginTop: 16,
       },

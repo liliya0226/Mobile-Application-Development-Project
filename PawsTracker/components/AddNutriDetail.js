@@ -14,7 +14,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
-
+import font from "../config/font";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AntDesign } from "@expo/vector-icons";
 import { auth } from "../firebase-files/firebaseSetup";
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: font.medium,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
-    fontSize: 18,
+    fontSize: font.small,
     lineHeight: 20,
     height: 50,
     textAlignVertical: "center",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: "#fff",
     textAlign: "center",
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   disabledSaveButton: {
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   inputText: {
-    fontSize: 18,
+    fontSize: font.small,
   },
   container: {
     flex: 1,

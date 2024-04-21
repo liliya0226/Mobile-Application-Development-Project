@@ -3,8 +3,7 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import PressableButton from "./PressableButton";
-import button from "../config/button";
+import font from "../config/font";
 
 const AddNutri = ({ navigation }) => {
 
@@ -131,7 +130,7 @@ const styles = StyleSheet.create({
   },
  
   title: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -166,6 +165,6 @@ const styles = StyleSheet.create({
   },
   optionText: {
     textAlign: "center", // Center the text
-    fontSize: 16,
+    fontSize: font.extraSmall,
   },
 });

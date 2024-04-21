@@ -70,7 +70,7 @@ export async function updateInDB(data, pathSegments) {
   try {
     const docRef = doc(database, ...pathSegments);
     await setDoc(docRef, data, { merge: true });
-    console.log("Document updated successfully.");
+
   } catch (err) {
     console.error("Error updating document:", err);
     throw err;
@@ -90,7 +90,6 @@ export async function addImageUrlToUserDocument(userId, imageUrl) {
   try {
     const userRef = doc(database, "users", userId);
     await updateDoc(userRef, { profileImage: imageUrl });
-    console.log("Image URL added to user document successfully.");
   } catch (error) {
     console.error("Error adding image URL to user document:", error);
   }
@@ -100,7 +99,6 @@ export async function addLocationToUserDocument(userId, location) {
   try {
     const userRef = doc(database, "users", userId);
     await updateDoc(userRef, { location: location });
-    console.log("Location added to user document successfully.");
   } catch (error) {
     console.error("Error adding location info to user document:", error);
   }

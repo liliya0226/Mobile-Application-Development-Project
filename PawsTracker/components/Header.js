@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
 import colors from "../config/colors";
+import font from "../config/font";
 export default function Header({ isWeight }) {
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
   const [open, setOpen] = useState(false);
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdownLabel: {
-    fontSize: 20,
+    fontSize: font.medium,
     textAlign: "center",
   },
   dropdown: {
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   },
   dropdownPlaceholder: {
     color: colors.black,
-    fontSize: 20,
+    fontSize: font.medium,
     textAlign: "center",
   },
   title: {

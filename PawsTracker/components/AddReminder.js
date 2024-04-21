@@ -15,6 +15,7 @@ import { useDogContext } from "../context-files/DogContext";
 import { scheduleNotification } from "./NotificationManager";
 import button from "../config/button";
 import PressableButton from "./PressableButton";
+import font from "../config/font";
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
     onPress={() => onSelect(day)}
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: font.small,
   },
   timePickerButton: {
     height: 40,
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   timePickerText: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
     color: "black",
   },
   dayButtonsContainer: {

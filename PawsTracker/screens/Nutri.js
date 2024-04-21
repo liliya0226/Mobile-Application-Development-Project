@@ -14,7 +14,7 @@ import { format } from "date-fns";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
 import NutritionList from "../components/NutritionList";
-
+import font from "../config/font";
 export default function Nutri() {
   const navigation = useNavigation();
   const { selectedDog } = useDogContext();
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
     flex: 1,
   },

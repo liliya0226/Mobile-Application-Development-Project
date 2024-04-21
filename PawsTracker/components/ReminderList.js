@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Switch, FlatList, StyleSheet } from "react-native";
-
+import font from "../config/font";
 const ReminderList = ({ reminders, formatTime, toggleSwitch }) => {
   const renderItem = ({ item, index }) => (
     <View style={styles.reminderContainer}>
@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   time: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
     marginBottom: 5,
   },
   days: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
   },
   switch: {
     transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }],

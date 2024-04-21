@@ -31,7 +31,7 @@ import button from "../config/button";
 import colors from "../config/colors";
 import { useDogContext } from "../context-files/DogContext";
 import { EvilIcons } from "@expo/vector-icons";
-
+import font from "../config/font";
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -53,13 +53,22 @@ export default function Profile({ navigation }) {
   const { setUserLocation } = useDogContext();
   const [refreshCount, setRefreshCount] = useState(0);
   const handleRefresh = () => {
-    // Increment the refresh count to trigger a re-render
+    if (!auth.currentUser.uid) {
+      return;
+    }
     setRefreshCount(refreshCount + 1);
   };
 
   useEffect(() => {
+    if (!auth.currentUser.uid) {
+      return;
+    }
     const fetchAndSetUserData = async () => {
+      if (!auth.currentUser.uid) {
+        return;
+      }
       try {
+
         const userDataArray = await getDocsFromDB(
           ["users"],
           auth.currentUser.uid
@@ -90,9 +99,13 @@ export default function Profile({ navigation }) {
     if (auth.currentUser.uid) {
       fetchAndSetUserData();
     }
-  }, [auth.currentUser.uid, profileImaUrl, userInfo.location]);
-
+    // }, [auth.currentUser.uid, profileImaUrl, userInfo.location]);
+  // }, []);
+  }, [ profileImaUrl]);
   const handleAddProfileImage = async (imageUri) => {
+    if (!auth.currentUser.uid) {
+      return;
+    }
     try {
       const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
       const imageRef = ref(storage, `profileImages/${imageName}`);
@@ -103,6 +116,7 @@ export default function Profile({ navigation }) {
 
       await addImageUrlToUserDocument(auth.currentUser.uid, imageUrl);
       setProfileImaUrl(imageUrl);
+
     } catch (error) {
       console.error("Error uploading profile image:", error);
       Alert.alert("Error", "Failed to upload profile image.");
@@ -166,7 +180,6 @@ export default function Profile({ navigation }) {
           onPress: async () => {
             await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
 
-            // console.log("Dog uploaded successfully");
             setDogAge("");
             setDogName("");
             setDogImaUrl("");
@@ -208,6 +221,8 @@ export default function Profile({ navigation }) {
       setAddress("");
       setDogs([]);
       setUserLocation(null);
+      navigation.navigate("Intro");
+  
     } catch (err) {
       console.error("Logout error:", err);
     }
@@ -238,7 +253,6 @@ export default function Profile({ navigation }) {
 
           setAddress(location);
         }
-        // console.log(location);
       } catch (error) {
         console.error("Error getting address:", error);
       }
@@ -252,13 +266,7 @@ export default function Profile({ navigation }) {
       <ImageBackground source={profileBack} style={styles.profileBack}>
         <PressableButton
           customStyle={styles.logout}
-          onPressFunction={() => {
-            try {
-              signOut(auth);
-            } catch (err) {
-              console.log(err);
-            }
-          }}
+          onPressFunction={() => logoutHandler()}
         >
           <AntDesign name="logout" size={30} color={colors.black} />
         </PressableButton>
@@ -316,7 +324,7 @@ export default function Profile({ navigation }) {
 
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
-          <Text style={{ fontSize: 20 }}>Add Your Dogs: </Text>
+          <Text style={{ fontSize: font.medium }}>Add Your Dogs: </Text>
           <PressableButton
             customStyle={styles.addDogButton}
             onPressFunction={addDog}
@@ -434,7 +442,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   name: {
-    fontSize: 30,
+    fontSize: font.extraLarge,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -443,7 +451,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 50,
   },
   email: {
-    fontSize: 18,
+    fontSize: font.small,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -456,7 +464,7 @@ const styles = StyleSheet.create({
   },
   location: {
     flexDirection: "row",
-    fontSize: 18,
+    fontSize: font.small,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,

@@ -8,7 +8,7 @@ import { useDogContext } from "../context-files/DogContext";
 import { onSnapshot, collection, updateDoc, doc } from "@firebase/firestore";
 import ReminderList from "../components/ReminderList";
 import  { cancelNotification, scheduleNotification } from "../components/NotificationManager";
-
+import font from "../config/font";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
   },
   groupContainer: {
@@ -173,11 +173,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   time: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
     marginBottom: 5,
   },
   days: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
   },
 });

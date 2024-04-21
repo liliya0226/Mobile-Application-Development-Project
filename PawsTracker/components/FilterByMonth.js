@@ -23,7 +23,6 @@ export default function FilterByMonth({
     if (month !== selectedMonth) {
       setSelectedMonth(month);
       onFilter(month);
-      //   console.log(month);
     }
   };
 

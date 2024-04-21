@@ -78,7 +78,7 @@ export default {
     shadowRadius: 3.84,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "white",
     fontWeight: "bold",
   },
