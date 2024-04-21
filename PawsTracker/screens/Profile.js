@@ -101,6 +101,7 @@ export default function Profile({ navigation }) {
     }
   }, [profileImaUrl, userInfo.location]);
 
+  //add image to user database
   const handleAddProfileImage = async (imageUri) => {
     if (!auth.currentUser.uid) {
       return;
@@ -121,10 +122,43 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //location button navigative to map screen get address
+  const locateUserHandler = () => {
+    if (auth.currentUser.uid) {
+      navigation.navigate("Map");
+    }
+  };
+
+  // update address if user clicked refresh button
+  useEffect(() => {
+    const getAdress = async () => {
+      try {
+        if (
+          userInfo.location &&
+          typeof userInfo.location.latitude === "number" &&
+          typeof userInfo.location.longitude === "number"
+        ) {
+          const [location] = await Location.reverseGeocodeAsync({
+            latitude: userInfo.location.latitude,
+            longitude: userInfo.location.longitude,
+          });
+
+          setAddress(location);
+        }
+      } catch (error) {
+        console.error("Error getting address:", error);
+      }
+    };
+
+    getAdress();
+  }, [refreshCount]);
+
+  //handle add dog modal
   const addDog = () => {
     setIsModalVisible(true);
   };
 
+  //handle add dog image
   const handleAddDogImage = async (imageUri) => {
     try {
       setDogImageUri(imageUri);
@@ -142,6 +176,7 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //handle save dog button
   const saveDog = async () => {
     if (!dogName.trim() || dogName.length > 20) {
       Alert.alert(
@@ -193,6 +228,7 @@ export default function Profile({ navigation }) {
     }
   };
 
+  // handle if user cancel add dog
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -207,6 +243,8 @@ export default function Profile({ navigation }) {
       setDogs(dogsData || []);
     }
   };
+
+  //handle log out button
   const logoutHandler = async () => {
     try {
       await signOut(auth);
@@ -225,35 +263,6 @@ export default function Profile({ navigation }) {
       console.error("Logout error:", err);
     }
   };
-
-  const locateUserHandler = () => {
-    if (auth.currentUser.uid) {
-      navigation.navigate("Map");
-    }
-  };
-
-  useEffect(() => {
-    const getAdress = async () => {
-      try {
-        if (
-          userInfo.location &&
-          typeof userInfo.location.latitude === "number" &&
-          typeof userInfo.location.longitude === "number"
-        ) {
-          const [location] = await Location.reverseGeocodeAsync({
-            latitude: userInfo.location.latitude,
-            longitude: userInfo.location.longitude,
-          });
-
-          setAddress(location);
-        }
-      } catch (error) {
-        console.error("Error getting address:", error);
-      }
-    };
-
-    getAdress();
-  }, [refreshCount]);
 
   return (
     <View style={styles.container}>
@@ -278,7 +287,6 @@ export default function Profile({ navigation }) {
                 name="account-circle-outline"
                 color={colors.shadow}
                 size={150}
-                // style={styles.iconWithBorder}
               />
             )}
           </View>
@@ -316,6 +324,7 @@ export default function Profile({ navigation }) {
         </View>
       </ImageBackground>
 
+      {/* Dog section */}
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
           <Text style={{ fontSize: font.medium }}>Add Your Dogs: </Text>
