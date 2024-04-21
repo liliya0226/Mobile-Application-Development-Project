@@ -52,6 +52,8 @@ export default function Profile({ navigation }) {
   const [address, setAddress] = useState("");
   const { setUserLocation } = useDogContext();
   const [refreshCount, setRefreshCount] = useState(0);
+
+  //refresh button for refresh location
   const handleRefresh = () => {
     if (!auth.currentUser.uid) {
       return;
@@ -59,6 +61,7 @@ export default function Profile({ navigation }) {
     setRefreshCount(refreshCount + 1);
   };
 
+  //re-render page when user update the location and the profile image
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       if (!auth.currentUser.uid) {
@@ -97,8 +100,7 @@ export default function Profile({ navigation }) {
       fetchAndSetUserData();
     }
   }, [profileImaUrl, userInfo.location]);
-  // }, []);
-  // }, [ profileImaUrl]);
+
   const handleAddProfileImage = async (imageUri) => {
     if (!auth.currentUser.uid) {
       return;
@@ -223,12 +225,6 @@ export default function Profile({ navigation }) {
       console.error("Logout error:", err);
     }
   };
-
-  // useEffect(() => {
-  //   if (auth.currentUser.uid) {
-  //     fetchDogsData();
-  //   }
-  // }, [auth.currentUser.uid]);
 
   const locateUserHandler = () => {
     if (auth.currentUser.uid) {
