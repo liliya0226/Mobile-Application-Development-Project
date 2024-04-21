@@ -30,6 +30,7 @@ import * as Location from "expo-location";
 import button from "../config/button";
 import colors from "../config/colors";
 import { useDogContext } from "../context-files/DogContext";
+import { EvilIcons } from "@expo/vector-icons";
 
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
@@ -50,6 +51,12 @@ export default function Profile({ navigation }) {
   const [dogImageUri, setDogImageUri] = useState("");
   const [address, setAddress] = useState("");
   const { setUserLocation } = useDogContext();
+  const [refreshCount, setRefreshCount] = useState(0);
+  const handleRefresh = () => {
+    // Increment the refresh count to trigger a re-render
+    setRefreshCount(refreshCount + 1);
+  };
+
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       try {
@@ -83,7 +90,7 @@ export default function Profile({ navigation }) {
     if (auth.currentUser.uid) {
       fetchAndSetUserData();
     }
-  }, [auth.currentUser.uid, profileImaUrl]);
+  }, [auth.currentUser.uid, profileImaUrl, userInfo.location]);
 
   const handleAddProfileImage = async (imageUri) => {
     try {
@@ -201,12 +208,11 @@ export default function Profile({ navigation }) {
       setAddress("");
       setDogs([]);
       setUserLocation(null);
-    
     } catch (err) {
       console.error("Logout error:", err);
     }
   };
-  
+
   useEffect(() => {
     if (auth.currentUser.uid) {
       fetchDogsData();
@@ -239,7 +245,7 @@ export default function Profile({ navigation }) {
     };
 
     getAdress();
-  }, [userInfo.location]);
+  }, [refreshCount]);
 
   return (
     <View style={styles.container}>
@@ -280,19 +286,31 @@ export default function Profile({ navigation }) {
             {userInfo.firstName}
           </Text>
           <Text style={styles.email}> {userInfo.email}</Text>
-          <PressableButton
-            customStyle={styles.location}
-            onPressFunction={locateUserHandler}
-          >
-            <Ionicons name="location-outline" size={20} color={colors.black} />
-            {address ? (
-              <Text>
-                {address.city}, {address.country}
-              </Text>
-            ) : (
-              <Text>Get My Location</Text>
-            )}
-          </PressableButton>
+          <View style={styles.locationAndrefresh}>
+            <PressableButton
+              customStyle={styles.location}
+              onPressFunction={locateUserHandler}
+            >
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.black}
+              />
+              {address ? (
+                <Text>
+                  {address.city}, {address.country}
+                </Text>
+              ) : (
+                <Text>Get My Location</Text>
+              )}
+            </PressableButton>
+            <PressableButton
+              customStyle={styles.refreshButton}
+              onPressFunction={handleRefresh}
+            >
+              <EvilIcons name="refresh" size={20} color={colors.black} />
+            </PressableButton>
+          </View>
         </View>
       </ImageBackground>
 
@@ -397,6 +415,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
   },
   profileBack: {
     flex: 1,
@@ -432,6 +451,9 @@ const styles = StyleSheet.create({
     shadowColor: colors.shadow,
     shadowOpacity: 50,
   },
+  locationAndrefresh: {
+    flexDirection: "row",
+  },
   location: {
     flexDirection: "row",
     fontSize: 18,
@@ -439,6 +461,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 2,
     marginVertical: 2,
+  },
+  refreshButton: {
+    backgroundColor: colors.profileInfos,
   },
   bottomContainer: {
     flex: 1,
@@ -471,7 +496,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
     marginHorizontal: 20,
-    width: Dimensions.get("screen").width > 600 ? "60%" : "40%",
+    width: Dimensions.get("screen").width > 600 ? "43%" : "38%",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: colors.shadow,
