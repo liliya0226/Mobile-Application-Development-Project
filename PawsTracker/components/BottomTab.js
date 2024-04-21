@@ -30,18 +30,6 @@ export default function BottomTab() {
         }}
       >
         <Tab.Screen
-          name="WeightTab"
-          component={WeightStackScreen}
-          options={{
-            tabBarLabel: "Weight",
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name="weight" size={size} color={color} />
-            ),
-            header: () => <Header isWeight={true} />,
-            headerShown: true,
-          }}
-        />
-        <Tab.Screen
           name="NutriTab"
           component={NutriStackScreen}
           options={{
@@ -79,7 +67,18 @@ export default function BottomTab() {
             headerShown: false,
           }}
         />
-
+        <Tab.Screen
+          name="WeightTab"
+          component={WeightStackScreen}
+          options={{
+            tabBarLabel: "Weight",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="weight" size={size} color={color} />
+            ),
+            header: () => <Header isWeight={true} />,
+            headerShown: true,
+          }}
+        />
         <Tab.Screen
           name="Map"
           component={Map}

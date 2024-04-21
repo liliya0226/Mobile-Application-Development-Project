@@ -31,6 +31,7 @@ export default function WeightChart({ weightData }) {
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     strokeWidth: 2,
   };
+  const height = Dimensions.get("screen").height;
 
   return (
     <View style={styles.container}>
@@ -45,7 +46,7 @@ export default function WeightChart({ weightData }) {
           ],
         }}
         width={Dimensions.get("screen").width * 0.85}
-        height={Dimensions.get("screen").height * 0.2}
+        height={height > 1024 ? height * 0.25 : height * 0.1855}
         yAxisSuffix="kg"
         chartConfig={chartConfig}
         bezier

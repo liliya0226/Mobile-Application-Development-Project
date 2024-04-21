@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: Dimensions.get("screen").width * 0.9,
     height: Dimensions.get("screen").height * 0.3,
+
     borderColor: colors.black,
     borderWidth: 1,
   },
