@@ -146,5 +146,4 @@ Also a subset of each dog's document, this collection stores reminders for the n
 
 ## Future improvement
 
-- Allows any changes made to the header in one of the screens—poopal, nutri, or weight—to be reflected in the headers of the other two screens
 - Add update and delete opeartion for Nutri and Poopal and Add dogs sections

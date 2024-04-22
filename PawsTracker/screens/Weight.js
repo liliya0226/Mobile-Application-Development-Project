@@ -106,10 +106,7 @@ export default function Weight() {
             <WeightChart weightData={weights} />
           </View>
         ) : (
-          <Text style={styles.noRecords}>
-            {" "}
-            No records for {selectedDog.label} yet
-          </Text>
+          <Text style={styles.noRecords}> No records for weight yet</Text>
         )}
 
         {weights.length > 0 && selectedDog ? (
