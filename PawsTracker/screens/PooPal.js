@@ -7,14 +7,20 @@ import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
 import { onSnapshot, collection, updateDoc, doc } from "@firebase/firestore";
 import ReminderList from "../components/ReminderList";
-import  { cancelNotification, scheduleNotification } from "../components/NotificationManager";
-
+import {
+  cancelNotification,
+  scheduleNotification,
+} from "../components/NotificationManager";
+import font from "../config/font";
+import PressableButton from "../components/PressableButton";
+import colors from "../config/colors";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
     useState(false);
-  const { selectedDog,userLocation,setUserLocation } = useDogContext();
- 
+  const { selectedDog, userLocation, setUserLocation } = useDogContext();
+
+  // Fetch reminders for the selected dog when it changes
   useEffect(() => {
     if (selectedDog) {
       const unsubscribe = onSnapshot(
@@ -44,25 +50,35 @@ export default function PooPal() {
       return () => unsubscribe();
     }
   }, [selectedDog]);
+
+  // Function to ensure location permission and retrieve current user location
   const ensureLocationAndGetPermission = async () => {
     if (!userLocation) {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Location Permission', 'Location permission is required to add reminders.');
+      if (status !== "granted") {
+        Alert.alert(
+          "Location Permission",
+          "Location permission is required to add reminders."
+        );
         return false;
       }
       let location = await Location.getCurrentPositionAsync({});
       setUserLocation({
         latitude: location.coords.latitude,
-        longitude: location.coords.longitude
+        longitude: location.coords.longitude,
       });
     }
     return true;
   };
 
+  // Function to open the add reminder screen
   const openAddReminderScreen = async () => {
     if (!selectedDog) {
-      Alert.alert("No Dog Selected", "Please select a dog before adding a reminder.", [{ text: "OK" }]);
+      Alert.alert(
+        "No Dog Selected",
+        "Please select a dog before adding a reminder.",
+        [{ text: "OK" }]
+      );
       return;
     }
 
@@ -72,12 +88,15 @@ export default function PooPal() {
     }
   };
 
+  // Function to format time from string
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
   };
+
+  // Function to toggle reminder switch
   const toggleSwitch = async (index) => {
     const updatedReminders = [...reminders];
     updatedReminders[index].isEnabled = !updatedReminders[index].isEnabled;
@@ -96,6 +115,7 @@ export default function PooPal() {
       await updateDoc(reminderRef, {
         isEnabled: updatedReminders[index].isEnabled,
       });
+
       // Schedule or cancel notification based on switch state
       if (updatedReminders[index].isEnabled) {
         // Schedule notification if switch is turned on
@@ -103,30 +123,34 @@ export default function PooPal() {
       } else {
         // Cancel notification if switch is turned off
         await cancelNotification(updatedReminders[index]);
-        
       }
     } catch (error) {
       console.error("Error updating reminder:", error);
     }
   };
 
+  // Function to close add reminder screen
   const closeAddReminderScreen = () => {
     setAddReminderModalVisible(false);
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Potty Reminder</Text>
-        <Pressable style={styles.addButton} onPress={openAddReminderScreen}>
+        <PressableButton onPressFunction={openAddReminderScreen}>
           <Ionicons name="add-circle-outline" size={35} color="black" />
-        </Pressable>
+        </PressableButton>
       </View>
+      {/* Render the list of reminders */}
       <ReminderList
-        reminders={reminders}
-        formatTime={formatTime}
-        toggleSwitch={toggleSwitch}
-      />
+          reminders={reminders}
+          formatTime={formatTime}
+          toggleSwitch={toggleSwitch}
+        />
 
+
+      {/* Render the add reminder modal */}
       <AddReminder
         isVisible={isAddReminderModalVisible}
         onClose={closeAddReminderScreen}
@@ -134,6 +158,7 @@ export default function PooPal() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -146,14 +171,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
   },
   groupContainer: {
     padding: 20,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "black",
+    borderColor: colors.black,
     marginBottom: 20,
   },
   switch: {
@@ -173,11 +198,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   time: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
     marginBottom: 5,
   },
   days: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
+  },
+  noReminder: {
+    fontSize: font.extraSmall,
+    color: colors.shadow,
+    textAlign: "center",
+    marginTop: 20,
   },
 });

@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native";
 import PressableButton from "./PressableButton";
 
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword function
@@ -8,6 +16,10 @@ import { writeUserToDB } from "../firebase-files/firestoreHelper";
 import button from "../config/button";
 import colors from "../config/colors";
 
+/**
+ * Singup for new user
+ * @param {navigation} navigate between login/signup
+ */
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState(""); // State for the first name
@@ -15,6 +27,7 @@ export default function SignUp({ navigation }) {
   const [password, setPassword] = useState(""); // State for the password
   const [confirmPassword, setConfirmPassword] = useState(""); // State for confirming the password
 
+  // sign up for new users
   const signUpHandler = async () => {
     if (!email || !password || !confirmPassword || !firstName || !lastName) {
       Alert.alert("Fill in all the fields");
@@ -37,7 +50,6 @@ export default function SignUp({ navigation }) {
 
       // Extract user ID
       const userId = userCredential.user.uid;
-
 
       // Write user data to the database
       const userData = {
@@ -64,8 +76,11 @@ export default function SignUp({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Input field for first name */}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    >
       <Text style={styles.label}>First Name</Text>
       <TextInput
         style={styles.input}
@@ -73,8 +88,6 @@ export default function SignUp({ navigation }) {
         value={firstName}
         onChangeText={setFirstName}
       />
-
-      {/* Input field for last name */}
       <Text style={styles.label}>Last Name</Text>
       <TextInput
         style={styles.input}
@@ -82,8 +95,6 @@ export default function SignUp({ navigation }) {
         value={lastName}
         onChangeText={setLastName}
       />
-
-      {/* Input field for email */}
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
@@ -91,28 +102,22 @@ export default function SignUp({ navigation }) {
         value={email}
         onChangeText={setEmail}
       />
-
-      {/* Input field for password */}
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Password"
-        secureTextEntry={true} // Hide the password input
+        secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
       />
-
-      {/* Input field for confirming password */}
       <Text style={styles.label}>Confirm Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
-        secureTextEntry={true} // Hide the confirm password input
+        secureTextEntry={true}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-
-      {/* Buttons for registering and navigating to login */}
       <View style={styles.section}>
         <PressableButton
           customStyle={button.registerButton}
@@ -124,11 +129,10 @@ export default function SignUp({ navigation }) {
           customStyle={button.loginButton}
           onPressFunction={loginHandler}
         >
-          <Text style={button.buttonText}>Already Registered? </Text>
-          <Text style={button.buttonText}>Login</Text>
+          <Text style={button.buttonText}>Already Registered? Login</Text>
         </PressableButton>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

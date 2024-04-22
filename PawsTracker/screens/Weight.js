@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import WeightList from "../components/WeightList";
-import { writeToDB } from "../firebase-files/firestoreHelper";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase-files/firebaseSetup";
-import { Pressable } from "react-native";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
@@ -15,12 +13,19 @@ import WeightChart from "../components/WeightChart";
 import PressableButton from "../components/PressableButton";
 import FilterByMonth from "../components/FilterByMonth";
 import colors from "../config/colors";
+import font from "../config/font";
+
+/**
+ * Weight Screen show selected dog weight record, graph and add, modify, delete weight record
+ */
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
   const [filteredWeights, setFilteredWeights] = useState([]);
   const [resetDropdown, setResetDropdown] = useState(false);
   const { selectedDog } = useDogContext();
+
+  //update weight record based on selected dog
   useEffect(() => {
     if (selectedDog) {
       const unsubscribe = onSnapshot(
@@ -49,11 +54,13 @@ export default function Weight() {
     }
   }, [selectedDog]);
 
+  // Modify weight record
   const handleWeightPress = (weight) => {
     navigation.navigate("AddWeight", { weight });
     setResetDropdown(true);
   };
 
+  // add weight record
   const handleAddButtonPress = () => {
     if (!selectedDog) {
       Alert.alert(
@@ -67,6 +74,7 @@ export default function Weight() {
     }
   };
 
+  //handle filter dropdown
   const handleFilterByMonth = (month) => {
     if (!month) {
       setFilteredWeights(weights);
@@ -77,7 +85,6 @@ export default function Weight() {
         return monthPart === month;
       });
       setFilteredWeights(filtered);
-      // console.log(filtered);
     }
   };
   return (
@@ -85,21 +92,21 @@ export default function Weight() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Weight Tracker</Text>
-          <Pressable style={styles.addButton} onPress={handleAddButtonPress}>
+          <PressableButton onPressFunction={handleAddButtonPress}>
             <Ionicons
               name="add-circle-outline"
               size={35}
               color={colors.black}
             />
-          </Pressable>
+          </PressableButton>
         </View>
-
+        {/* if weight record exist and dog is selected, then show the chart and record */}
         {weights.length > 0 && selectedDog ? (
           <View style={styles.WeightChart}>
             <WeightChart weightData={weights} />
           </View>
         ) : (
-          <Text style={styles.noRecords}>No records yet</Text>
+          <Text style={styles.noRecords}>  No records yet</Text>
         )}
 
         {weights.length > 0 && selectedDog ? (
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
     flex: 1,
   },
@@ -153,7 +160,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   noRecords: {
-    fontSize: 16,
+    fontSize: font.extraSmall,
     color: colors.shadow,
     textAlign: "center",
     marginTop: 20,

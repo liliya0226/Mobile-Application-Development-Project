@@ -3,6 +3,10 @@ import { View, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import colors from "../config/colors";
 
+/**
+ * Filtered the month for weight record
+ * @param {onFilter, resetDropdown, setResetDropdown} get from Weight.js
+ */
 export default function FilterByMonth({
   onFilter,
   resetDropdown,
@@ -12,6 +16,7 @@ export default function FilterByMonth({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
+  //reset the dropdown
   useEffect(() => {
     if (resetDropdown) {
       setValue(null);
@@ -19,11 +24,11 @@ export default function FilterByMonth({
     }
   }, [resetDropdown]);
 
+  // filted by month
   const handleMonthSelect = (month) => {
     if (month !== selectedMonth) {
       setSelectedMonth(month);
       onFilter(month);
-      //   console.log(month);
     }
   };
 
@@ -32,6 +37,7 @@ export default function FilterByMonth({
       <DropDownPicker
         open={open}
         value={value}
+        // 12 months as label
         items={[
           { label: "All", value: null },
           { label: "January", value: "01" },

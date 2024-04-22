@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { auth } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
@@ -14,12 +9,14 @@ import { format } from "date-fns";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
 import NutritionList from "../components/NutritionList";
+import font from "../config/font";
+import PressableButton from "../components/PressableButton";
 
 export default function Nutri() {
   const navigation = useNavigation();
   const { selectedDog } = useDogContext();
   const [nutris, setNutris] = useState([]);
-
+  // Function to get the image for a specific nutrition category
   const getCategoryImage = (category) => {
     const images = {
       "Dry Food": require("../assets/dryfood.png"),
@@ -31,7 +28,7 @@ export default function Nutri() {
     };
     return images[category];
   };
-
+  // Handle press on the add button to navigate to the add nutrition screen
   const handleAddButtonPress = () => {
     if (!selectedDog) {
       Alert.alert(
@@ -44,7 +41,7 @@ export default function Nutri() {
     }
   };
   useEffect(() => {
-
+    // Fetch nutrition logs for the selected dog
     if (selectedDog) {
       const nutrisRef = collection(
         database,
@@ -54,7 +51,7 @@ export default function Nutri() {
         selectedDog.value,
         "nutris"
       );
-
+      // Subscribe to changes in nutrition logs
       const unsubscribe = onSnapshot(
         nutrisRef,
         (snapshot) => {
@@ -68,37 +65,34 @@ export default function Nutri() {
           updatedNutris.sort((a, b) => b.date - a.date);
 
           setNutris(updatedNutris);
-    
         },
         (error) => {
           console.error("Error fetching nutritional information:", error);
         }
       );
 
-      return () => unsubscribe();
+      return () => unsubscribe(); // Unsubscribe from snapshot listener when component unmounts
     }
   }, [selectedDog]);
-
   return (
-
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Daily Nutrition Log</Text>
-          <Pressable style={styles.addButton} onPress={handleAddButtonPress}>
-            <Ionicons name="add-circle-outline" size={35} color="black" />
-          </Pressable>
-        </View>
-       
-        <View style={styles.list}>
-          <NutritionList
-            nutris={nutris}
-            getCategoryImage={getCategoryImage}
-            selectedDog={selectedDog}
-          />
-       
-        </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        {/* Title for the nutrition log */}
+        <Text style={styles.title}>Daily Nutrition Log</Text>
+        {/* Button to add new nutrition entry */}
+        <PressableButton onPressFunction={handleAddButtonPress}>
+          <Ionicons name="add-circle-outline" size={35} color="black" />
+        </PressableButton>
       </View>
-
+      {/* Nutrition log list */}
+      <View style={styles.list}>
+        <NutritionList
+          nutris={nutris}
+          getCategoryImage={getCategoryImage}
+          selectedDog={selectedDog}
+        />
+      </View>
+    </View>
   );
 }
 
@@ -118,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
     flex: 1,
   },
@@ -126,5 +120,4 @@ const styles = StyleSheet.create({
     flex: 3,
     marginBottom: 10,
   },
-
 });

@@ -12,16 +12,36 @@ Our application is currently capable of the following:
 
 - User authentication and profile management.
 - Creation and management of pet profiles, including details like name and age.
-- Tracking of weight history for each pet.
-- Setting reminders for potty time.
+  ![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
 
-![WeightWithGraph](/PawsTracker/assets/weightchart.png)
+- Tracking of weight history for each pet.
+  ![WeightWithGraph](/PawsTracker/assets/weightchart.png)
 
 ![editWeight](/PawsTracker/assets/editWeight.png)
 
-![MapScreen](/PawsTracker/assets/map.PNG)
+- Setting and receiving timely potty time reminders and local weather-based notifications, including suggestions on whether to carry an umbrella.
 
-![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
+![reminder](/PawsTracker/assets/reminder.png)
+![addReminder](/PawsTracker/assets/addReminder.png)
+
+- Discover nearby dog parks based on user's location
+  ![MapScreen](/PawsTracker/assets/map.PNG)
+- Track dog's dietary details
+
+![NutriInfo](/PawsTracker/assets/nutri.png)
+![addNutriInfo](/PawsTracker/assets/addNutri.png)
+![addNutriInfoDetail](/PawsTracker/assets/addNutriDetail.png)
+
+## Setting Up API Keys
+
+To use the features of this project that require external API calls, you'll need to obtain an API key from the respective service provider. Follow these steps to setup your API key:
+
+### Configure the API Key in Your Project:
+
+- Copy the API key from the service provider.
+- Create a file named `.env` in the root directory of your project.
+- Add the API key to your `.env` file with the appropriate variable name, like so:
+  WEATHER_API_KEY="7679506db4a163d5b0b49cdb62987b7c"
 
 ## Team Contributions for iteration 1
 
@@ -43,7 +63,7 @@ Our application is currently capable of the following:
 
 ### Member 1: Mingxi Li
 
-- Implement the functionality of Nutris screen.
+- Implemented the functionality of Nutris screen.
   - Users can navigate through different dates using the calendar on the Nutri screen to add or review their nutritional records.
 - Created a new introductory screen that welcomes users and provides a quick overview of the app’s features.
 
@@ -59,6 +79,11 @@ Our application is currently capable of the following:
 ## Team Contributions for iteration 3
 
 ### Member 1: Mingxi Li
+
+- Integrated a third-party API to provide real-time weather data for enhanced reminders and weather-based notifications.
+- Led comprehensive testing on Android and iPad platforms to ensure seamless integration and functionality.
+- Improved the UI layout and design, focusing on a cohesive look that aligns with our unified style guide for buttons and color schemes.
+- Unify font config.
 
 ### Member 2: Xinyue Zheng
 
@@ -121,4 +146,5 @@ Also a subset of each dog's document, this collection stores reminders for the n
 
 ## Future improvement
 
--
+- Allows any changes made to the header in one of the screens—poopal, nutri, or weight—to be reflected in the headers of the other two screens
+- Add update and delete opeartion for Nutri and Poopal and Add dogs sections

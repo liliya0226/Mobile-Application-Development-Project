@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Button, Alert } from "react-native";
+import { Alert } from "react-native";
 import * as Notifications from "expo-notifications";
 import { WEATHER_API_KEY } from "@env";
+// Function to verify notification permissions
 export async function verifyPermission() {
   try {
     const status = await Notifications.getPermissionsAsync();
@@ -15,18 +16,22 @@ export async function verifyPermission() {
     console.log(err);
   }
 }
+// Function to schedule notifications
 export const scheduleNotification = async (reminder, userLocation) => {
   try {
+    // Check permission for notifications
     const havePermission = await verifyPermission();
     if (!havePermission) {
       Alert.alert("You need to give permission for notifications");
       return;
     }
-  
 
     const { id, time, days, isEnabled } = reminder;
+    // Function to fetch weather and temperature
     const getWeatherAndTemperature = async (latitude, longitude) => {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`);
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=metric`
+      );
       const data = await response.json();
       const weather = data.weather[0].description;
       const temperature = data.main.temp;
@@ -34,14 +39,19 @@ export const scheduleNotification = async (reminder, userLocation) => {
     };
 
     if (isEnabled) {
-      const { weather, temperature } = await getWeatherAndTemperature(userLocation.latitude, userLocation.longitude);
+      // Get weather and temperature
+      const { weather, temperature } = await getWeatherAndTemperature(
+        userLocation.latitude,
+        userLocation.longitude
+      );
 
+      // Iterate through each selected day
       days.forEach(async (day) => {
         const dayIndex = getDayIndex(day);
         const timeObject = new Date(time);
         const hour = timeObject.getHours();
         const minute = timeObject.getMinutes();
-
+        // Set trigger for the notification
         const trigger = {
           hour,
           minute,
@@ -49,9 +59,9 @@ export const scheduleNotification = async (reminder, userLocation) => {
           weekday: dayIndex,
         };
 
-        console.log(`Scheduling a weekly notification on ${day} at ${hour}:${minute} with weather: ${weather}`);
+        // Generate message based on weather conditions
         let message = `Time to walk the dog! Current temp: ${temperature}°C.`;
-        
+
         if (weather.includes("rain")) {
           message += " Don't forget your umbrella, it's raining. Stay dry!";
         } else if (weather.includes("clear")) {
@@ -63,6 +73,7 @@ export const scheduleNotification = async (reminder, userLocation) => {
         } else {
           message += ` Weather condition: ${weather}. Enjoy your time outside!`;
         }
+        // Schedule the notification
         await Notifications.scheduleNotificationAsync({
           content: {
             title: "Potty Time Reminder",
@@ -73,7 +84,6 @@ export const scheduleNotification = async (reminder, userLocation) => {
         });
       });
     }
- 
   } catch (error) {
     console.error("Error scheduling notifications:", error);
   }
@@ -83,7 +93,6 @@ export const cancelNotification = async (reminder) => {
   try {
     const allScheduledNotifications =
       await Notifications.getAllScheduledNotificationsAsync();
-    console.log(allScheduledNotifications);
     allScheduledNotifications.forEach(async (notification) => {
       if (
         notification.content.data &&
