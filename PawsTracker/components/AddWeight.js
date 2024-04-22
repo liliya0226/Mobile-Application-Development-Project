@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Alert,
+  Pressable,
+  Platform,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PressableButton from "../components/PressableButton";
 import {
@@ -157,15 +165,30 @@ export default function AddWeight({ navigation, route }) {
 
       <View style={styles.section}>
         <Text>Date *</Text>
-        <TextInput
-          style={styles.input}
-          value={textInputValue}
-          editable={false}
-          onTouchStart={() => {
+        <Pressable
+          onPress={() => {
             setShowDatePicker(true);
-            setTextInputValue(new Date().toDateString());
+            setTextInputValue(
+              date ? date.toDateString() : new Date().toDateString()
+            );
           }}
-        />
+        >
+          <TextInput
+            style={styles.input}
+            value={textInputValue}
+            editable={false}
+            {...(Platform.OS === "ios"
+              ? {
+                  onTouchStart: () => {
+                    setShowDatePicker(true);
+                    setTextInputValue(
+                      date ? date.toDateString() : new Date().toDateString()
+                    );
+                  },
+                }
+              : {})}
+          />
+        </Pressable>
         {showDatePicker && (
           <DateTimePicker
             value={date}

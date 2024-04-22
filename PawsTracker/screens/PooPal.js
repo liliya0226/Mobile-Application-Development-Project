@@ -13,7 +13,7 @@ import {
 } from "../components/NotificationManager";
 import font from "../config/font";
 import PressableButton from "../components/PressableButton";
-
+import colors from "../config/colors";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
@@ -115,7 +115,7 @@ export default function PooPal() {
       await updateDoc(reminderRef, {
         isEnabled: updatedReminders[index].isEnabled,
       });
-      
+
       // Schedule or cancel notification based on switch state
       if (updatedReminders[index].isEnabled) {
         // Schedule notification if switch is turned on
@@ -143,11 +143,15 @@ export default function PooPal() {
         </PressableButton>
       </View>
       {/* Render the list of reminders */}
-      <ReminderList
-        reminders={reminders}
-        formatTime={formatTime}
-        toggleSwitch={toggleSwitch}
-      />
+      {reminders.length > 0 ? (
+        <ReminderList
+          reminders={reminders}
+          formatTime={formatTime}
+          toggleSwitch={toggleSwitch}
+        />
+      ) : (
+        <Text style={styles.noReminder}>No reminders yet</Text>
+      )}
 
       {/* Render the add reminder modal */}
       <AddReminder
@@ -177,7 +181,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "black",
+    borderColor: colors.black,
     marginBottom: 20,
   },
   switch: {
@@ -203,5 +207,11 @@ const styles = StyleSheet.create({
   },
   days: {
     fontSize: font.extraSmall,
+  },
+  noReminder: {
+    fontSize: font.extraSmall,
+    color: colors.shadow,
+    textAlign: "center",
+    marginTop: 20,
   },
 });
