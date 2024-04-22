@@ -143,15 +143,12 @@ export default function PooPal() {
         </PressableButton>
       </View>
       {/* Render the list of reminders */}
-      {reminders.length > 0 ? (
-        <ReminderList
+      <ReminderList
           reminders={reminders}
           formatTime={formatTime}
           toggleSwitch={toggleSwitch}
         />
-      ) : (
-        <Text style={styles.noReminder}>No reminders yet</Text>
-      )}
+
 
       {/* Render the add reminder modal */}
       <AddReminder
