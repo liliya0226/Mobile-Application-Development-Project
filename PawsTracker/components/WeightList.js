@@ -11,10 +11,17 @@ import { Ionicons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import colors from "../config/colors";
 import font from "../config/font";
+/**
+ * use flatlist to show the data by date.
+ * @param {weights, onWeightPress} pass from Weight.js
+ */
 export default function WeightList({ weights, onWeightPress }) {
+  //sort the data by dates. Most recent on the top
   const sortedWeights = weights
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // render the record by date and weight record in kg
   const renderWeightItem = ({ item }) => (
     <View style={styles.weightItem}>
       <Text style={styles.dateText}>

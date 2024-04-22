@@ -13,12 +13,19 @@ import { FontAwesome } from "@expo/vector-icons";
 import colors from "../config/colors";
 import button from "../config/button";
 import font from "../config/font";
+
+/**
+ * Handle add, modify and delete weight record with weight and date.
+ * @param { navigation, route } param for modification of weight
+ */
 export default function AddWeight({ navigation, route }) {
   const [record, setRecord] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
   const { selectedDog } = useDogContext();
+
+  // get the weight record if is for modification with route
   useEffect(() => {
     if (route.params?.weight) {
       const { weight } = route.params;
@@ -28,13 +35,12 @@ export default function AddWeight({ navigation, route }) {
     }
   }, [route.params?.weight]);
 
+  // handle add a new weight record
   const addWeight = async () => {
     const payload = {
       record: Number(record),
       date: date.toISOString(),
     };
-
-    //TODO: check if date is duplicate
 
     await writeToDB(payload, [
       "users",
@@ -45,6 +51,7 @@ export default function AddWeight({ navigation, route }) {
     ]);
   };
 
+  //handle date for datetimepicker
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
@@ -52,6 +59,7 @@ export default function AddWeight({ navigation, route }) {
     setTextInputValue(currentDate.toDateString());
   };
 
+  // handle save button with alert
   const handleSave = async () => {
     if (!record || isNaN(Number(record)) || Number(record) <= 0) {
       Alert.alert("Invalid Input", "Please check your input values");
@@ -64,6 +72,7 @@ export default function AddWeight({ navigation, route }) {
     ]);
   };
 
+  // handle save button with add a new record or modify a record
   const saveChanges = async () => {
     try {
       if (route.params?.weight) {
@@ -85,10 +94,12 @@ export default function AddWeight({ navigation, route }) {
     navigation.goBack();
   };
 
+  // handle cancel button
   const handleCancel = () => {
     navigation.goBack();
   };
 
+  // handle delete button with existing record
   const handleDelete = async () => {
     if (route.params?.weight) {
       const { weight } = route.params;
@@ -120,6 +131,7 @@ export default function AddWeight({ navigation, route }) {
     <View style={styles.container}>
       <View style={styles.recordHeader}>
         <Text style={styles.recordHeaderText}>Weight Record</Text>
+        {/* show delete button based on if add new record or not */}
         {route.params?.weight ? (
           <View style={styles.deleteButtonContainer}>
             <PressableButton

@@ -32,6 +32,11 @@ import colors from "../config/colors";
 import { useDogContext } from "../context-files/DogContext";
 import { EvilIcons } from "@expo/vector-icons";
 import font from "../config/font";
+
+/**
+ * Profile Screen show current user infomation(profile image, name, email and current location).
+ * User could add dog's name and age and dog's image.
+ */
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
