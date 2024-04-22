@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Switch, Pressable } from "react-native";
+import { View, Text, StyleSheet, Switch, Pressable, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AddReminder from "../components/AddReminder";
 import { auth } from "../firebase-files/firebaseSetup";
 import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
-import { Alert } from "react-native";
-import { ref, onValue } from "firebase/database";
-import { collection, onSnapshot } from "@firebase/firestore";
-
+import { onSnapshot, collection, updateDoc, doc } from "@firebase/firestore";
+import ReminderList from "../components/ReminderList";
+import {
+  cancelNotification,
+  scheduleNotification,
+} from "../components/NotificationManager";
+import font from "../config/font";
+import PressableButton from "../components/PressableButton";
+import colors from "../config/colors";
 export default function PooPal() {
   const [reminders, setReminders] = useState([]);
   const [isAddReminderModalVisible, setAddReminderModalVisible] =
     useState(false);
-  const { selectedDog } = useDogContext();
+  const { selectedDog, userLocation, setUserLocation } = useDogContext();
 
-
+  // Fetch reminders for the selected dog when it changes
   useEffect(() => {
     if (selectedDog) {
       const unsubscribe = onSnapshot(
@@ -30,7 +35,10 @@ export default function PooPal() {
         (snapshot) => {
           const updatedReminders = [];
           snapshot.forEach((doc) => {
-            updatedReminders.push({ id: doc.id, ...doc.data(), isEnabled: false });
+            updatedReminders.push({
+              id: doc.id,
+              ...doc.data(),
+            });
           });
           setReminders(updatedReminders);
         },
@@ -38,39 +46,49 @@ export default function PooPal() {
           console.error("Error fetching reminders:", error);
         }
       );
-  
+
       return () => unsubscribe();
     }
   }, [selectedDog]);
-  const toggleSwitch = (index) => {
-    setReminders((prevReminders) => {
-      const updatedReminders = [...prevReminders];
-      updatedReminders[index] = {
-        ...updatedReminders[index],
-        isEnabled: !updatedReminders[index].isEnabled,
-      };
-      return updatedReminders;
-    });
+
+  // Function to ensure location permission and retrieve current user location
+  const ensureLocationAndGetPermission = async () => {
+    if (!userLocation) {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Location Permission",
+          "Location permission is required to add reminders."
+        );
+        return false;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    }
+    return true;
   };
 
-
-  const openAddReminderScreen = () => {
+  // Function to open the add reminder screen
+  const openAddReminderScreen = async () => {
     if (!selectedDog) {
       Alert.alert(
         "No Dog Selected",
-        "Please select a dog before adding a weight.",
+        "Please select a dog before adding a reminder.",
         [{ text: "OK" }]
       );
-    } else {
+      return;
+    }
+
+    const hasLocation = await ensureLocationAndGetPermission();
+    if (hasLocation) {
       setAddReminderModalVisible(true);
     }
   };
 
-  const closeAddReminderScreen = () => {
-    setAddReminderModalVisible(false);
-  };
-
-
+  // Function to format time from string
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     const hours = date.getHours();
@@ -78,31 +96,61 @@ export default function PooPal() {
     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
   };
 
+  // Function to toggle reminder switch
+  const toggleSwitch = async (index) => {
+    const updatedReminders = [...reminders];
+    updatedReminders[index].isEnabled = !updatedReminders[index].isEnabled;
+    setReminders(updatedReminders);
+
+    try {
+      const reminderRef = doc(
+        database,
+        "users",
+        auth.currentUser.uid,
+        "dogs",
+        selectedDog.value,
+        "reminders",
+        reminders[index].id
+      );
+      await updateDoc(reminderRef, {
+        isEnabled: updatedReminders[index].isEnabled,
+      });
+
+      // Schedule or cancel notification based on switch state
+      if (updatedReminders[index].isEnabled) {
+        // Schedule notification if switch is turned on
+        await scheduleNotification(updatedReminders[index], userLocation);
+      } else {
+        // Cancel notification if switch is turned off
+        await cancelNotification(updatedReminders[index]);
+      }
+    } catch (error) {
+      console.error("Error updating reminder:", error);
+    }
+  };
+
+  // Function to close add reminder screen
+  const closeAddReminderScreen = () => {
+    setAddReminderModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Potty Reminder</Text>
-        <Pressable style={styles.addButton} onPress={openAddReminderScreen}>
+        <PressableButton onPressFunction={openAddReminderScreen}>
           <Ionicons name="add-circle-outline" size={35} color="black" />
-        </Pressable>
+        </PressableButton>
       </View>
-      {reminders.map((reminder, index) => (
-        <View style={styles.reminderContainer} key={index}>
-          <View style={styles.timeAndDaysContainer}>
-            <Text style={styles.time}>{formatTime(reminder.time)}</Text>
-            <Text style={styles.days}>{reminder.days.join(", ")}</Text>
-          </View>
-          <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={reminder.isEnabled ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => toggleSwitch(index)}
-            value={reminder.isEnabled}
-            style={styles.switch}
-          />
-        </View>
-      ))}
+      {/* Render the list of reminders */}
+      <ReminderList
+          reminders={reminders}
+          formatTime={formatTime}
+          toggleSwitch={toggleSwitch}
+        />
 
+
+      {/* Render the add reminder modal */}
       <AddReminder
         isVisible={isAddReminderModalVisible}
         onClose={closeAddReminderScreen}
@@ -123,24 +171,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: font.large,
     fontWeight: "bold",
   },
   groupContainer: {
     padding: 20,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "black",
+    borderColor: colors.black,
     marginBottom: 20,
   },
-
   switch: {
     transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }],
   },
   reminderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
@@ -148,15 +195,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   timeAndDaysContainer: {
-
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   time: {
-    fontSize: 18, 
-    fontWeight: 'bold',
-    marginBottom: 5, 
+    fontSize: font.small,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   days: {
-    fontSize: 16, 
+    fontSize: font.extraSmall,
+  },
+  noReminder: {
+    fontSize: font.extraSmall,
+    color: colors.shadow,
+    textAlign: "center",
+    marginTop: 20,
   },
 });

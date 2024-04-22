@@ -5,33 +5,19 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { auth } from "../firebase-files/firebaseSetup";
 import { addLocationToUserDocument } from "../firebase-files/firestoreHelper";
+import { useDogContext } from "../context-files/DogContext";
 import colors from "../config/colors";
 
+/**
+ * LocationManager component responsible for fetching nearby dog parks based on user location.
+ */
 export default function LocationManager() {
-  const [userLocation, setUserLocation] = useState(null);
+  const { userLocation } = useDogContext();
   const [dogParks, setDogParks] = useState([]);
 
+  // Fetches nearby dog parks based on the user's location.
   useEffect(() => {
-    (async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission to access location was denied");
-          return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-        setUserLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-      } catch (error) {
-        console.error("Error fetching user location: ", error);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
+   
     const fetchNearbyDogParks = async () => {
       if (!userLocation) return;
 
@@ -44,8 +30,6 @@ export default function LocationManager() {
         );
         const data = await response.json();
         setDogParks(data.results);
-        // console.log(response);
-        // console.log(data.results);
       } catch (error) {
         console.error("Error fetching nearby dog parks: ", error);
       }
@@ -54,6 +38,7 @@ export default function LocationManager() {
     fetchNearbyDogParks();
   }, [userLocation]);
 
+  // add user location to database
   const addLocationToUser = async (location) => {
     try {
       await addLocationToUserDocument(auth.currentUser.uid, location);

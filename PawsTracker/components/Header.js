@@ -7,17 +7,25 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
 import colors from "../config/colors";
+import font from "../config/font";
+
 export default function Header() {
+  // Retrieve dogs and selectedDog from context
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
+
+  // State variables for dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
+  // Update value when selectedDog changes
   useEffect(() => {
     if (selectedDog) {
       setValue(selectedDog.value);
     }
     //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
   }, [selectedDog]);
+
+  // Function to handle dog change
 
   const handleDogChange = (item) => {
     setValue(item.value); // Set the value to the value property of the selected item
@@ -26,6 +34,8 @@ export default function Header() {
       setSelectedDog(dog);
     }
   };
+
+  // Function to toggle dropdown
   const toggleDropdown = () => {
     setOpen(!open);
   };
@@ -33,12 +43,14 @@ export default function Header() {
   return (
     <SafeAreaView>
       <Pressable onPress={toggleDropdown} style={styles.container}>
+        {/* Dog icon */}
         <MaterialCommunityIcons
           name="dog"
           size={40}
           color={colors.black}
           style={styles.icon}
         />
+        {/* DropDownPicker for selecting dog */}
         <DropDownPicker
           open={open}
           value={value}
@@ -59,6 +71,8 @@ export default function Header() {
             nestedScrollEnabled: true,
           }}
         />
+        {/* Arrow icon for dropdown */}
+
         <AntDesign
           name="down"
           size={35}
@@ -91,7 +105,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdownLabel: {
-    fontSize: 25,
+    fontSize: font.medium,
     textAlign: "center",
   },
   dropdown: {
@@ -107,7 +121,7 @@ const styles = StyleSheet.create({
   },
   dropdownPlaceholder: {
     color: colors.black,
-    fontSize: 25,
+    fontSize: font.medium,
     textAlign: "center",
   },
   title: {

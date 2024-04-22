@@ -10,7 +10,6 @@ import Profile from "../screens/Profile";
 import Map from "../screens/Map";
 import Weight from "../screens/Weight";
 import Header from "./Header";
-import PressableButton from "./PressableButton";
 import AddReminder from "./AddReminder";
 import AddWeight from "./AddWeight";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -20,6 +19,9 @@ import AddNutriDetail from "./AddNutriDetail";
 import colors from "../config/colors";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+/**
+ * BottomTab component responsible for rendering the bottom tab navigation.
+ */
 export default function BottomTab() {
   return (
     <DogProvider>
@@ -67,7 +69,6 @@ export default function BottomTab() {
             headerShown: false,
           }}
         />
-
         <Tab.Screen
           name="WeightTab"
           component={WeightStackScreen}
@@ -110,6 +111,10 @@ export default function BottomTab() {
     </DogProvider>
   );
 }
+
+/**
+ * WeightStackScreen component renders the stack navigator for the Weight tab.
+ */
 const WeightStackScreen = ({ navigation }) => {
   return (
     <Stack.Navigator>
@@ -130,6 +135,10 @@ const WeightStackScreen = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
+
+/**
+ * NutriStackScreen component renders the stack navigator for the Nutri tab.
+ */
 const NutriStackScreen = ({ navigation }) => {
   return (
     <Stack.Navigator>

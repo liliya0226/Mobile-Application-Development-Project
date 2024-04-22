@@ -29,7 +29,14 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import button from "../config/button";
 import colors from "../config/colors";
+import { useDogContext } from "../context-files/DogContext";
+import { EvilIcons } from "@expo/vector-icons";
+import font from "../config/font";
 
+/**
+ * Profile Screen show current user infomation(profile image, name, email and current location).
+ * User could add dog's name and age and dog's image.
+ */
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -48,9 +55,23 @@ export default function Profile({ navigation }) {
   const [dogImaUrl, setDogImaUrl] = useState("");
   const [dogImageUri, setDogImageUri] = useState("");
   const [address, setAddress] = useState("");
+  const { setUserLocation } = useDogContext();
+  const [refreshCount, setRefreshCount] = useState(0);
 
+  //refresh button for refresh location
+  const handleRefresh = () => {
+    if (!auth.currentUser.uid) {
+      return;
+    }
+    setRefreshCount(refreshCount + 1);
+  };
+
+  //re-render page when user update the location and the profile image
   useEffect(() => {
     const fetchAndSetUserData = async () => {
+      if (!auth.currentUser.uid) {
+        return;
+      }
       try {
         const userDataArray = await getDocsFromDB(
           ["users"],
@@ -67,24 +88,29 @@ export default function Profile({ navigation }) {
             profileImage: userData.profileImage || "",
           });
         }
-
-        const dogsData = await getDocsFromDB([
-          "users",
-          auth.currentUser.uid,
-          "dogs",
-        ]);
-        setDogs(dogsData || []);
+        if (auth.currentUser && auth.currentUser.uid) {
+          const dogsData = await getDocsFromDB([
+            "users",
+            auth.currentUser.uid,
+            "dogs",
+          ]);
+          setDogs(dogsData || []);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    if (auth.currentUser.uid) {
+    if (auth.currentUser && auth.currentUser.uid) {
       fetchAndSetUserData();
     }
-  }, [auth.currentUser.uid, profileImaUrl]);
+  }, [profileImaUrl, userInfo.location]);
 
+  //add image to user database
   const handleAddProfileImage = async (imageUri) => {
+    if (!auth.currentUser.uid) {
+      return;
+    }
     try {
       const imageName = imageUri.substring(imageUri.lastIndexOf("/") + 1);
       const imageRef = ref(storage, `profileImages/${imageName}`);
@@ -101,10 +127,43 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //location button navigative to map screen get address
+  const locateUserHandler = () => {
+    if (auth.currentUser.uid) {
+      navigation.navigate("Map");
+    }
+  };
+
+  // update address if user clicked refresh button
+  useEffect(() => {
+    const getAdress = async () => {
+      try {
+        if (
+          userInfo.location &&
+          typeof userInfo.location.latitude === "number" &&
+          typeof userInfo.location.longitude === "number"
+        ) {
+          const [location] = await Location.reverseGeocodeAsync({
+            latitude: userInfo.location.latitude,
+            longitude: userInfo.location.longitude,
+          });
+
+          setAddress(location);
+        }
+      } catch (error) {
+        console.error("Error getting address:", error);
+      }
+    };
+
+    getAdress();
+  }, [refreshCount]);
+
+  //handle add dog modal
   const addDog = () => {
     setIsModalVisible(true);
   };
 
+  //handle add dog image
   const handleAddDogImage = async (imageUri) => {
     try {
       setDogImageUri(imageUri);
@@ -122,6 +181,7 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //handle save dog button
   const saveDog = async () => {
     if (!dogName.trim() || dogName.length > 20) {
       Alert.alert(
@@ -158,7 +218,6 @@ export default function Profile({ navigation }) {
           onPress: async () => {
             await writeToDB(newDog, ["users", auth.currentUser.uid, "dogs"]);
 
-            // console.log("Dog uploaded successfully");
             setDogAge("");
             setDogName("");
             setDogImaUrl("");
@@ -174,65 +233,48 @@ export default function Profile({ navigation }) {
     }
   };
 
+  // handle if user cancel add dog
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
   const fetchDogsData = async () => {
-    const dogsData = await getDocsFromDB([
-      "users",
-      auth.currentUser.uid,
-      "dogs",
-    ]);
-    setDogs(dogsData || []);
-  };
-
-  useEffect(() => {
     if (auth.currentUser.uid) {
-      fetchDogsData();
+      const dogsData = await getDocsFromDB([
+        "users",
+        auth.currentUser.uid,
+        "dogs",
+      ]);
+      setDogs(dogsData || []);
     }
-  }, [auth.currentUser.uid]);
-
-  const locateUserHandler = () => {
-    navigation.navigate("Map");
   };
 
-  useEffect(() => {
-    const getAdress = async () => {
-      try {
-        if (
-          userInfo.location &&
-          typeof userInfo.location.latitude === "number" &&
-          typeof userInfo.location.longitude === "number"
-        ) {
-          const [location] = await Location.reverseGeocodeAsync({
-            latitude: userInfo.location.latitude,
-            longitude: userInfo.location.longitude,
-          });
-
-          setAddress(location);
-        }
-        // console.log(location);
-      } catch (error) {
-        console.error("Error getting address:", error);
-      }
-    };
-
-    getAdress();
-  }, [userInfo.location]);
+  //handle log out button
+  const logoutHandler = async () => {
+    try {
+      await signOut(auth);
+      setUserInfo({
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        location: [],
+        profileImage: "",
+      });
+      setDogs([]);
+      setUserLocation(null);
+      navigation.navigate("Intro");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <ImageBackground source={profileBack} style={styles.profileBack}>
         <PressableButton
           customStyle={styles.logout}
-          onPressFunction={() => {
-            try {
-              signOut(auth);
-            } catch (err) {
-              console.log(err);
-            }
-          }}
+          onPressFunction={() => logoutHandler()}
         >
           <AntDesign name="logout" size={30} color={colors.black} />
         </PressableButton>
@@ -250,7 +292,6 @@ export default function Profile({ navigation }) {
                 name="account-circle-outline"
                 color={colors.shadow}
                 size={150}
-                // style={styles.iconWithBorder}
               />
             )}
           </View>
@@ -260,25 +301,38 @@ export default function Profile({ navigation }) {
             {userInfo.firstName}
           </Text>
           <Text style={styles.email}> {userInfo.email}</Text>
-          <PressableButton
-            customStyle={styles.location}
-            onPressFunction={locateUserHandler}
-          >
-            <Ionicons name="location-outline" size={20} color={colors.black} />
-            {address ? (
-              <Text>
-                {address.city}, {address.country}
-              </Text>
-            ) : (
-              <Text>Get My Location</Text>
-            )}
-          </PressableButton>
+          <View style={styles.locationAndrefresh}>
+            <PressableButton
+              customStyle={styles.location}
+              onPressFunction={locateUserHandler}
+            >
+              <Ionicons
+                name="location-outline"
+                size={20}
+                color={colors.black}
+              />
+              {address ? (
+                <Text>
+                  {address.city}, {address.country}
+                </Text>
+              ) : (
+                <Text>Get My Location</Text>
+              )}
+            </PressableButton>
+            <PressableButton
+              customStyle={styles.refreshButton}
+              onPressFunction={handleRefresh}
+            >
+              <EvilIcons name="refresh" size={20} color={colors.black} />
+            </PressableButton>
+          </View>
         </View>
       </ImageBackground>
 
+      {/* Dog section */}
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
-          <Text style={{ fontSize: 20 }}>Add Your Dogs: </Text>
+          <Text style={{ fontSize: font.medium }}>Add Your Dogs: </Text>
           <PressableButton
             customStyle={styles.addDogButton}
             onPressFunction={addDog}
@@ -377,6 +431,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
   },
   profileBack: {
     flex: 1,
@@ -395,7 +450,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   name: {
-    fontSize: 30,
+    fontSize: font.extraLarge,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -404,7 +459,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 50,
   },
   email: {
-    fontSize: 18,
+    fontSize: font.small,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,
@@ -412,13 +467,19 @@ const styles = StyleSheet.create({
     shadowColor: colors.shadow,
     shadowOpacity: 50,
   },
+  locationAndrefresh: {
+    flexDirection: "row",
+  },
   location: {
     flexDirection: "row",
-    fontSize: 18,
+    fontSize: font.small,
     backgroundColor: colors.profileInfos,
     paddingHorizontal: 10,
     paddingVertical: 2,
     marginVertical: 2,
+  },
+  refreshButton: {
+    backgroundColor: colors.profileInfos,
   },
   bottomContainer: {
     flex: 1,
@@ -451,7 +512,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 20,
     marginHorizontal: 20,
-    width: Dimensions.get("screen").width > 600 ? "60%" : "40%",
+    width: Dimensions.get("screen").width > 600 ? "43%" : "38%",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: colors.shadow,

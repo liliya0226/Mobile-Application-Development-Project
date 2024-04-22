@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import colors from "../config/colors";
 
@@ -33,13 +33,26 @@ const styles = StyleSheet.create({
   defaultStyle: {
     borderRadius: 5,
     padding: 5,
-    backgroundColor: colors.placeholder,
+    backgroundColor: 'transparent', // Ensure the background is always transparent
   },
   pressed: {
-    opacity: 0.5,
+    opacity: 0.2,
+    backgroundColor: '#e0e0e0',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   disabled: {
     opacity: 0.5,
     backgroundColor: colors.dropdowncolor,
   },
 });
+

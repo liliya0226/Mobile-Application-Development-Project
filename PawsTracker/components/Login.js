@@ -8,16 +8,21 @@ import { auth } from "../firebase-files/firebaseSetup";
 import button from "../config/button";
 import colors from "../config/colors";
 
+/**
+ * Login screen handle user login with email and name
+ */
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
 
+  // to Signup component
   const signupHandler = () => {
     navigation.replace("Signup");
   };
 
+  // login the page with name and email
   const loginHandler = async () => {
     try {
       if (!email || !password) {
@@ -25,7 +30,6 @@ export default function Login() {
         return;
       }
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(userCred);
     } catch (err) {
       console.log(err);
       if (
@@ -70,14 +74,14 @@ export default function Login() {
           customStyle={button.loginButton}
           onPressFunction={loginHandler}
         >
-          <Text>Login</Text>
+          <Text style={button.buttonText}>Login</Text>
         </PressableButton>
         <PressableButton
           customStyle={button.registerButton}
           onPressFunction={signupHandler}
         >
-          <Text>New User? </Text>
-          <Text>Create An Account</Text>
+          <Text style={button.buttonText}>New User? </Text>
+          <Text style={button.buttonText}>Create An Account</Text>
         </PressableButton>
       </View>
     </View>

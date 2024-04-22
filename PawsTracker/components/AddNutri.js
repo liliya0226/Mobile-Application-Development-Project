@@ -1,36 +1,46 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import font from "../config/font";
+import button from "../config/button";
+import PressableButton from "./PressableButton";
+import colors from "../config/colors";
 
 const AddNutri = ({ navigation }) => {
-
+  // Function to navigate to AddNutriDetail screen with selected category
   const handlePress = (selectedCategory) => {
-    // Handle the press event, possibly update state or navigate
-
     navigation.navigate("AddNutriDetail", {
       category: selectedCategory,
     });
   };
+
+  // Function to handle back navigation
   const handleBack = () => {
-    // navigation code to go back
     if (navigation && navigation.goBack) {
       navigation.goBack();
     }
   };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable onPress={handleBack} style={styles.backButton}>
-            <AntDesign name="left" size={24} color="black" />
-          </Pressable>
+          <View style={styles.buttonWrapper}>
+            <PressableButton onPressFunction={handleBack}>
+              <AntDesign name="left" size={25} color="black" />
+            </PressableButton>
+          </View>
           <Text style={styles.title}>Choose what you would like to log</Text>
         </View>
         <View style={styles.optionsContainer}>
+          {/* Pressable for Dry Food */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Dry Food")}
           >
             <View>
@@ -39,11 +49,15 @@ const AddNutri = ({ navigation }) => {
                 source={require("../assets/dryfood.png")}
               />
             </View>
-
             <Text style={styles.optionText}>Dry Food</Text>
           </Pressable>
+
+          {/* Pressable for Wet Food */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Wet Food")}
           >
             <View>
@@ -52,11 +66,15 @@ const AddNutri = ({ navigation }) => {
                 source={require("../assets/wetfood.png")}
               />
             </View>
-
             <Text style={styles.optionText}>Wet Food</Text>
           </Pressable>
+
+          {/* Pressable for Home Food */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Home Food")}
           >
             <View>
@@ -68,8 +86,12 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Home Food</Text>
           </Pressable>
 
+          {/* Pressable for Raw Diet */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Raw Diet")}
           >
             <View>
@@ -81,8 +103,12 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Raw Diet</Text>
           </Pressable>
 
+          {/* Pressable for Medicine */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Medicine")}
           >
             <View>
@@ -94,8 +120,12 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Medicine</Text>
           </Pressable>
 
+          {/* Pressable for Other */}
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Other")}
           >
             <View>
@@ -124,21 +154,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
+    flexDirection: "row",
+    alignItems: "center",
     width: "100%",
-    alignItems: "center", // Centers the title text
-    justifyContent: "center", // Centers the header content vertically
-    padding: 20,
+    justifyContent: "flex-start",
   },
-  backButton: {
-    position: "absolute", // Absolute positioning to place the button
-    top: 20, // Distance from the top of the header
-    left: 10, // Distance from the left of the header
-    paddingRight: 15,
-    zIndex: 10, // Ensures the button is clickable by bringing it to the front
+  buttonWrapper: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+    backgroundColor: colors.transparent,
   },
   title: {
-    fontSize: 18,
+    fontSize: font.small,
     fontWeight: "bold",
+    flex: 1,
     textAlign: "center",
   },
   optionsContainer: {
@@ -151,20 +194,16 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     margin: 20,
-   
   },
-  optionButton: {
-    width: "45%",
-    flexDirection: "column", // Stack the icon and text on top of each other
-    alignItems: "center", // Center align items for each optionButton
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: "15%",
+  backButton: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    paddingRight: 15,
+    zIndex: 10,
   },
   optionText: {
-    textAlign: "center", // Center the text
-    fontSize: 16,
+    textAlign: "center",
+    fontSize: font.extraSmall,
   },
 });
