@@ -17,10 +17,11 @@ export default function Header() {
       setValue(selectedDog.value);
     }
     //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
-  }, []);
+  }, [selectedDog]);
 
-  const handleDogChange = (value) => {
-    const dog = dogs.find((d) => d.value === value);
+  const handleDogChange = (item) => {
+    setValue(item.value); // Set the value to the value property of the selected item
+    const dog = dogs.find((d) => d.value === item.value);
     if (dog) {
       setSelectedDog(dog);
     }
@@ -44,7 +45,7 @@ export default function Header() {
           items={dogs.map((dog) => ({ label: dog.label, value: dog.value }))}
           setOpen={setOpen}
           setValue={setValue}
-          onChangeValue={handleDogChange}
+          onSelectItem={handleDogChange}
           labelStyle={styles.dropdownLabel}
           containerStyle={styles.dropdownContainer}
           style={styles.dropdown}
