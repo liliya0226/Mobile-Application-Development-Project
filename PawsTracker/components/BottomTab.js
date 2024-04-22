@@ -43,7 +43,7 @@ export default function BottomTab() {
                 color={color}
               />
             ),
-            header: () => <Header isWeight={false} />,
+            header: () => <Header />,
             headerShown: true,
           }}
         />
@@ -55,7 +55,7 @@ export default function BottomTab() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="toilet-paper" size={size} color={color} />
             ),
-            header: () => <Header isWeight={false} />,
+            header: () => <Header />,
             headerShown: true,
           }}
         />
@@ -77,7 +77,7 @@ export default function BottomTab() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="weight" size={size} color={color} />
             ),
-            header: () => <Header isWeight={true} />,
+            header: () => <Header />,
             headerShown: true,
           }}
         />

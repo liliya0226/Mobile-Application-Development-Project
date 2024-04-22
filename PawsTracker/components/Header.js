@@ -9,7 +9,7 @@ import { Pressable } from "react-native";
 import colors from "../config/colors";
 import font from "../config/font";
 
-export default function Header({ isWeight }) {
+export default function Header() {
   // Retrieve dogs and selectedDog from context
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
 
@@ -22,12 +22,14 @@ export default function Header({ isWeight }) {
     if (selectedDog) {
       setValue(selectedDog.value);
     }
-    // Delete "selectedDog" dependency to switch dogs for Nutri and Poopal
+    //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
   }, [selectedDog]);
 
   // Function to handle dog change
-  const handleDogChange = (value) => {
-    const dog = dogs.find((d) => d.value === value);
+
+  const handleDogChange = (item) => {
+    setValue(item.value); // Set the value to the value property of the selected item
+    const dog = dogs.find((d) => d.value === item.value);
     if (dog) {
       setSelectedDog(dog);
     }
@@ -40,10 +42,7 @@ export default function Header({ isWeight }) {
 
   return (
     <SafeAreaView>
-      <Pressable
-        onPress={isWeight ? toggleDropdown : undefined}
-        style={styles.container}
-      >
+      <Pressable onPress={toggleDropdown} style={styles.container}>
         {/* Dog icon */}
         <MaterialCommunityIcons
           name="dog"
@@ -53,12 +52,12 @@ export default function Header({ isWeight }) {
         />
         {/* DropDownPicker for selecting dog */}
         <DropDownPicker
-          open={isWeight ? open : false}
+          open={open}
           value={value}
           items={dogs.map((dog) => ({ label: dog.label, value: dog.value }))}
           setOpen={setOpen}
           setValue={setValue}
-          onChangeValue={handleDogChange}
+          onSelectItem={handleDogChange}
           labelStyle={styles.dropdownLabel}
           containerStyle={styles.dropdownContainer}
           style={styles.dropdown}
@@ -73,16 +72,13 @@ export default function Header({ isWeight }) {
           }}
         />
         {/* Arrow icon for dropdown */}
-        {isWeight ? (
-          <AntDesign
-            name="down"
-            size={35}
-            color={colors.black}
-            style={styles.icon}
-          />
-        ) : (
-          ""
-        )}
+
+        <AntDesign
+          name="down"
+          size={35}
+          color={colors.black}
+          style={styles.icon}
+        />
       </Pressable>
     </SafeAreaView>
   );
