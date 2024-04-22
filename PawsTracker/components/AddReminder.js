@@ -16,10 +16,11 @@ import { scheduleNotification } from "./NotificationManager";
 import button from "../config/button";
 import PressableButton from "./PressableButton";
 import font from "../config/font";
+
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
     onPress={() => onSelect(day)}
-    style={[styles.dayButton, isSelected && styles.selectedDayButton]}
+    style={[button.dayButton, isSelected && button.selectedDayButton]}
   >
     <Text style={styles.dayButtonText}>{day}</Text>
   </Pressable>
@@ -27,7 +28,6 @@ const DayButton = ({ day, isSelected, onSelect }) => (
 
 const AddReminder = ({ isVisible, onClose }) => {
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(Platform.OS === "ios"); // iOS always shows the picker
   const [selectedDays, setSelectedDays] = useState([]);
   const [isSaving, setIsSaving] = useState(false); // New state to prevent multiple saves
   const { selectedDog, userLocation } = useDogContext();
@@ -50,7 +50,6 @@ const AddReminder = ({ isVisible, onClose }) => {
     setShowTimePicker(true);
   };
   const onTimeChange = (event, selectedTime) => {
-    const currentMode = Platform.OS === "ios" ? "time" : "date";
     setShowTimePicker(Platform.OS === "ios");
     if (selectedTime) {
       setDate(
@@ -83,7 +82,7 @@ const AddReminder = ({ isVisible, onClose }) => {
 
       try {
         onClose();
-        const savedReminder = await writeToDB(reminder, [
+        await writeToDB(reminder, [
           "users",
           auth.currentUser.uid,
           "dogs",
@@ -115,9 +114,14 @@ const AddReminder = ({ isVisible, onClose }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Add Reminder</Text>
-
-          <Pressable onPress={showTimepicker} style={styles.timePickerButton}>
-            <Text style={styles.timePickerText}>
+          <Pressable
+            onPress={showTimepicker}
+            style={({ pressed }) => [
+              button.timePickerButton,
+              pressed && button.pressedStyle,
+            ]}
+          >
+            <Text style={button.timePickerText}>
               {date.toTimeString().substring(0, 5)}
             </Text>
           </Pressable>
@@ -199,40 +203,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: font.small,
   },
-  timePickerButton: {
-    height: 40,
-    width: "100%",
-    borderWidth: 1,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  timePickerText: {
-    fontSize: font.extraSmall,
-    color: "black",
-  },
+
   dayButtonsContainer: {
     flexDirection: "row",
     marginBottom: 20,
     marginTop: 20,
   },
-  dayButton: {
-    flex: 1,
-    paddingVertical: 8,
-    marginHorizontal: 4,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "white",
-  },
-  selectedDayButton: {
-    backgroundColor: "#ff7f50",
-  },
+
   dayButtonText: {
     textAlign: "center",
   },
-
+  pressedStyle: {
+    backgroundColor: "#e0e0e0",
+    opacity: 0.75,
+  },
   datePicker: {
     width: "100%",
   },

@@ -13,4 +13,5 @@ export default {
   chartColor: "#f5f5f5",
   profileInfos: "#fffff0",
   modalColor: "#ffc4ad",
+  inputPressedColor:"#ccc",
 };

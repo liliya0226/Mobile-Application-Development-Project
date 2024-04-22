@@ -21,6 +21,8 @@ import { auth } from "../firebase-files/firebaseSetup";
 import { writeToDB } from "../firebase-files/firestoreHelper";
 import { useDogContext } from "../context-files/DogContext";
 import button from "../config/button";
+import PressableButton from "./PressableButton";
+import colors from "../config/colors";
 const getCategoryImage = (category) => {
   const images = {
     "Dry Food": require("../assets/dryfood.png"),
@@ -57,16 +59,14 @@ const AddNutriDetail = ({ route, navigation }) => {
 
   const handleTimeChange = (event, selectedTime) => {
     if (event.type === "set") {
-      // 用户确认了时间选择
       setDate(
         new Date(
           date.setHours(selectedTime.getHours(), selectedTime.getMinutes())
         )
       );
-      setShowTimePicker(false); // 关闭时间选择器
+      setShowTimePicker(false);
     } else if (event.type === "dismissed") {
-      // 用户取消了时间选择
-      setShowTimePicker(false); // 关闭时间选择器
+      setShowTimePicker(false);
     }
   };
 
@@ -97,40 +97,54 @@ const AddNutriDetail = ({ route, navigation }) => {
     setShowDatePicker(true);
   };
   const handleSaveNutri = async () => {
-    if (selectedDog) {
-      let nutriData = {};
-      if (isMedicineCategory) {
-        nutriData = {
-          category: category,
-          medicineName: medicineName,
-          medicineDosage: medicineDosage,
-          notes: notes,
-          date: Timestamp.fromDate(date),
-        };
+      if (selectedDog) {
+        Alert.alert(
+          "Confirm Save",
+          "Are you sure you want to save this information?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Save cancelled"),
+              style: "cancel"
+            },
+            { text: "Yes", onPress: () => saveNutrition() }
+          ]
+        );
       } else {
-        nutriData = {
-          category: category,
-          foodName: foodName,
-          weight: weight,
-          notes: notes,
-          date: Timestamp.fromDate(date),
-        };
+        console.error("No selected dog to save the nutritional information for.");
       }
-
-      try {
-        await writeToDB(nutriData, [
-          "users",
-          auth.currentUser.uid,
-          "dogs",
-          selectedDog.value,
-          "nutris",
-        ]);
-        navigation.navigate("Nutri");
-      } catch (error) {
-        console.error("Failed to save nutritional information:", error);
-      }
+  };
+  const saveNutrition = async () => {
+    let nutriData = {};
+    if (isMedicineCategory) {
+      nutriData = {
+        category: category,
+        medicineName: medicineName,
+        medicineDosage: medicineDosage,
+        notes: notes,
+        date: Timestamp.fromDate(date),
+      };
     } else {
-      console.error("No selected dog to save the nutritional information for.");
+      nutriData = {
+        category: category,
+        foodName: foodName,
+        weight: weight,
+        notes: notes,
+        date: Timestamp.fromDate(date),
+      };
+    }
+
+    try {
+      await writeToDB(nutriData, [
+        "users",
+        auth.currentUser.uid,
+        "dogs",
+        selectedDog.value,
+        "nutris",
+      ]);
+      navigation.navigate("Nutri");
+    } catch (error) {
+      console.error("Failed to save nutritional information:", error);
     }
   };
 
@@ -141,97 +155,102 @@ const AddNutriDetail = ({ route, navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-      <View style={styles.header}>
-        <Pressable onPress={handleBack} style={styles.backButton}>
-          <AntDesign name="left" size={24} color="black" />
-        </Pressable>
-        <Text style={styles.title}>{category}</Text>
-      </View>
-      <ScrollView>
-      <View style={styles.content}>
-        <Image style={styles.icon} source={imageSource} />
-      
-        <TouchableWithoutFeedback onPress={showDatepicker}>
-          <View style={[styles.input, styles.inputPressable]}>
-            <Text style={styles.inputText}>{date.toDateString()}</Text>
+        <View style={styles.header}>
+          <View style={styles.buttonWrapper}>
+            <PressableButton onPressFunction={handleBack}>
+              <AntDesign name="left" size={25} color="black" />
+            </PressableButton>
           </View>
-        </TouchableWithoutFeedback>
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display={Platform.OS === "ios" ? "inline" : "default"}
-            is24Hour={true}
-            onChange={handleDateChange}
-            maximumDate={new Date(2300, 10, 20)}
-            minimumDate={new Date(1950, 0, 1)}
-          />
-        )}
-        <TouchableWithoutFeedback onPress={showTimepicker}>
-          <View style={[styles.input, styles.inputPressable]}>
-            <Text style={styles.inputText}>{date.toLocaleTimeString()}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        {showTimePicker && (
-          <DateTimePicker
-            value={date}
-            mode="time"
-            display="inline"
-            onChange={handleTimeChange}
-          />
-        )}
-        {isMedicineCategory && (
-          <>
+          <Text style={styles.title}>{category}</Text>
+        </View>
+        <ScrollView>
+          <View style={styles.content}>
+            <Image style={styles.icon} source={imageSource} />
+
+            <TouchableWithoutFeedback onPress={showDatepicker}>
+              <View style={[styles.input, styles.inputPressable]}>
+                <Text style={styles.inputText}>{date.toDateString()}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                is24Hour={true}
+                onChange={handleDateChange}
+                maximumDate={new Date(2300, 10, 20)}
+                minimumDate={new Date(1950, 0, 1)}
+              />
+            )}
+            <TouchableWithoutFeedback onPress={showTimepicker}>
+              <View style={[styles.input, styles.inputPressable]}>
+                <Text style={styles.inputText}>
+                  {date.toLocaleTimeString()}
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+            {showTimePicker && (
+              <DateTimePicker
+                value={date}
+                mode="time"
+                display="inline"
+                onChange={handleTimeChange}
+              />
+            )}
+            {isMedicineCategory && (
+              <>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMedicineName}
+                  value={medicineName}
+                  placeholder="Medicine Name"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setMedicineDosage}
+                  value={medicineDosage}
+                  placeholder="Dosage (e.g., 500mg)"
+                />
+              </>
+            )}
+            {!isMedicineCategory && (
+              <TextInput
+                style={styles.input}
+                onChangeText={setFoodName}
+                value={foodName}
+                placeholder="Name"
+              />
+            )}
+            {!isMedicineCategory && (
+              <TextInput
+                style={styles.input}
+                onChangeText={setWeight}
+                value={weight}
+                placeholder="Weight (e.g., 500g)"
+                keyboardType="numeric"
+              />
+            )}
             <TextInput
               style={styles.input}
-              onChangeText={setMedicineName}
-              value={medicineName}
-              placeholder="Medicine Name"
+              onChangeText={handleNotesChange}
+              value={notes}
+              placeholder="Notes"
+              numberOfLines={4}
             />
-            <TextInput
-              style={styles.input}
-              onChangeText={setMedicineDosage}
-              value={medicineDosage}
-              placeholder="Dosage (e.g., 500mg)"
-            />
-          </>
-        )}
-        {!isMedicineCategory && (
-          <TextInput
-            style={styles.input}
-            onChangeText={setFoodName}
-            value={foodName}
-            placeholder="Name"
-          />
-        )}
-        {!isMedicineCategory && (
-          <TextInput
-            style={styles.input}
-            onChangeText={setWeight}
-            value={weight}
-            placeholder="Weight (e.g., 500g)"
-            keyboardType="numeric"
-          />
-        )}
-        <TextInput
-          style={styles.input}
-          onChangeText={handleNotesChange}
-          value={notes}
-          placeholder="Notes"
-          numberOfLines={4}
-        />
-        <Pressable
-          onPress={handleSaveNutri}
-          style={[
-            button.saveButton,
-            isSaveDisabled && button.disabledSaveButton,
-          ]}
-          disabled={isSaveDisabled}
-        >
-          <Text style={button.buttonText}>Save</Text>
-        </Pressable>
-      </View>
-      </ScrollView>
+            <Pressable
+              onPress={handleSaveNutri}
+              style={({ pressed }) => [
+                button.saveButton,
+                pressed && button.pressedSaveButton,
+                isSaveDisabled && button.disabledSaveButton,
+              ]}
+              disabled={isSaveDisabled}
+            >
+              <Text style={styles.buttonText}>Save</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -248,6 +267,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     paddingTop: 10,
+    overflow: "visible",
+  },
+  buttonWrapper: {
+    borderRadius: 5,
+    backgroundColor: colors.transparent,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+        backgroundColor: colors.white,
+      },
+    }),
+    marginRight: 10,
   },
   backButton: {
     position: "absolute",
@@ -284,25 +321,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  saveButton: {
-    marginTop: 30,
-    backgroundColor: "black",
-    padding: 15,
-    borderRadius: 5,
-    width: "100%",
-  },
-  saveButtonText: {
-    color: "#fff",
+  buttonText: {
+    color: colors.white,
     textAlign: "center",
-    fontSize: font.small,
+    fontSize: font.small, 
     fontWeight: "bold",
   },
-  disabledSaveButton: {
-    backgroundColor: "grey",
-  },
+
+
   inputPressable: {
     width: "100%",
-    borderColor: "#ccc",
+    borderColor: button.inputPressedColor,
     padding: 10,
     borderRadius: 5,
     textAlignVertical: "center",

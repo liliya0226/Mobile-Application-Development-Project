@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent', // Ensure the background is always transparent
   },
   pressed: {
-    opacity: 0.5,
+    opacity: 0.2,
+    backgroundColor: '#e0e0e0',
     ...Platform.select({
       ios: {
         shadowColor: '#000',

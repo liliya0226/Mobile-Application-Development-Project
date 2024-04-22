@@ -1,12 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import { Pressable } from "react-native";
 import { SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import font from "../config/font";
-
+import button from "../config/button";
+import PressableButton from "./PressableButton";
+import colors from "../config/colors";
 const AddNutri = ({ navigation }) => {
-
   const handlePress = (selectedCategory) => {
     navigation.navigate("AddNutriDetail", {
       category: selectedCategory,
@@ -22,14 +23,19 @@ const AddNutri = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Pressable onPress={handleBack} style={styles.backButton}>
-            <AntDesign name="left" size={24} color="black" />
-          </Pressable>
+          <View style={styles.buttonWrapper}>
+            <PressableButton onPressFunction={handleBack}>
+              <AntDesign name="left" size={25} color="black" />
+            </PressableButton>
+          </View>
           <Text style={styles.title}>Choose what you would like to log</Text>
         </View>
         <View style={styles.optionsContainer}>
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Dry Food")}
           >
             <View>
@@ -38,11 +44,14 @@ const AddNutri = ({ navigation }) => {
                 source={require("../assets/dryfood.png")}
               />
             </View>
-
             <Text style={styles.optionText}>Dry Food</Text>
           </Pressable>
+
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Wet Food")}
           >
             <View>
@@ -55,7 +64,10 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Wet Food</Text>
           </Pressable>
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Home Food")}
           >
             <View>
@@ -68,7 +80,10 @@ const AddNutri = ({ navigation }) => {
           </Pressable>
 
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Raw Diet")}
           >
             <View>
@@ -81,7 +96,10 @@ const AddNutri = ({ navigation }) => {
           </Pressable>
 
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Medicine")}
           >
             <View>
@@ -94,7 +112,10 @@ const AddNutri = ({ navigation }) => {
           </Pressable>
 
           <Pressable
-            style={styles.optionButton}
+            style={({ pressed }) => [
+              button.optionButton,
+              pressed ? button.buttonPressed : {},
+            ]}
             onPress={() => handlePress("Other")}
           >
             <View>
@@ -123,17 +144,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
+    flexDirection: 'row',    
+    alignItems: 'center',  
     width: "100%",
-    alignItems: "center", // Centers the title text
-    justifyContent: "center", // Centers the header content vertically
-    padding: 20,
+    justifyContent: 'flex-start',
   },
- 
+  buttonWrapper: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    justifyContent: 'center', 
+    alignItems: 'center',     
+    borderRadius: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+    backgroundColor: colors.transparent,
+  },
   title: {
     fontSize: font.small,
     fontWeight: "bold",
-    textAlign: "center",
+    flex: 1,
+    textAlign: 'center', 
   },
+
   optionsContainer: {
     width: "100%",
     flexDirection: "row",
@@ -144,25 +185,15 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     margin: 20,
-   
   },
   backButton: {
-    position: "absolute", 
-    top: 20, 
-    left: 10, 
+    position: "absolute",
+    top: 20,
+    left: 10,
     paddingRight: 15,
-    zIndex: 10, 
+    zIndex: 10,
   },
-  optionButton: {
-    width: "45%",
-    flexDirection: "column", // Stack the icon and text on top of each other
-    alignItems: "center", // Center align items for each optionButton
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: "15%",
-  },
+
   optionText: {
     textAlign: "center", // Center the text
     fontSize: font.extraSmall,

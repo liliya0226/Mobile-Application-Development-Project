@@ -49,7 +49,7 @@ export const scheduleNotification = async (reminder, userLocation) => {
           weekday: dayIndex,
         };
 
-        console.log(`Scheduling a weekly notification on ${day} at ${hour}:${minute} with weather: ${weather}`);
+      
         let message = `Time to walk the dog! Current temp: ${temperature}°C.`;
         
         if (weather.includes("rain")) {
@@ -83,7 +83,6 @@ export const cancelNotification = async (reminder) => {
   try {
     const allScheduledNotifications =
       await Notifications.getAllScheduledNotificationsAsync();
-    console.log(allScheduledNotifications);
     allScheduledNotifications.forEach(async (notification) => {
       if (
         notification.content.data &&
