@@ -105,7 +105,7 @@ export default {
     paddingVertical: 10,
     paddingHorizontal: 20,
     elevation: 2,
-    backgroundColor: "#b0bec5",  // Light blue grey color for contrast
+    backgroundColor: "#b0bec5", 
     marginRight: 10,
   },
   disabledSaveButton: {

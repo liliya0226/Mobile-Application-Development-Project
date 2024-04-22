@@ -7,18 +7,22 @@ import font from "../config/font";
 import button from "../config/button";
 import PressableButton from "./PressableButton";
 import colors from "../config/colors";
+
 const AddNutri = ({ navigation }) => {
+  // Function to navigate to AddNutriDetail screen with selected category
   const handlePress = (selectedCategory) => {
     navigation.navigate("AddNutriDetail", {
       category: selectedCategory,
     });
   };
+
+  // Function to handle back navigation
   const handleBack = () => {
-    // navigation code to go back
     if (navigation && navigation.goBack) {
       navigation.goBack();
     }
   };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -31,6 +35,7 @@ const AddNutri = ({ navigation }) => {
           <Text style={styles.title}>Choose what you would like to log</Text>
         </View>
         <View style={styles.optionsContainer}>
+          {/* Pressable for Dry Food */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -47,6 +52,7 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Dry Food</Text>
           </Pressable>
 
+          {/* Pressable for Wet Food */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -60,9 +66,10 @@ const AddNutri = ({ navigation }) => {
                 source={require("../assets/wetfood.png")}
               />
             </View>
-
             <Text style={styles.optionText}>Wet Food</Text>
           </Pressable>
+
+          {/* Pressable for Home Food */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -79,6 +86,7 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Home Food</Text>
           </Pressable>
 
+          {/* Pressable for Raw Diet */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -95,6 +103,7 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Raw Diet</Text>
           </Pressable>
 
+          {/* Pressable for Medicine */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -111,6 +120,7 @@ const AddNutri = ({ navigation }) => {
             <Text style={styles.optionText}>Medicine</Text>
           </Pressable>
 
+          {/* Pressable for Other */}
           <Pressable
             style={({ pressed }) => [
               button.optionButton,
@@ -144,16 +154,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    flexDirection: 'row',    
-    alignItems: 'center',  
+    flexDirection: "row",
+    alignItems: "center",
     width: "100%",
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   buttonWrapper: {
     paddingVertical: 10,
     paddingHorizontal: 10,
-    justifyContent: 'center', 
-    alignItems: 'center',     
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 5,
     ...Platform.select({
       ios: {
@@ -172,9 +182,8 @@ const styles = StyleSheet.create({
     fontSize: font.small,
     fontWeight: "bold",
     flex: 1,
-    textAlign: 'center', 
+    textAlign: "center",
   },
-
   optionsContainer: {
     width: "100%",
     flexDirection: "row",
@@ -193,9 +202,8 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     zIndex: 10,
   },
-
   optionText: {
-    textAlign: "center", // Center the text
+    textAlign: "center",
     fontSize: font.extraSmall,
   },
 });

@@ -17,6 +17,7 @@ export default function LocationManager() {
 
   // Fetches nearby dog parks based on the user's location.
   useEffect(() => {
+   
     const fetchNearbyDogParks = async () => {
       if (!userLocation) return;
 

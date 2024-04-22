@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import WeightList from "../components/WeightList";
-import { writeToDB } from "../firebase-files/firestoreHelper";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase-files/firebaseSetup";
-import { Pressable } from "react-native";
 import { onSnapshot, collection } from "firebase/firestore";
 import { database } from "../firebase-files/firebaseSetup";
 import { useDogContext } from "../context-files/DogContext";
@@ -108,7 +106,7 @@ export default function Weight() {
             <WeightChart weightData={weights} />
           </View>
         ) : (
-          <Text style={styles.noRecords}>No records yet</Text>
+          <Text style={styles.noRecords}>  No records yet</Text>
         )}
 
         {weights.length > 0 && selectedDog ? (

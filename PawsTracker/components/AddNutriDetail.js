@@ -23,6 +23,8 @@ import { useDogContext } from "../context-files/DogContext";
 import button from "../config/button";
 import PressableButton from "./PressableButton";
 import colors from "../config/colors";
+
+// Function to get the image source for a given category
 const getCategoryImage = (category) => {
   const images = {
     "Dry Food": require("../assets/dryfood.png"),
@@ -47,43 +49,43 @@ const AddNutriDetail = ({ route, navigation }) => {
   const imageSource = getCategoryImage(category);
   const isMedicineCategory = category === "Medicine";
   const [showDatePicker, setShowDatePicker] = useState(false);
-
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  // Determine if the save button should be disabled
   const isSaveDisabled = isMedicineCategory
-    ? !medicineName ||
-      medicineName.trim() === "" ||
-      !medicineDosage ||
-      medicineDosage.trim() === ""
-    : !foodName && (!weight || weight.trim() === ""); // Require either foodName or weight for non-medicine categories
+    ? !medicineName || medicineName.trim() === "" || !medicineDosage || medicineDosage.trim() === ""
+    : !foodName && (!weight || weight.trim() === ""); 
 
+  // Function to handle time change
   const handleTimeChange = (event, selectedTime) => {
     if (event.type === "set") {
-      setDate(
-        new Date(
-          date.setHours(selectedTime.getHours(), selectedTime.getMinutes())
-        )
-      );
+      setDate(new Date(date.setHours(selectedTime.getHours(), selectedTime.getMinutes())));
       setShowTimePicker(false);
     } else if (event.type === "dismissed") {
       setShowTimePicker(false);
     }
   };
 
+  // Function to show the time picker
   const showTimepicker = () => {
     setShowTimePicker(true);
   };
+
+  // Function to handle back navigation
   const handleBack = () => {
     navigation.goBack();
   };
+
+  // Function to handle notes change
   const handleNotesChange = (text) => {
     if (text.length > 20) {
-      // If the text is longer than 20 characters, show an alert
       Alert.alert("Notes cannot exceed 20 characters.");
     } else {
       setNotes(text);
     }
   };
+
+  // Function to handle date change
   const handleDateChange = (event, selectedDate) => {
     if (event.type === "set") {
       setDate(selectedDate);
@@ -93,27 +95,32 @@ const AddNutriDetail = ({ route, navigation }) => {
     }
   };
 
+  // Function to show the date picker
   const showDatepicker = () => {
     setShowDatePicker(true);
   };
+
+  // Function to save nutritional information
   const handleSaveNutri = async () => {
-      if (selectedDog) {
-        Alert.alert(
-          "Confirm Save",
-          "Are you sure you want to save this information?",
-          [
-            {
-              text: "Cancel",
-              onPress: () => console.log("Save cancelled"),
-              style: "cancel"
-            },
-            { text: "Yes", onPress: () => saveNutrition() }
-          ]
-        );
-      } else {
-        console.error("No selected dog to save the nutritional information for.");
-      }
+    if (selectedDog) {
+      Alert.alert(
+        "Confirm Save",
+        "Are you sure you want to save this information?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Save cancelled"),
+            style: "cancel"
+          },
+          { text: "Yes", onPress: () => saveNutrition() }
+        ]
+      );
+    } else {
+      console.error("No selected dog to save the nutritional information for.");
+    }
   };
+
+  // Function to actually save nutritional information to the database
   const saveNutrition = async () => {
     let nutriData = {};
     if (isMedicineCategory) {
@@ -185,9 +192,7 @@ const AddNutriDetail = ({ route, navigation }) => {
             )}
             <TouchableWithoutFeedback onPress={showTimepicker}>
               <View style={[styles.input, styles.inputPressable]}>
-                <Text style={styles.inputText}>
-                  {date.toLocaleTimeString()}
-                </Text>
+                <Text style={styles.inputText}>{date.toLocaleTimeString()}</Text>
               </View>
             </TouchableWithoutFeedback>
             {showTimePicker && (
@@ -307,7 +312,6 @@ const styles = StyleSheet.create({
     height: 100,
     margin: 20,
   },
-
   input: {
     width: "100%",
     borderWidth: 1,
@@ -327,8 +331,6 @@ const styles = StyleSheet.create({
     fontSize: font.small, 
     fontWeight: "bold",
   },
-
-
   inputPressable: {
     width: "100%",
     borderColor: button.inputPressedColor,

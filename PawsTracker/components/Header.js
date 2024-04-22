@@ -8,24 +8,32 @@ import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
 import colors from "../config/colors";
 import font from "../config/font";
+
 export default function Header({ isWeight }) {
+  // Retrieve dogs and selectedDog from context
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
+
+  // State variables for dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
+  // Update value when selectedDog changes
   useEffect(() => {
     if (selectedDog) {
       setValue(selectedDog.value);
     }
-    //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
+    // Delete "selectedDog" dependency to switch dogs for Nutri and Poopal
   }, [selectedDog]);
 
+  // Function to handle dog change
   const handleDogChange = (value) => {
     const dog = dogs.find((d) => d.value === value);
     if (dog) {
       setSelectedDog(dog);
     }
   };
+
+  // Function to toggle dropdown
   const toggleDropdown = () => {
     setOpen(!open);
   };
@@ -36,12 +44,14 @@ export default function Header({ isWeight }) {
         onPress={isWeight ? toggleDropdown : undefined}
         style={styles.container}
       >
+        {/* Dog icon */}
         <MaterialCommunityIcons
           name="dog"
           size={40}
           color={colors.black}
           style={styles.icon}
         />
+        {/* DropDownPicker for selecting dog */}
         <DropDownPicker
           open={isWeight ? open : false}
           value={value}
@@ -62,6 +72,7 @@ export default function Header({ isWeight }) {
             nestedScrollEnabled: true,
           }}
         />
+        {/* Arrow icon for dropdown */}
         {isWeight ? (
           <AntDesign
             name="down"

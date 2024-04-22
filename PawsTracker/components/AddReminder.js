@@ -16,7 +16,7 @@ import { scheduleNotification } from "./NotificationManager";
 import button from "../config/button";
 import PressableButton from "./PressableButton";
 import font from "../config/font";
-
+// Component for each day button to be selected
 const DayButton = ({ day, isSelected, onSelect }) => (
   <Pressable
     onPress={() => onSelect(day)}
@@ -25,20 +25,21 @@ const DayButton = ({ day, isSelected, onSelect }) => (
     <Text style={styles.dayButtonText}>{day}</Text>
   </Pressable>
 );
-
+// Component for adding a reminder
 const AddReminder = ({ isVisible, onClose }) => {
   const [date, setDate] = useState(new Date());
   const [selectedDays, setSelectedDays] = useState([]);
   const [isSaving, setIsSaving] = useState(false); // New state to prevent multiple saves
   const { selectedDog, userLocation } = useDogContext();
   const [showTimePicker, setShowTimePicker] = useState(false);
+   // Reset date and selected days when modal visibility changes
   useEffect(() => {
     if (isVisible) {
       setDate(new Date());
       setSelectedDays([]);
     }
   }, [isVisible]);
-
+  // Function to toggle day selection
   const toggleDaySelection = (day) => {
     setSelectedDays((currentDays) =>
       currentDays.includes(day)
@@ -46,9 +47,11 @@ const AddReminder = ({ isVisible, onClose }) => {
         : [...currentDays, day]
     );
   };
+   // Function to show the time picker
   const showTimepicker = () => {
     setShowTimePicker(true);
   };
+    // Function to handle time change in the time picker
   const onTimeChange = (event, selectedTime) => {
     setShowTimePicker(Platform.OS === "ios");
     if (selectedTime) {
@@ -59,11 +62,12 @@ const AddReminder = ({ isVisible, onClose }) => {
       );
     }
   };
+    // Function to handle cancel button press
   const handleCancel = () => {
     setShowTimePicker(false); // Hide time picker
     onClose(); // Call the original onClose handler
   };
-
+ // Function to save the reminder
   const saveReminder = async () => {
     if (isSaving) return; // Prevents additional clicks
     setIsSaving(true); // Disables the button to prevent multiple saves
@@ -203,13 +207,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: font.small,
   },
-
   dayButtonsContainer: {
     flexDirection: "row",
     marginBottom: 20,
     marginTop: 20,
   },
-
   dayButtonText: {
     textAlign: "center",
   },
