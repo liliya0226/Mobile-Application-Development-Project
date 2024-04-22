@@ -15,7 +15,7 @@ Our application is currently capable of the following:
   ![ProfileWithCamera](/PawsTracker/assets/newprofile.png)
 
 - Tracking of weight history for each pet.
-  ![WeightWithGraph](/PawsTracker/assets/weightchart.png)
+  ![WeightWithGraph](/PawsTracker/assets/weightChart.png)
 
 ![editWeight](/PawsTracker/assets/editWeight.png)
 
