@@ -4,8 +4,15 @@ import { LineChart } from "react-native-chart-kit";
 import { format } from "date-fns";
 import colors from "../config/colors";
 import font from "../config/font";
+
+/**
+ * Use the weightData to calculate the average weight by month and reflected on Chart
+ * @param {weightData} passed by Weight.js
+ * @returns
+ */
 export default function WeightChart({ weightData }) {
   const groupByMonth = {};
+  // Group the data by month from weightData
   weightData.forEach((item) => {
     const month = format(new Date(item.date), "MM");
     if (!groupByMonth[month]) {
@@ -15,12 +22,14 @@ export default function WeightChart({ weightData }) {
   });
 
   const averageWeights = {};
+  // calculated the sum of weight from groups and store the average to the averageWeights list.
   for (const month in groupByMonth) {
     const weights = groupByMonth[month];
     const sum = weights.reduce((total, weight) => total + weight, 0);
     averageWeights[month] = sum / weights.length;
   }
 
+  // sort it by month and restore it back to weight array
   let dates = Object.keys(averageWeights);
   dates = dates.sort((a, b) => Number(a) - Number(b));
   const weights = dates.map((month) => averageWeights[month]);
@@ -45,6 +54,7 @@ export default function WeightChart({ weightData }) {
             },
           ],
         }}
+        // responsive the chart width and height based on screen dimension
         width={Dimensions.get("screen").width * 0.85}
         height={height > 1024 ? height * 0.25 : height * 0.2}
         yAxisSuffix="kg"

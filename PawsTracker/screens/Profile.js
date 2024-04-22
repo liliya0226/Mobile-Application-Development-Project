@@ -32,6 +32,11 @@ import colors from "../config/colors";
 import { useDogContext } from "../context-files/DogContext";
 import { EvilIcons } from "@expo/vector-icons";
 import font from "../config/font";
+
+/**
+ * Profile Screen show current user infomation(profile image, name, email and current location).
+ * User could add dog's name and age and dog's image.
+ */
 export default function Profile({ navigation }) {
   const [userInfo, setUserInfo] = useState({
     id: "",
@@ -52,6 +57,8 @@ export default function Profile({ navigation }) {
   const [address, setAddress] = useState("");
   const { setUserLocation } = useDogContext();
   const [refreshCount, setRefreshCount] = useState(0);
+
+  //refresh button for refresh location
   const handleRefresh = () => {
     if (!auth.currentUser.uid) {
       return;
@@ -59,6 +66,7 @@ export default function Profile({ navigation }) {
     setRefreshCount(refreshCount + 1);
   };
 
+  //re-render page when user update the location and the profile image
   useEffect(() => {
     const fetchAndSetUserData = async () => {
       if (!auth.currentUser.uid) {
@@ -97,8 +105,8 @@ export default function Profile({ navigation }) {
       fetchAndSetUserData();
     }
   }, [profileImaUrl, userInfo.location]);
-  // }, []);
-  // }, [ profileImaUrl]);
+
+  //add image to user database
   const handleAddProfileImage = async (imageUri) => {
     if (!auth.currentUser.uid) {
       return;
@@ -119,10 +127,43 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //location button navigative to map screen get address
+  const locateUserHandler = () => {
+    if (auth.currentUser.uid) {
+      navigation.navigate("Map");
+    }
+  };
+
+  // update address if user clicked refresh button
+  useEffect(() => {
+    const getAdress = async () => {
+      try {
+        if (
+          userInfo.location &&
+          typeof userInfo.location.latitude === "number" &&
+          typeof userInfo.location.longitude === "number"
+        ) {
+          const [location] = await Location.reverseGeocodeAsync({
+            latitude: userInfo.location.latitude,
+            longitude: userInfo.location.longitude,
+          });
+
+          setAddress(location);
+        }
+      } catch (error) {
+        console.error("Error getting address:", error);
+      }
+    };
+
+    getAdress();
+  }, [refreshCount]);
+
+  //handle add dog modal
   const addDog = () => {
     setIsModalVisible(true);
   };
 
+  //handle add dog image
   const handleAddDogImage = async (imageUri) => {
     try {
       setDogImageUri(imageUri);
@@ -140,6 +181,7 @@ export default function Profile({ navigation }) {
     }
   };
 
+  //handle save dog button
   const saveDog = async () => {
     if (!dogName.trim() || dogName.length > 20) {
       Alert.alert(
@@ -191,6 +233,7 @@ export default function Profile({ navigation }) {
     }
   };
 
+  // handle if user cancel add dog
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -205,6 +248,8 @@ export default function Profile({ navigation }) {
       setDogs(dogsData || []);
     }
   };
+
+  //handle log out button
   const logoutHandler = async () => {
     try {
       await signOut(auth);
@@ -223,41 +268,6 @@ export default function Profile({ navigation }) {
       console.error("Logout error:", err);
     }
   };
-
-  // useEffect(() => {
-  //   if (auth.currentUser.uid) {
-  //     fetchDogsData();
-  //   }
-  // }, [auth.currentUser.uid]);
-
-  const locateUserHandler = () => {
-    if (auth.currentUser.uid) {
-      navigation.navigate("Map");
-    }
-  };
-
-  useEffect(() => {
-    const getAdress = async () => {
-      try {
-        if (
-          userInfo.location &&
-          typeof userInfo.location.latitude === "number" &&
-          typeof userInfo.location.longitude === "number"
-        ) {
-          const [location] = await Location.reverseGeocodeAsync({
-            latitude: userInfo.location.latitude,
-            longitude: userInfo.location.longitude,
-          });
-
-          setAddress(location);
-        }
-      } catch (error) {
-        console.error("Error getting address:", error);
-      }
-    };
-
-    getAdress();
-  }, [refreshCount]);
 
   return (
     <View style={styles.container}>
@@ -282,7 +292,6 @@ export default function Profile({ navigation }) {
                 name="account-circle-outline"
                 color={colors.shadow}
                 size={150}
-                // style={styles.iconWithBorder}
               />
             )}
           </View>
@@ -320,6 +329,7 @@ export default function Profile({ navigation }) {
         </View>
       </ImageBackground>
 
+      {/* Dog section */}
       <View style={styles.bottomContainer}>
         <View style={styles.addDogSection}>
           <Text style={{ fontSize: font.medium }}>Add Your Dogs: </Text>

@@ -16,12 +16,18 @@ import PressableButton from "../components/PressableButton";
 import FilterByMonth from "../components/FilterByMonth";
 import colors from "../config/colors";
 import font from "../config/font";
+
+/**
+ * Weight Screen show selected dog weight record, graph and add, modify, delete weight record
+ */
 export default function Weight() {
   const navigation = useNavigation();
   const [weights, setWeights] = useState([]);
   const [filteredWeights, setFilteredWeights] = useState([]);
   const [resetDropdown, setResetDropdown] = useState(false);
   const { selectedDog } = useDogContext();
+
+  //update weight record based on selected dog
   useEffect(() => {
     if (selectedDog) {
       const unsubscribe = onSnapshot(
@@ -50,11 +56,13 @@ export default function Weight() {
     }
   }, [selectedDog]);
 
+  // Modify weight record
   const handleWeightPress = (weight) => {
     navigation.navigate("AddWeight", { weight });
     setResetDropdown(true);
   };
 
+  // add weight record
   const handleAddButtonPress = () => {
     if (!selectedDog) {
       Alert.alert(
@@ -68,6 +76,7 @@ export default function Weight() {
     }
   };
 
+  //handle filter dropdown
   const handleFilterByMonth = (month) => {
     if (!month) {
       setFilteredWeights(weights);
@@ -78,7 +87,6 @@ export default function Weight() {
         return monthPart === month;
       });
       setFilteredWeights(filtered);
-   
     }
   };
   return (
@@ -86,7 +94,7 @@ export default function Weight() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Weight Tracker</Text>
-          <PressableButton  onPressFunction={handleAddButtonPress}>
+          <PressableButton onPressFunction={handleAddButtonPress}>
             <Ionicons
               name="add-circle-outline"
               size={35}
@@ -94,7 +102,7 @@ export default function Weight() {
             />
           </PressableButton>
         </View>
-
+        {/* if weight record exist and dog is selected, then show the chart and record */}
         {weights.length > 0 && selectedDog ? (
           <View style={styles.WeightChart}>
             <WeightChart weightData={weights} />
