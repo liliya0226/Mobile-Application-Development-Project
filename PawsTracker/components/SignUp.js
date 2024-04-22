@@ -16,6 +16,10 @@ import { writeUserToDB } from "../firebase-files/firestoreHelper";
 import button from "../config/button";
 import colors from "../config/colors";
 
+/**
+ * Singup for new user
+ * @param {navigation} navigate between login/signup
+ */
 export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState(""); // State for the first name
@@ -23,6 +27,7 @@ export default function SignUp({ navigation }) {
   const [password, setPassword] = useState(""); // State for the password
   const [confirmPassword, setConfirmPassword] = useState(""); // State for confirming the password
 
+  // sign up for new users
   const signUpHandler = async () => {
     if (!email || !password || !confirmPassword || !firstName || !lastName) {
       Alert.alert("Fill in all the fields");

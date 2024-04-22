@@ -19,6 +19,9 @@ import AddNutriDetail from "./AddNutriDetail";
 import colors from "../config/colors";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+/**
+ * BottomTab component responsible for rendering the bottom tab navigation.
+ */
 export default function BottomTab() {
   return (
     <DogProvider>
@@ -108,6 +111,10 @@ export default function BottomTab() {
     </DogProvider>
   );
 }
+
+/**
+ * WeightStackScreen component renders the stack navigator for the Weight tab.
+ */
 const WeightStackScreen = ({ navigation }) => {
   return (
     <Stack.Navigator>
@@ -128,6 +135,10 @@ const WeightStackScreen = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
+
+/**
+ * NutriStackScreen component renders the stack navigator for the Nutri tab.
+ */
 const NutriStackScreen = ({ navigation }) => {
   return (
     <Stack.Navigator>

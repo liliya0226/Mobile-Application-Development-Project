@@ -8,16 +8,21 @@ import { auth } from "../firebase-files/firebaseSetup";
 import button from "../config/button";
 import colors from "../config/colors";
 
+/**
+ * Login screen handle user login with email and name
+ */
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
 
+  // to Signup component
   const signupHandler = () => {
     navigation.replace("Signup");
   };
 
+  // login the page with name and email
   const loginHandler = async () => {
     try {
       if (!email || !password) {
