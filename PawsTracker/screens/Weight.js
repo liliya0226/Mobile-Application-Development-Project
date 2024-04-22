@@ -100,15 +100,30 @@ export default function Weight() {
             />
           </PressableButton>
         </View>
+
         {/* if weight record exist and dog is selected, then show the chart and record */}
         {weights.length > 0 && selectedDog ? (
           <View style={styles.WeightChart}>
             <WeightChart weightData={weights} />
           </View>
         ) : (
-          <Text style={styles.noRecords}> No records for weight yet</Text>
+          ""
         )}
-
+        {selectedDog ? (
+          ""
+        ) : (
+          <View style={styles.centerMessage}>
+            <Ionicons
+              name="paw"
+              size={50}
+              color={colors.shadow}
+              style={styles.iconStyle}
+            />
+            <Text style={styles.selectDogMessage}>
+              Please select a dog first
+            </Text>
+          </View>
+        )}
         {weights.length > 0 && selectedDog ? (
           <FilterByMonth
             onFilter={handleFilterByMonth}
@@ -116,7 +131,9 @@ export default function Weight() {
             setResetDropdown={setResetDropdown}
           />
         ) : (
-          ""
+          <Text style={styles.noRecords}>
+            No records for {selectedDog.label} yet
+          </Text>
         )}
         <View style={styles.weightData}>
           <WeightList
@@ -164,5 +181,15 @@ const styles = StyleSheet.create({
     color: colors.shadow,
     textAlign: "center",
     marginTop: 20,
+  },
+  centerMessage: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectDogMessage: {
+    fontSize: font.medium,
+    color: colors.shadow,
+    marginTop: 16,
   },
 });
