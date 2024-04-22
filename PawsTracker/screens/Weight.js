@@ -110,7 +110,19 @@ export default function Weight() {
           ""
         )}
         {selectedDog ? (
-          ""
+          <View>
+            {weights.length > 0 ? (
+              <FilterByMonth
+                onFilter={handleFilterByMonth}
+                resetDropdown={resetDropdown}
+                setResetDropdown={setResetDropdown}
+              />
+            ) : (
+              <Text style={styles.noRecords}>
+                No records for {selectedDog.label} yet
+              </Text>
+            )}
+          </View>
         ) : (
           <View style={styles.centerMessage}>
             <Ionicons
@@ -124,17 +136,7 @@ export default function Weight() {
             </Text>
           </View>
         )}
-        {weights.length > 0 && selectedDog ? (
-          <FilterByMonth
-            onFilter={handleFilterByMonth}
-            resetDropdown={resetDropdown}
-            setResetDropdown={setResetDropdown}
-          />
-        ) : (
-          <Text style={styles.noRecords}>
-            No records for {selectedDog.label} yet
-          </Text>
-        )}
+
         <View style={styles.weightData}>
           <WeightList
             weights={filteredWeights}
