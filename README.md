@@ -83,6 +83,7 @@ To use the features of this project that require external API calls, you'll need
 - Integrated a third-party API to provide real-time weather data for enhanced reminders and weather-based notifications.
 - Led comprehensive testing on Android and iPad platforms to ensure seamless integration and functionality.
 - Improved the UI layout and design, focusing on a cohesive look that aligns with our unified style guide for buttons and color schemes.
+- Unify font config.
 
 ### Member 2: Xinyue Zheng
 
@@ -146,4 +147,4 @@ Also a subset of each dog's document, this collection stores reminders for the n
 ## Future improvement
 
 - Allows any changes made to the header in one of the screens—poopal, nutri, or weight—to be reflected in the headers of the other two screens
-- add update and delete opeartion for Nutri and Poopal and Add dogs sections
+- Add update and delete opeartion for Nutri and Poopal and Add dogs sections
