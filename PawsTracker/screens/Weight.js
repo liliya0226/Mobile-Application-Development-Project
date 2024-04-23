@@ -110,7 +110,7 @@ export default function Weight() {
           ""
         )}
         {selectedDog ? (
-          <View>
+          <View style={styles.centerMessage}>
             {weights.length > 0 ? (
               <FilterByMonth
                 onFilter={handleFilterByMonth}
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 2,
   },
   selectDogMessage: {
     fontSize: font.medium,

@@ -70,7 +70,12 @@ export default function AddWeight({ navigation, route }) {
   // handle save button with alert
   const handleSave = async () => {
     if (!record || isNaN(Number(record)) || Number(record) <= 0) {
-      Alert.alert("Invalid Input", "Please check your input values");
+      Alert.alert("Invalid Input", "Please check your record values");
+      return;
+    }
+
+    if (!textInputValue) {
+      Alert.alert("Empty Input", "Please choose your record date");
       return;
     }
 
