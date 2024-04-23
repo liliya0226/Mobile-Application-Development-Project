@@ -51,10 +51,11 @@ const AddNutriDetail = ({ route, navigation }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
-  // Determine if the save button should be disabled
-  const isSaveDisabled = isMedicineCategory
-    ? !medicineName || medicineName.trim() === "" || !medicineDosage || medicineDosage.trim() === ""
-    : !foodName && (!weight || weight.trim() === ""); 
+// Determine if the save button should be disabled
+const isSaveDisabled = isMedicineCategory
+    ? (!medicineName || medicineName.trim() === "") || (!medicineDosage || medicineDosage.trim() === "")
+    : !foodName || foodName.trim() === "" || !weight || weight.trim() === "";
+
 
   // Function to handle time change
   const handleTimeChange = (event, selectedTime) => {
@@ -233,7 +234,6 @@ const AddNutriDetail = ({ route, navigation }) => {
                 onChangeText={setWeight}
                 value={weight}
                 placeholder="Weight (e.g., 500g)"
-                keyboardType="numeric"
               />
             )}
             <TextInput

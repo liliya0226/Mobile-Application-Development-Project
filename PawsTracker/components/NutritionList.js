@@ -21,14 +21,14 @@ const NutritionList = ({ nutris, getCategoryImage, selectedDog }) => {
                 <Text style={styles.time}>{format(item.date, "Pp")}</Text>
                 <Text
                   style={styles.description}
-                >{`${item.foodName} - ${item.weight}`}</Text>
+                >{`${item.foodName}  ${item.weight}`}</Text>
               </>
             ) : (
               <>
                 <Text style={styles.time}>{format(item.date, "Pp")}</Text>
                 <Text
                   style={styles.description}
-                >{`${item.medicineName} - ${item.medicineDosage}`}</Text>
+                >{`${item.medicineName}  ${item.medicineDosage}`}</Text>
               </>
             )}
             <Text style={styles.description}>{`${item.notes}`}</Text>

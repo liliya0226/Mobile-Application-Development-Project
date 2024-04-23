@@ -5,6 +5,9 @@
 ## Introduction
 
 Welcome to our Paw Tracker App, a comprehensive solution for managing your pets' health and well-being. This application allows users to create profiles for their pets, track weight changes over time, set reminders for potty time, and more.
+## Demo Video
+Watch our project demonstration by clicking the link below:
+[![Watch the video](https://img.youtube.com/vi/5rkgBbiXBQA/1.jpg)](https://youtu.be/5rkgBbiXBQA)
 
 ## Current State of the Application
 
@@ -146,4 +149,6 @@ Also a subset of each dog's document, this collection stores reminders for the n
 
 ## Future improvement
 
-- Add update and delete opeartion for Nutri and Poopal and Add dogs sections
+- Add update opeartion for Nutri and Poopal and Add dogs sections.
+- Implement a seamless, intuitive slide action for deleting entries for Nutri and Poopal and Add dogs sections.
+
