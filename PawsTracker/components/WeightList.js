@@ -9,10 +9,19 @@ import {
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
+import colors from "../config/colors";
+import font from "../config/font";
+/**
+ * use flatlist to show the data by date.
+ * @param {weights, onWeightPress} pass from Weight.js
+ */
 export default function WeightList({ weights, onWeightPress }) {
+  //sort the data by dates. Most recent on the top
   const sortedWeights = weights
     .slice()
     .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // render the record by date and weight record in kg
   const renderWeightItem = ({ item }) => (
     <View style={styles.weightItem}>
       <Text style={styles.dateText}>
@@ -28,7 +37,11 @@ export default function WeightList({ weights, onWeightPress }) {
         customStyle={styles.arrow}
         onPressFunction={() => onWeightPress(item)}
       >
-        <Ionicons name="chevron-forward-outline" size={24} color="black" />
+        <Ionicons
+          name="chevron-forward-outline"
+          size={24}
+          color={colors.black}
+        />
       </PressableButton>
     </View>
   );
@@ -52,18 +65,18 @@ const styles = StyleSheet.create({
     padding: 16,
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: "#000",
+    borderColor: colors.black,
     marginBottom: 10,
   },
   dateText: {
-    fontSize: 16,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   weightText: {
-    fontSize: 16,
+    fontSize: font.small,
     fontWeight: "bold",
   },
   arrow: {
-    backgroundColor: "transparent",
+    backgroundColor: colors.transparent,
   },
 });

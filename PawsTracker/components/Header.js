@@ -6,23 +6,36 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Pressable } from "react-native";
+import colors from "../config/colors";
+import font from "../config/font";
+
 export default function Header() {
+  // Retrieve dogs and selectedDog from context
   const { dogs, selectedDog, setSelectedDog } = useDogContext();
+
+  // State variables for dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
 
+  // Update value when selectedDog changes
   useEffect(() => {
     if (selectedDog) {
       setValue(selectedDog.value);
     }
+    //delete "selectedDog" dependency for switch dogs for Nutri and Poopal
   }, [selectedDog]);
 
-  const handleDogChange = (value) => {
-    const dog = dogs.find((d) => d.value === value);
+  // Function to handle dog change
+
+  const handleDogChange = (item) => {
+    setValue(item.value); // Set the value to the value property of the selected item
+    const dog = dogs.find((d) => d.value === item.value);
     if (dog) {
       setSelectedDog(dog);
     }
   };
+
+  // Function to toggle dropdown
   const toggleDropdown = () => {
     setOpen(!open);
   };
@@ -30,19 +43,21 @@ export default function Header() {
   return (
     <SafeAreaView>
       <Pressable onPress={toggleDropdown} style={styles.container}>
+        {/* Dog icon */}
         <MaterialCommunityIcons
           name="dog"
           size={40}
-          color="black"
+          color={colors.black}
           style={styles.icon}
         />
+        {/* DropDownPicker for selecting dog */}
         <DropDownPicker
           open={open}
           value={value}
           items={dogs.map((dog) => ({ label: dog.label, value: dog.value }))}
           setOpen={setOpen}
           setValue={setValue}
-          onChangeValue={handleDogChange}
+          onSelectItem={handleDogChange}
           labelStyle={styles.dropdownLabel}
           containerStyle={styles.dropdownContainer}
           style={styles.dropdown}
@@ -56,7 +71,14 @@ export default function Header() {
             nestedScrollEnabled: true,
           }}
         />
-        <AntDesign name="down" size={35} color="black" style={styles.icon} />
+        {/* Arrow icon for dropdown */}
+
+        <AntDesign
+          name="down"
+          size={35}
+          color={colors.black}
+          style={styles.icon}
+        />
       </Pressable>
     </SafeAreaView>
   );
@@ -69,7 +91,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     justifyContent: "center",
-    backgroundColor: "#FFA07A",
+    backgroundColor: colors.header,
+    shadowColor: colors.shadow,
+    shadowOffset: 10,
+    shadowOpacity: 50,
   },
   icon: {
     width: 40,
@@ -80,23 +105,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdownLabel: {
-    fontSize: 25,
+    fontSize: font.medium,
     textAlign: "center",
   },
   dropdown: {
-    backgroundColor: "transparent", // Makes the dropdown transparent
+    backgroundColor: colors.transparent,
     borderWidth: 0,
     textAlign: "center",
   },
   dropdownBox: {
-    borderColor: "#000",
+    borderColor: colors.placeholder,
   },
   dropdownArrow: {
     display: "none",
   },
   dropdownPlaceholder: {
-    color: "black",
-    fontSize: 25,
+    color: colors.black,
+    fontSize: font.medium,
     textAlign: "center",
   },
   title: {
