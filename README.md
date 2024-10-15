@@ -1,4 +1,4 @@
-# CS5520-Final-Project
+# Mobile Application Development Project
 
 # Paw Tracker
 
